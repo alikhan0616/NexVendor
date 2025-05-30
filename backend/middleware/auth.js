@@ -1,3 +1,3 @@
-import ErrorHandler from "../utils/errorHandler";
-import catchAsyncError from "./catchAsyncError";
-import jwt from "jsonwebtoken";
+const ErrorHandler = require("../utils/errorHandler");
+const catchAsyncError = require("./catchAsyncError");
+const jwt = require("jsonwebtoken");

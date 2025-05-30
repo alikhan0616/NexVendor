@@ -1,20 +1,15 @@
-import express from "express";
-import dotenv from "dotenv";
-import ErrorHandler from "./utils/errorHandler.js";
-import cookieParser from "cookie-parser";
-import bodyParser from "body-parser";
-import cors from "cors";
-import userRoute from "./controller/user.js";
+const express = require("express");
+const dotenv = require("dotenv");
+const ErrorHandler = require("./utils/errorHandler");
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const userRoute = require("./controller/user");
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://localhost:8000",
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use("/", express.static("uploads"));
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
@@ -25,8 +20,9 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 }
 // Import routes
 app.use("/api/v2/user", userRoute);
+app.get("/ping", (req, res) => res.send("pong"));
 
 // Its for error handling
-app.use(ErrorHandler);
+// app.use(ErrorHandler);
 
-export default app;
+module.exports = app;

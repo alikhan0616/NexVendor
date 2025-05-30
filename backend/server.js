@@ -1,6 +1,6 @@
-import app from "./app.js";
-import dotenv from "dotenv";
-import connectDatabase from "./db/Database.js";
+const app = require("./app");
+const dotenv = require("dotenv");
+const connectDatabase = require("./db/Database");
 
 // Handling uncaught exceptions
 process.on("uncaughtException", (err) => {
