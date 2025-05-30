@@ -1,6 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const ErrorHandler = require("./utils/errorHandler");
+const ErrorHandler = require("./middleware/error.js");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");

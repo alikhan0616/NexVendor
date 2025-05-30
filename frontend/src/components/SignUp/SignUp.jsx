@@ -1,11 +1,12 @@
 import { useState } from "react";
 import styles from "../../styles/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
 import axios from "axios";
 import { server } from "../../server";
 
 function SignUp() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -26,9 +27,9 @@ function SignUp() {
     newForm.append("password", password);
 
     axios
-      .post(`http://localhost:8000/api/v2/user/create-user`, newForm, config)
+      .post(`${server}/user/create-user`, newForm, config)
       .then((res) => {
-        console.log(res);
+        alert(res.message);
       })
       .catch((err) => {
         console.log(err);
