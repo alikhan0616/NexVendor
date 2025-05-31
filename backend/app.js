@@ -23,6 +23,6 @@ app.use("/api/v2/user", userRoute);
 app.get("/ping", (req, res) => res.send("pong"));
 
 // Its for error handling
-// app.use(ErrorHandler);
+app.use(ErrorHandler);
 
 module.exports = app;

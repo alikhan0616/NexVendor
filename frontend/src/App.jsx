@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LoginPage, SignUpPage, ActivationPage } from "./Routes.js";
+import { ToastContainer, Bounce } from "react-toastify";
+
 function App() {
   return (
     <BrowserRouter>
@@ -12,6 +14,19 @@ function App() {
           element={<ActivationPage />}
         />
       </Routes>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
     </BrowserRouter>
   );
 }
