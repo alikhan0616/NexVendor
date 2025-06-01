@@ -24,7 +24,9 @@ const Hero = () => {
           tempora cumque placeat soluta alias.
         </p>
         <Link to={`/products`}>
-          <div className={`${styles.button} mt-5 bg-black hover:bg-slate-800`}>
+          <div
+            className={`${styles.button} rounded-xl mt-5 bg-black hover:bg-slate-800`}
+          >
             <span className="text-white font-[Poppins] text-md">Shop Now</span>
           </div>
         </Link>

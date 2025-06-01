@@ -84,7 +84,9 @@ const Header = ({ activeHeading }) => {
               </div>
             ) : null}
           </div>
-          <div className={`${styles.button} bg-[#0D1321] hover:bg-slate-800`}>
+          <div
+            className={`${styles.button} rounded-xl bg-[#0D1321] hover:bg-slate-800`}
+          >
             <Link to="/seller">
               <h1 className="text-white flex items-center">
                 Become a Seller <IoIosArrowForward className="ml-1 " />

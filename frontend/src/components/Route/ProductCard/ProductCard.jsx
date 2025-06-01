@@ -9,6 +9,7 @@ import {
   AiOutlineShoppingCart,
   AiOutlineStar,
 } from "react-icons/ai";
+import ProductDetailCard from "../ProductDetailsCard/ProductDetailsCard.jsx";
 
 const ProductCard = ({ data }) => {
   const [click, setClick] = useState(false);
@@ -104,6 +105,7 @@ const ProductCard = ({ data }) => {
             color={"#333"}
             title="Add to cart"
           />
+          {open ? <ProductDetailCard setOpen={setOpen} data={data} /> : null}
         </div>
       </div>
     </>
