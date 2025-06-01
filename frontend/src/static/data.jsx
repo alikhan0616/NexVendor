@@ -272,11 +272,11 @@ export const productData = [
     image_Url: [
       {
         public_id: "test",
-        url: "https://www.istorebangladesh.com/images/thumbs/0000286_macbook-pro-m1_550.png",
+        url: "https://atlas-content-cdn.pixelsquid.com/stock-images/macbook-air-gold-laptop-72rDZq8-600.jpg",
       },
       {
         public_id: "test",
-        url: "https://www.istorebangladesh.com/images/thumbs/0000286_macbook-pro-m1_550.png",
+        url: "https://atlas-content-cdn.pixelsquid.com/stock-images/macbook-air-gold-laptop-72rDZq8-600.jpg",
       },
     ],
     shop: {
@@ -332,11 +332,11 @@ export const productData = [
     image_Url: [
       {
         public_id: "test",
-        url: "https://www.istorebangladesh.com/images/thumbs/0000286_macbook-pro-m1_550.png",
+        url: "https://i01.hsncdn.com/is/image/HomeShoppingNetwork/rocs1200/apple-macbook-pro-13-m2-256gb-8-core-cpu-10-core-gpu-bu-d-20240130111145193~20629088w_alt2.jpg",
       },
       {
         public_id: "test",
-        url: "https://www.istorebangladesh.com/images/thumbs/0000286_macbook-pro-m1_550.png",
+        url: "https://i01.hsncdn.com/is/image/HomeShoppingNetwork/rocs1200/apple-macbook-pro-13-m2-256gb-8-core-cpu-10-core-gpu-bu-d-20240130111145193~20629088w_alt2.jpg",
       },
     ],
     shop: {
@@ -394,11 +394,11 @@ export const productData = [
     image_Url: [
       {
         public_id: "test",
-        url: "https://mirzacdns3.s3.ap-south-1.amazonaws.com/cache/catalog/RLV0015/2-800x800.jpg",
+        url: "https://www.pngitem.com/pimgs/m/10-109181_nike-shoes-png-hd-transparent-png.png",
       },
       {
         public_id: "test",
-        url: "https://mirzacdns3.s3.ap-south-1.amazonaws.com/cache/catalog/RLV0015/2-800x800.jpg",
+        url: "https://www.pngitem.com/pimgs/m/10-109181_nike-shoes-png-hd-transparent-png.png",
       },
     ],
     shop: {

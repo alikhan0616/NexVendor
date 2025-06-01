@@ -32,7 +32,7 @@ const Header = ({ activeHeading }) => {
   };
 
   window.addEventListener("scroll", () => {
-    if (window.screenY > 70) {
+    if (window.scrollY > 70) {
       setActive(true);
     } else {
       setActive(false);
@@ -102,11 +102,11 @@ const Header = ({ activeHeading }) => {
           className={`${styles.section} relative ${styles.normalFlex} justify-between`}
         >
           {/* Categories */}
-          <div>
+          <div onClick={() => setDropDown(!dropDown)}>
             <div className="relative h-[60px] mt-[10px] w-[270px] hidden md:block">
               <BiMenuAltLeft size={30} className="absolute top-3 left-2" />
               <button
-                className={`h-[100%] w-full flex justify-between items-center pl-12 pb-1 bg-white rounded-t-md font-sans font-[500] select-none`}
+                className={`h-[100%] cursor-pointer w-full flex justify-between items-center pl-12 pb-1 bg-white rounded-t-md font-sans font-[500] select-none`}
               >
                 All Categories
               </button>

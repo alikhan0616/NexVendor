@@ -1,0 +1,31 @@
+import { useEffect, useState } from "react";
+import { productData } from "../../../static/data";
+import styles from "../../../styles/styles";
+import ProductCard from "../ProductCard/ProductCard";
+
+const BestDeals = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const d =
+      productData && productData.sort((a, b) => b.total_sell - a.total_sell);
+    const firstFive = d.slice(0, 5);
+    setData(firstFive);
+  }, []);
+  return (
+    <div>
+      <div className={`${styles.section} `}>
+        {/* HEADING DIV */}
+        <div className={`${styles.heading}`}>
+          <h1>Best Deals</h1>
+        </div>
+        {/* PRODUCT CARD DIV */}
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-2 md:gap-2.5 lg:grid-cols-4 lg:gap-5 xl:grid-5 xl:gap-7">
+          {data && data.map((i, index) => <ProductCard data={i} key={index} />)}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BestDeals;
