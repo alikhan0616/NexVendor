@@ -4,7 +4,8 @@ import Hero from "../components/Route/Hero";
 import Categories from "../components/Route/Categories";
 import BestDeals from "../components/Route/BestDeals/BestDeals";
 import FeaturedProducts from "../components/Route/FeaturedProducts/FeaturedProducts";
-import Events from "../components/Events/Events.jsx";
+import Events from "../components/Route/Events/Events.jsx";
+import Sponsered from "../components/Route/Sponsered.jsx";
 const HomePage = () => {
   return (
     <div>
@@ -14,6 +15,7 @@ const HomePage = () => {
       <BestDeals />
       <Events />
       <FeaturedProducts />
+      <Sponsered />
     </div>
   );
 };

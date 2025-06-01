@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../styles/styles";
+import styles from "../../../styles/styles.js";
 import CountDown from "./CountDown.jsx";
 
 const EventCard = () => {
