@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LoginPage, SignUpPage, ActivationPage } from "./Routes.js";
-import { ToastContainer, Bounce, toast } from "react-toastify";
+import { LoginPage, SignUpPage, ActivationPage, HomePage } from "./Routes.js";
+import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
 import { loadUser } from "./redux/actions/user.js";
 
@@ -12,6 +12,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route
