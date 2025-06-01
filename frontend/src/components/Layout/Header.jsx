@@ -133,7 +133,7 @@ const Header = ({ activeHeading }) => {
             <div className={`${styles.normalFlex}`}>
               <div className="relative cursor-pointer mr-[15px]">
                 <AiOutlineHeart size={30} color="rgb(255 255 255 / 83%)" />
-                <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
+                <span className="absolute right-0 top-0 rounded-full bg-[#B66E41] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
                   0
                 </span>
               </div>
@@ -144,7 +144,7 @@ const Header = ({ activeHeading }) => {
                   size={30}
                   color="rgb(255 255 255 / 83%)"
                 />
-                <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
+                <span className="absolute right-0 top-0 rounded-full bg-[#B66E41] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
                   1
                 </span>
               </div>

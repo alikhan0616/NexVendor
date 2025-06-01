@@ -12,7 +12,7 @@ const NavBar = ({ active }) => {
             <Link
               className={
                 active == index + 1
-                  ? "text-[#90e0ef]  px-6 "
+                  ? "text-[#B66E41]  px-6 "
                   : "text-white font-[500] px-6 cursor-pointer"
               }
               to={i.url}
