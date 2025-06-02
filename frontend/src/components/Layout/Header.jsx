@@ -15,12 +15,16 @@ import DropDown from "./DropDown.jsx";
 import NavBar from "./NavBar.jsx";
 import { useSelector } from "react-redux";
 import { backend_url } from "../../server.js";
+import Cart from "../Cart/Cart.jsx";
+import WishList from "../WishList/WishList.jsx";
 const Header = ({ activeHeading }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [active, setActive] = useState(false);
   const [dropDown, setDropDown] = useState(false);
   const { isAuthenticated, user, loading } = useSelector((state) => state.user);
+  const [openCart, setOpenCart] = useState(false);
+  const [openWishlist, setOpenWishList] = useState(false);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -145,7 +149,10 @@ const Header = ({ activeHeading }) => {
           </div>
           <div className="flex">
             <div className={`${styles.normalFlex}`}>
-              <div className="relative cursor-pointer mr-[15px]">
+              <div
+                onClick={() => setOpenWishList(true)}
+                className="relative cursor-pointer mr-[15px]"
+              >
                 <AiOutlineHeart size={30} color="rgb(255 255 255 / 83%)" />
                 <span className="absolute right-0 top-0 rounded-full bg-[#B66E41] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
                   0
@@ -153,7 +160,10 @@ const Header = ({ activeHeading }) => {
               </div>
             </div>
             <div className={`${styles.normalFlex}`}>
-              <div className="relative cursor-pointer mr-[15px]">
+              <div
+                onClick={() => setOpenCart(true)}
+                className="relative cursor-pointer mr-[15px]"
+              >
                 <AiOutlineShoppingCart
                   size={30}
                   color="rgb(255 255 255 / 83%)"
@@ -180,6 +190,12 @@ const Header = ({ activeHeading }) => {
                 )}
               </div>
             </div>
+            {/* CART POP UP */}
+            {openCart ? <Cart setOpenCart={setOpenCart} /> : null}
+            {/* WISHLIST POP UP */}
+            {openWishlist ? (
+              <WishList setOpenWishList={setOpenWishList} />
+            ) : null}
           </div>
         </div>
       </div>

@@ -19,9 +19,7 @@ function App() {
   useEffect(() => {
     Store.dispatch(loadUser());
   }, []);
-  return loading ? (
-    <h1>loading</h1>
-  ) : (
+  return loading ? null : (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />

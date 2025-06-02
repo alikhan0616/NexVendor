@@ -3,7 +3,7 @@ import Header from "../components/Layout/Header";
 import styles from "../styles/styles";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
-import { productData } from "../static/data";
+import { categoriesData, productData } from "../static/data";
 import ProductCard from "../components/Route/ProductCard/ProductCard";
 const ProductPage = () => {
   const [searchParams] = useSearchParams();
