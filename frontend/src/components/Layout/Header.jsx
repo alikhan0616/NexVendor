@@ -13,11 +13,14 @@ import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { BiMenuAltLeft } from "react-icons/bi";
 import DropDown from "./DropDown.jsx";
 import NavBar from "./NavBar.jsx";
+import { useSelector } from "react-redux";
+import { backend_url } from "../../server.js";
 const Header = ({ activeHeading }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [active, setActive] = useState(false);
   const [dropDown, setDropDown] = useState(false);
+  const { isAuthenticated, user, loading } = useSelector((state) => state.user);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -162,9 +165,19 @@ const Header = ({ activeHeading }) => {
             </div>
             <div className={`${styles.normalFlex}`}>
               <div className="relative cursor-pointer mr-[15px]">
-                <Link to={"/login"}>
-                  <CgProfile size={30} color="rgb(255 255 255 / 83%)" />
-                </Link>
+                {isAuthenticated && !loading ? (
+                  <Link className="" to={"/profile"}>
+                    <img
+                      className="h-[40px] w-[40px] rounded-full"
+                      src={`${backend_url}${user.avatar}`}
+                      alt=""
+                    />
+                  </Link>
+                ) : (
+                  <Link to={"/login"}>
+                    <CgProfile size={30} color="rgb(255 255 255 / 83%)" />
+                  </Link>
+                )}
               </div>
             </div>
           </div>
