@@ -2,9 +2,13 @@ import React from "react";
 import styles from "../../../styles/styles.js";
 import CountDown from "./CountDown.jsx";
 
-const EventCard = () => {
+const EventCard = ({ active }) => {
   return (
-    <div className={`w-full block bg-white rounded-lg lg:flex p-2 mb-12`}>
+    <div
+      className={`w-full block bg-white rounded-lg ${
+        active ? "unset" : "mb-12"
+      } lg:flex p-2 `}
+    >
       <div className="w-full lg:w-[50%] m-auto">
         <img
           src="https://i01.hsncdn.com/is/image/HomeShoppingNetwork/rocs1200/apple-macbook-pro-13-m2-256gb-8-core-cpu-10-core-gpu-bu-d-20240130111145193~20629088w_alt2.jpg"
