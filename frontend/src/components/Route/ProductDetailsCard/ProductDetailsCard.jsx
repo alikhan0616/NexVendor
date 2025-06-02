@@ -18,7 +18,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     }
   };
   const incrementCount = () => {
-    if (count < 20) {
+    if (count < 25) {
       setCount(count + 1);
     }
   };

@@ -1,11 +1,12 @@
-import LoginPage from "./pages/LoginPage.jsx";
-import SignUpPage from "./pages/SignUpPage.jsx";
-import HomePage from "./pages/HomePage.jsx";
-import ActivationPage from "../src/pages/ActivationPage.jsx";
-import ProductPage from "./pages/ProductPage.jsx";
-import BestSellingPage from "./pages/BestSellingPage.jsx";
-import EventsPage from "./pages/EventsPage.jsx";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
+import HomePage from "./pages/HomePage";
+import ActivationPage from "../src/pages/ActivationPage";
+import ProductPage from "./pages/ProductPage";
+import BestSellingPage from "./pages/BestSellingPage";
+import EventsPage from "./pages/EventsPage";
 import FAQPage from "./pages/FAQPage.jsx";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
 export {
   LoginPage,
   SignUpPage,
@@ -15,4 +16,5 @@ export {
   BestSellingPage,
   EventsPage,
   FAQPage,
+  ProductDetailsPage,
 };

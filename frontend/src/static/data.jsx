@@ -428,7 +428,7 @@ export const productData = [
       },
       {
         public_id: "test",
-        url: "https://eratablet.com/wp-content/uploads/2022/08/H51ba6537405f4948972e293927673546u.jpg",
+        url: "https://media.e-valy.com/cms/products/images/f05b72b2-1d10-4e92-b38b-c58aaec53454",
       },
     ],
     shop: {
@@ -496,7 +496,7 @@ export const productData = [
       },
       {
         public_id: "test",
-        url: "https://eratablet.com/wp-content/uploads/2022/08/H51ba6537405f4948972e293927673546u.jpg",
+        url: "https://media.e-valy.com/cms/products/images/f05b72b2-1d10-4e92-b38b-c58aaec53454",
       },
     ],
     shop: {
