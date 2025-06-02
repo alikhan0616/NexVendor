@@ -6,6 +6,7 @@ import {
   ActivationPage,
   HomePage,
   ProductPage,
+  BestSellingPage,
 } from "./Routes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
@@ -22,6 +23,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/products" element={<ProductPage />} />
+        <Route path="/best-selling" element={<BestSellingPage />} />
         <Route
           path="/activation/:activation_token"
           element={<ActivationPage />}

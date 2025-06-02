@@ -20,7 +20,6 @@ const ProductPage = () => {
         productData && productData.filter((i) => i.category === categoryData);
       setData(d);
     }
-    // window.scrollTo(0, 0);
   }, [categoryData]);
   return (
     <div>
