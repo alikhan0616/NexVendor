@@ -1,6 +1,12 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LoginPage, SignUpPage, ActivationPage, HomePage } from "./Routes.js";
+import {
+  LoginPage,
+  SignUpPage,
+  ActivationPage,
+  HomePage,
+  ProductPage,
+} from "./Routes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
 import { loadUser } from "./redux/actions/user.js";
@@ -15,6 +21,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/products" element={<ProductPage />} />
         <Route
           path="/activation/:activation_token"
           element={<ActivationPage />}

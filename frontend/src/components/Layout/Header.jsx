@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import logo from "../../assets/N-removebg-preview.png";
@@ -31,13 +31,22 @@ const Header = ({ activeHeading }) => {
     setSearchData(filteredProducts);
   };
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 70) {
-      setActive(true);
-    } else {
-      setActive(false);
-    }
-  });
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 70) {
+        setActive(true);
+      } else {
+        setActive(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
     <>
       <div className={`${styles.section}`}>
@@ -97,7 +106,9 @@ const Header = ({ activeHeading }) => {
       </div>
       <div
         className={`${
-          active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
+          active === true
+            ? "shadow-sm fixed top-0 left-0 z-10 bg-[#1D2D44] transition-all duration-500 ease-in-out"
+            : "transition-all duration-500 ease-in-out"
         } transition hidden sm:flex items-center justify-between w-full bg-[#1D2D44]`}
       >
         <div
