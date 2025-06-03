@@ -10,7 +10,7 @@ const FeaturedProducts = () => {
         <div className={`${styles.heading}`}>
           <h1>Featured Products</h1>
         </div>
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-5 xl:gap-[30x] mb-12 border-0">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30x] mb-12 border-0">
           {productData &&
             productData.map((i, index) => <ProductCard data={i} key={index} />)}
         </div>
