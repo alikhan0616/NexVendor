@@ -40,7 +40,9 @@ const Header = ({ activeHeading }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 70) {
+      const headerElement = document.querySelector('.main-header');
+      const headerHeight = headerElement?.offsetHeight || 70;
+      if (window.scrollY >= headerHeight) {
         setActive(true);
       } else {
         setActive(false);
@@ -48,15 +50,11 @@ const Header = ({ activeHeading }) => {
     };
 
     window.addEventListener("scroll", handleScroll);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return (
     <>
-      <div className={`${styles.section}`}>
+      <div className={`${styles.section} main-header`}>
         <div className="hidden sm:h-[50px sm:my-[20px] sm:flex items-center justify-between">
           <div className="">
             <Link to="/">
@@ -113,9 +111,9 @@ const Header = ({ activeHeading }) => {
       </div>
       <div
         className={`${
-          active === true
-            ? "shadow-sm fixed top-0 left-0 z-10 bg-[#1D2D44] transition-all duration-500 ease-in-out"
-            : "transition-all duration-500 ease-in-out"
+          active
+            ? "shadow-sm fixed top-0 left-0 z-10 bg-[#1D2D44] transition-all duration-300 ease-in-out transform translate-y-0"
+            : "transition-all duration-300 ease-in-out transform translate-y-0"
         } transition hidden sm:flex items-center justify-between w-full bg-[#1D2D44]`}
       >
         <div
