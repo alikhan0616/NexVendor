@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import { backend_url } from "../../server";
 import { useSelector } from "react-redux";
-import { AiOutlineCamera } from "react-icons/ai";
+import {
+  AiOutlineArrowRight,
+  AiOutlineCamera,
+  AiOutlineDelete,
+} from "react-icons/ai";
 import styles from "../../styles/styles";
+import { Link } from "react-router-dom";
+import { MdOutlineTrackChanges } from "react-icons/md";
+import Button from "@mui/material/Button";
+import { DataGrid } from "@mui/x-data-grid";
 
 const ProfileContent = ({ active, setActive }) => {
   const { user } = useSelector((state) => state.user);
@@ -114,6 +122,358 @@ const ProfileContent = ({ active, setActive }) => {
           </div>
         </>
       )}
+
+      {/* ORDER PAGE */}
+      {active === 2 && (
+        <div className="">
+          <AllOrders />
+        </div>
+      )}
+
+      {/* REFUND ORDER PAGE */}
+      {active === 3 && (
+        <div className="">
+          <AllRefundOrders />
+        </div>
+      )}
+      {/* TRACK ORDER PAGE */}
+      {active === 5 && (
+        <div className="">
+          <TrackOrder />
+        </div>
+      )}
+
+      {/* PAYMENT METHODS PAGE */}
+      {active === 6 && (
+        <div className="">
+          <PaymentMethod />
+        </div>
+      )}
+
+      {/* USER ADDRESS PAGE */}
+      {active === 7 && (
+        <div className="">
+          <Address />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const AllOrders = () => {
+  const orders = [
+    {
+      _id: "3bnj1lho219827121",
+      orderItems: [
+        {
+          name: "Iphone 14 Pro Max ",
+        },
+      ],
+      totalPrice: 340,
+      orderStatus: "Processing",
+    },
+  ];
+  const columns = [
+    { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
+    {
+      field: "status",
+      headerName: "Status",
+      minWidth: 130,
+      flex: 0.7,
+      cellClassName: (params) => {
+        return params.value === "Delivered" ? "greenColor" : "redColor";
+      },
+    },
+    {
+      field: "itemsQty",
+      headerName: "Items Qty",
+      type: "number",
+      minWidth: 130,
+      flex: 0.7,
+    },
+
+    {
+      field: "total",
+      headerName: "Total",
+      type: "number",
+      minWidth: 130,
+      flex: 0.8,
+    },
+    {
+      field: " ",
+      flex: 1,
+      minWidth: 130,
+      headerName: "",
+      type: "number",
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <>
+            <Link to={`/order/${params.id}`}>
+              <Button>
+                <AiOutlineArrowRight size={20} />
+              </Button>
+            </Link>
+          </>
+        );
+      },
+    },
+  ];
+
+  const row = [];
+
+  orders &&
+    orders.forEach((item) => {
+      row.push({
+        id: item._id,
+        itemsQty: item.orderItems.length,
+        total: "PKR " + item.totalPrice,
+        status: item.orderStatus,
+      });
+    });
+  return (
+    <div className="pl-8 pt-1">
+      <DataGrid
+        rows={row}
+        columns={columns}
+        disableRowSelectionOnClick
+        autoPageSize
+      />
+    </div>
+  );
+};
+
+const AllRefundOrders = () => {
+  const orders = [
+    {
+      _id: "3bnj1lho219827121",
+      orderItems: [
+        {
+          name: "Iphone 14 Pro Max ",
+        },
+      ],
+      totalPrice: 340,
+      orderStatus: "Processing",
+    },
+  ];
+  const columns = [
+    { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
+
+    {
+      field: "status",
+      headerName: "Status",
+      minWidth: 130,
+      flex: 0.7,
+      cellClassName: (params) => {
+        return params.value === "Delivered" ? "greenColor" : "redColor";
+      },
+    },
+    {
+      field: "itemsQty",
+      headerName: "Items Qty",
+      type: "number",
+      minWidth: 130,
+      flex: 0.7,
+    },
+
+    {
+      field: "total",
+      headerName: "Total",
+      type: "number",
+      minWidth: 130,
+      flex: 0.8,
+    },
+
+    {
+      field: " ",
+      flex: 1,
+      minWidth: 150,
+      headerName: "",
+      type: "number",
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <>
+            <Link to={`/order/${params.id}`}>
+              <Button>
+                <AiOutlineArrowRight size={20} />
+              </Button>
+            </Link>
+          </>
+        );
+      },
+    },
+  ];
+  const row = [];
+  orders &&
+    orders.forEach((item) => {
+      row.push({
+        id: item._id,
+        itemsQty: item.orderItems.length,
+        total: "PKR " + item.totalPrice,
+        status: item.orderStatus,
+      });
+    });
+  return (
+    <div className="pl-8 pt-1">
+      <DataGrid
+        rows={row}
+        columns={columns}
+        disableRowSelectionOnClick
+        autoPageSize
+      />
+    </div>
+  );
+};
+
+const TrackOrder = () => {
+  const orders = [
+    {
+      _id: "7463hvbfbhfbrtr28820221",
+      orderItems: [
+        {
+          name: "Iphone 14 pro max",
+        },
+      ],
+      totalPrice: 120,
+      orderStatus: "Processing",
+    },
+  ];
+
+  const columns = [
+    { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
+    {
+      field: "status",
+      headerName: "Status",
+      minWidth: 130,
+      flex: 0.7,
+      cellClassName: (params) => {
+        return params.value === "Delivered" ? "greenColor" : "redColor";
+      },
+    },
+    {
+      field: "itemsQty",
+      headerName: "Items Qty",
+      type: "number",
+      minWidth: 130,
+      flex: 0.7,
+    },
+
+    {
+      field: "total",
+      headerName: "Total",
+      type: "number",
+      minWidth: 130,
+      flex: 0.8,
+    },
+    {
+      field: " ",
+      flex: 1,
+      minWidth: 130,
+      headerName: "",
+      type: "number",
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <>
+            <Link to={`/order/${params.id}`}>
+              <Button>
+                <MdOutlineTrackChanges size={20} />
+              </Button>
+            </Link>
+          </>
+        );
+      },
+    },
+  ];
+
+  const row = [];
+
+  orders &&
+    orders.forEach((item) => {
+      row.push({
+        id: item._id,
+        itemsQty: item.orderItems.length,
+        total: "PKR " + item.totalPrice,
+        status: item.orderStatus,
+      });
+    });
+
+  return (
+    <div className="pl-8 pt-1">
+      <DataGrid
+        rows={row}
+        columns={columns}
+        disableRowSelectionOnClick
+        autoPageSize
+      />
+    </div>
+  );
+};
+
+const PaymentMethod = () => {
+  return (
+    <div className="w-full px-5">
+      <div className="w-full flex items-center justify-between">
+        <h1 className="text-2xl font-semibold text-[#000000ba] pb-2">
+          Payment Methods
+        </h1>
+        <div
+          className={`${styles.button} !rounded-md bg-[#B66E41] hover:bg-[#FF6F00] duration-300 `}
+        >
+          <span className="text-white ">Add New</span>
+        </div>
+      </div>
+      <br />
+      <div className="w-full bg-white h-[70px] rounded-[4px] flex items-center px-3 shadow justify-between pr-10">
+        <div className="flex items-center">
+          <img
+            className="h-5"
+            src="https://1000logos.net/wp-content/uploads/2021/11/VISA-logo.png"
+            alt="payment-icon"
+          />
+          <h5 className="pl-5 font-semibold text-slate-900">Ali Khan</h5>
+        </div>
+        <div className="pl-8 flex items-center ">
+          <h6 className="">1234 **** **** ****</h6>
+          <h5 className="pl-6 ">08/2028</h5>
+        </div>
+        <div className="min-w-[10%] flex items-center justify-between pl-8">
+          <AiOutlineDelete size={25} className="cursor-pointer" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Address = () => {
+  return (
+    <div className="w-full px-5">
+      <div className="w-full flex items-center justify-between">
+        <h1 className="text-2xl font-semibold text-[#000000ba] pb-2">
+          My Addresses
+        </h1>
+        <div
+          className={`${styles.button} !rounded-md bg-[#B66E41] hover:bg-[#FF6F00] duration-300 `}
+        >
+          <span className="text-white ">Add New</span>
+        </div>
+      </div>
+      <br />
+      <div className="w-full bg-white h-[70px] rounded-[4px] flex items-center px-3 shadow justify-between pr-10">
+        <div className="flex items-center">
+          <h5 className="pl-5 font-semibold text-slate-900">Default</h5>
+        </div>
+        <div className="pl-8 flex items-center ">
+          <h6 className="">House# 52, ABC Street, Burger Town, Capital City</h6>
+        </div>
+        <div className="pl-8 flex items-center ">
+          <h6 className="">(062) 111-222-3</h6>
+        </div>
+        <div className="min-w-[10%] flex items-center justify-between pl-8">
+          <AiOutlineDelete size={25} className="cursor-pointer" />
+        </div>
+      </div>
     </div>
   );
 };
