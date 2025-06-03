@@ -16,8 +16,9 @@ import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
 import { loadUser } from "./redux/actions/user.js";
 import { useSelector } from "react-redux";
+import ProtectRoute from "./ProtectedRoute";
 function App() {
-  const { loading } = useSelector((state) => state.user);
+  const { loading, isAuthenticated } = useSelector((state) => state.user);
   useEffect(() => {
     Store.dispatch(loadUser());
   }, []);
@@ -32,7 +33,15 @@ function App() {
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/faq" element={<FAQPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectRoute isAuthenticated={isAuthenticated}>
+              <ProfilePage />
+            </ProtectRoute>
+          }
+        />
+
         <Route
           path="/activation/:activation_token"
           element={<ActivationPage />}
