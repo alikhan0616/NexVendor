@@ -5,7 +5,7 @@ const fs = require("fs");
 const upload = require("../multer");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
-const sendToken = require("../utils/jwtToken");
+const sendShopToken = require("../utils/shopToken");
 const { isAuthenticated } = require("../middleware/auth");
 const ErrorHandler = require("../utils/errorHandler");
 const Shop = require("../model/shop");
@@ -91,21 +91,31 @@ router.post(
 
       if (seller) {
         return next(
-          new ErrorHandler("seller with this email already exists", 400)
+          new ErrorHandler("Seller with this email already exists", 400)
         );
       }
 
-      seller = await Shop.create({
-        name,
-        email,
-        avatar,
-        password,
-        zipCode,
-        address,
-        phoneNumber,
-      });
+      try {
+        seller = await Shop.create({
+          name,
+          email,
+          avatar,
+          phoneNumber: Number(phoneNumber),
+          zipCode: Number(zipCode),
+          password,
+          address,
+          phoneNumber,
+        });
+      } catch (err) {
+        if (err.code === 11000) {
+          return next(
+            new ErrorHandler("Seller with this email already exists", 400)
+          );
+        }
+        return next(new ErrorHandler(err.message, 500));
+      }
 
-      sendToken(seller, 201, res);
+      sendShopToken(seller, 201, res);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -133,7 +143,7 @@ router.post(
         return next(new ErrorHandler("Invalid credentials!"));
       }
 
-      sendToken(seller, 201, res);
+      sendShopToken(seller, 201, res);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }

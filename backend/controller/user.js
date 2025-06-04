@@ -90,12 +90,21 @@ router.post(
         );
       }
 
-      user = await User.create({
-        name,
-        email,
-        avatar,
-        password,
-      });
+      try {
+        user = await User.create({
+          name,
+          email,
+          avatar,
+          password,
+        });
+      } catch (err) {
+        if (err.code === 11000) {
+          return next(
+            new ErrorHandler("User with this email already exists", 400)
+          );
+        }
+        return next(new ErrorHandler(err.message, 500));
+      }
 
       sendToken(user, 201, res);
     } catch (error) {

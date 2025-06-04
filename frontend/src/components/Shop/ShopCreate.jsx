@@ -10,9 +10,9 @@ function ShopCreate() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState();
   const [address, setAddress] = useState("");
-  const [zipCode, setZipCode] = useState();
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [zipCode, setZipCode] = useState("");
   const [avatar, setAvatar] = useState();
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();

@@ -13,6 +13,7 @@ import {
   ProfilePage,
   ShopCreatePage,
   SellerActivationPage,
+  ShopLoginPage,
 } from "./Routes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
@@ -54,6 +55,7 @@ function App() {
           element={<SellerActivationPage />}
         />
         <Route path="/shop-create" element={<ShopCreatePage />} />
+        <Route path="/shop-login" element={<ShopLoginPage />} />
       </Routes>
       <ToastContainer
         position="bottom-center"
