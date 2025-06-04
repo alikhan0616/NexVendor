@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
 import {
   LoginPage,
   SignUpPage,
@@ -17,16 +23,21 @@ import {
 } from "./Routes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
-import { loadUser } from "./redux/actions/user.js";
+import { loadSeller, loadUser } from "./redux/actions/user.js";
 import { useSelector } from "react-redux";
 import ProtectRoute from "./ProtectedRoute";
 import ScrollToTop from "./ScrollToTops.jsx";
+import { ShopHomePage } from "./ShopRoutes.js";
+import SellerProtectedRoute from "./SellerProtectedRoute.jsx";
 function App() {
   const { loading, isAuthenticated } = useSelector((state) => state.user);
+  const { isLoading, isSeller } = useSelector((state) => state.seller);
   useEffect(() => {
     Store.dispatch(loadUser());
+    Store.dispatch(loadSeller());
   }, []);
-  return loading ? null : (
+
+  return loading && isLoading ? null : (
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
@@ -54,8 +65,17 @@ function App() {
           path="/seller/activation/:activation_token"
           element={<SellerActivationPage />}
         />
+        {/* SHOP ROUTES */}
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
+        <Route
+          path="/shop/:id"
+          element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopHomePage />
+            </SellerProtectedRoute>
+          }
+        />
       </Routes>
       <ToastContainer
         position="bottom-center"

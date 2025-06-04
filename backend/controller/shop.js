@@ -6,7 +6,7 @@ const upload = require("../multer");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendShopToken = require("../utils/shopToken");
-const { isAuthenticated } = require("../middleware/auth");
+const { isAuthenticated, isSeller } = require("../middleware/auth");
 const ErrorHandler = require("../utils/errorHandler");
 const Shop = require("../model/shop");
 const catchAsyncError = require("../middleware/catchAsyncError");
@@ -144,6 +144,26 @@ router.post(
       }
 
       sendShopToken(seller, 201, res);
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// Load Shop
+
+router.get(
+  "/getseller",
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const seller = await Shop.findById(req.seller.id);
+
+      if (!seller) {
+        return next(new ErrorHandler("User doesn't exist!", 400));
+      }
+
+      res.status(200).json({ success: true, seller });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
