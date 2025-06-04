@@ -122,7 +122,7 @@ const Header = ({ activeHeading }) => {
         className={`${
           active
             ? "shadow-sm fixed top-0 left-0 z-10 bg-[#1D2D44] transition-all duration-300 ease-in-out transform translate-y-0"
-            : "transition-all duration-300 ease-in-out transform translate-y-0"
+            : null
         } transition hidden 800px:flex items-center justify-between w-full bg-[#1D2D44]`}
       >
         <div
