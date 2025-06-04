@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { server } from "../server";
 import axios from "axios";
 
-export default function ActivationPage() {
+export default function SellerActivationPage() {
   const { activation_token } = useParams();
   const [error, setError] = useState(false);
 
@@ -14,7 +14,7 @@ export default function ActivationPage() {
     if (activation_token) {
       const activationEmail = async () => {
         await axios
-          .post(`${server}/user/activation`, {
+          .post(`${server}/shop/activation`, {
             activation_token,
           })
           .then((res) => {

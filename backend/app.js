@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const userRoute = require("./controller/user");
+const shopRoute = require("./controller/shop");
 const app = express();
 
 app.use(express.json());
@@ -20,6 +21,7 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 }
 // Import routes
 app.use("/api/v2/user", userRoute);
+app.use("/api/v2/shop", shopRoute);
 app.get("/ping", (req, res) => res.send("pong"));
 
 // Its for error handling
