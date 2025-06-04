@@ -13,7 +13,7 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     const data = productData.find((i) => i.name === productName);
     setData(data);
-  }, []);
+  }, [name]);
   return (
     <div>
       <Header />

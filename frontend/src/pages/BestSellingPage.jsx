@@ -17,7 +17,7 @@ const BestSellingPage = () => {
       <Header activeHeading={2} />
       <br />
       <br />
-      <div className={`${styles.section}`}>
+      <div className={`${styles.section} mt-10 800px:mt-0`}>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30x] mb-12">
           {data && data.map((i, index) => <ProductCard data={i} key={index} />)}
         </div>

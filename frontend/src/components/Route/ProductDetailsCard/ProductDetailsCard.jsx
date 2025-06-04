@@ -26,7 +26,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     <div className="bg-white ">
       {data ? (
         <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 items-center flex justify-center">
-          <div className="w-[90%] sm:w-[60%] h-[99vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
+          <div className="w-[90%] sm:w-[60%] h-[99vh] mt-45 800px:mt-0 overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
             <RxCross1
               size={30}
               className="absolute right-3 top-3 z-50"

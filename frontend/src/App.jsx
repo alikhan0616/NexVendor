@@ -17,6 +17,7 @@ import Store from "./redux/store.js";
 import { loadUser } from "./redux/actions/user.js";
 import { useSelector } from "react-redux";
 import ProtectRoute from "./ProtectedRoute";
+import ScrollToTop from "./ScrollToTops.jsx";
 function App() {
   const { loading, isAuthenticated } = useSelector((state) => state.user);
   useEffect(() => {
@@ -24,6 +25,7 @@ function App() {
   }, []);
   return loading ? null : (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />

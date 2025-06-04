@@ -31,7 +31,9 @@ const ProductDetails = ({ data }) => {
     <div className="bg-white">
       {data ? (
         <>
-          <div className={`${styles.section} w-[90%] 800px:w-[80%] `}>
+          <div
+            className={`${styles.section} mt-12 800px:mt-0 w-[90%] 800px:w-[80%] `}
+          >
             {/* UPPER DIV */}
             <div className="w-full py-5 ">
               <div className="block w-[100%] 800px:flex">
