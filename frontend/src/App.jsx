@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useNavigate,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
   LoginPage,
   SignUpPage,
@@ -20,24 +14,21 @@ import {
   ShopCreatePage,
   SellerActivationPage,
   ShopLoginPage,
-} from "./Routes.js";
+} from "./routes/Routes.js";
+import { ShopDashboardPage } from "./routes/ShopRoutes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
 import { loadSeller, loadUser } from "./redux/actions/user.js";
-import { useSelector } from "react-redux";
-import ProtectRoute from "./ProtectedRoute";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import ScrollToTop from "./ScrollToTops.jsx";
-import { ShopHomePage } from "./ShopRoutes.js";
-import SellerProtectedRoute from "./SellerProtectedRoute.jsx";
+import SellerProtectedRoute from "./routes/SellerProtectedRoute.jsx";
 function App() {
-  const { loading, isAuthenticated } = useSelector((state) => state.user);
-  const { isLoading, isSeller } = useSelector((state) => state.seller);
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
   }, []);
 
-  return loading && isLoading ? null : (
+  return (
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
@@ -52,9 +43,9 @@ function App() {
         <Route
           path="/profile"
           element={
-            <ProtectRoute isAuthenticated={isAuthenticated}>
+            <ProtectedRoute>
               <ProfilePage />
-            </ProtectRoute>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -69,10 +60,10 @@ function App() {
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
         <Route
-          path="/shop/:id"
+          path="/dashboard"
           element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopHomePage />
+            <SellerProtectedRoute>
+              <ShopDashboardPage />
             </SellerProtectedRoute>
           }
         />
