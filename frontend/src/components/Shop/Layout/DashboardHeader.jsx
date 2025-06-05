@@ -19,42 +19,46 @@ const DashboardHeader = () => {
       </div>
       <div className="flex items-center">
         <div className="flex items-center mr-4">
-          <Link to="/dashboard/cuppons">
+          <Link to="/dashboard/coupons">
             <AiOutlineGift
               color="#555"
               size={30}
-              className="mx-5 cursor-pointer"
+              className="mx-5 cursor-pointer 800px:block hidden"
             />
           </Link>
           <Link to="/dashboard-events">
             <MdOutlineLocalOffer
               color="#555"
               size={30}
-              className="mx-5 cursor-pointer"
+              className="mx-5 cursor-pointer 800px:block hidden"
             />
           </Link>
           <Link to="/dashboard-products">
             <FiShoppingBag
               color="#555"
               size={30}
-              className="mx-5 cursor-pointer"
+              className="mx-5 cursor-pointer 800px:block hidden"
             />
           </Link>
           <Link to="/dashboard-orders">
-            <FiPackage color="#555" size={30} className="mx-5 cursor-pointer" />
+            <FiPackage
+              color="#555"
+              size={30}
+              className="mx-5 cursor-pointer 800px:block hidden"
+            />
           </Link>
           <Link to="/dashboard-messages">
             <BiMessageSquareDetail
               color="#555"
               size={30}
-              className="mx-5 cursor-pointer"
+              className="mx-5 cursor-pointer 800px:block hidden"
             />
           </Link>
           <Link to={`/shop/${seller._id}`}>
             <img
               src={`${backend_url}${seller.avatar}`}
               alt="shop-icon"
-              className="w-12 h-12 rounded-full object-cover"
+              className="w-12 h-12 rounded-full object-cover "
             />
           </Link>
         </div>
