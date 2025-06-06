@@ -71,10 +71,10 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 </p>
                 <div className="flex pt-3">
                   <h4 className={styles.productDiscountPrice}>
-                    {data.discount_price} PKR
+                    ${data.discount_price}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.price ? data.price + " PKR" : null}
+                    {data.price ? "$" + data.price : null}
                   </h3>
                 </div>
                 <div className="flex items-center mt-12 justify-between pr-3">
