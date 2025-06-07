@@ -32,7 +32,7 @@ const productSchema = new mongoose.Schema({
       type: String,
     },
   ],
-  ShopId: {
+  shopId: {
     type: String,
     required: true,
   },
