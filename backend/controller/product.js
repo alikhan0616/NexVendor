@@ -5,6 +5,7 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
 const Shop = require("../model/shop");
 const Product = require("../model/product");
+const { isSeller } = require("../middleware/auth");
 
 // Create Product
 router.post(
@@ -48,6 +49,32 @@ router.get(
       res.status(201).json({
         success: true,
         products,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
+// Delete Product
+
+router.delete(
+  "/delete-shop-product/:id",
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+
+      const product = await Product.findByIdAndDelete(productId);
+
+      if (!product) {
+        return next(
+          new ErrorHandler("Product with this id doesn't exist!", 500)
+        );
+      }
+      res.status(201).json({
+        success: true,
+        message: "Product deleted successfully!",
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));

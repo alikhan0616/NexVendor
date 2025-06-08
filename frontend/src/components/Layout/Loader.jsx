@@ -3,7 +3,7 @@ import Lottie from "react-lottie";
 import animationData from "../../assets/animations/Animation - 1749137747850.json";
 const Loader = () => {
   const defaultOptions = {
-    loop: false,
+    loop: true,
     autoplay: true,
     animationData: animationData,
     rendererSettings: {
