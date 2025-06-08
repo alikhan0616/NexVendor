@@ -4,6 +4,7 @@ const upload = require("../multer");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
 const Shop = require("../model/shop");
+const fs = require("fs");
 const Product = require("../model/product");
 const { isSeller } = require("../middleware/auth");
 
@@ -65,13 +66,27 @@ router.delete(
     try {
       const productId = req.params.id;
 
-      const product = await Product.findByIdAndDelete(productId);
+      const product = await Product.findById(productId);
 
       if (!product) {
         return next(
           new ErrorHandler("Product with this id doesn't exist!", 500)
         );
       }
+
+      product.images.forEach((imageUrl) => {
+        const filename = imageUrl;
+        const filePath = `uploads/${filename}`;
+
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
+
+      await Product.findByIdAndDelete(productId);
+
       res.status(201).json({
         success: true,
         message: "Product deleted successfully!",

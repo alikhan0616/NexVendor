@@ -21,6 +21,7 @@ import {
   ShopCreateProduct,
   ShopAllProducts,
   ShopCreateEvents,
+  ShopAllEvents,
 } from "./routes/ShopRoutes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
@@ -102,6 +103,14 @@ function App() {
           element={
             <SellerProtectedRoute>
               <ShopCreateEvents />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-events"
+          element={
+            <SellerProtectedRoute>
+              <ShopAllEvents />
             </SellerProtectedRoute>
           }
         />
