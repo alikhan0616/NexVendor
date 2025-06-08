@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import { createProduct } from "../../redux/actions/product";
+import { createEvent } from "../../redux/actions/event";
 
-const CreateProduct = () => {
+const CreateEvent = () => {
   const { seller } = useSelector((state) => state.seller);
-  const { success, error } = useSelector((state) => state.product);
+  const { success, error } = useSelector((state) => state.event);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -17,8 +17,8 @@ const CreateProduct = () => {
       toast.error(error);
     }
     if (success) {
-      toast.success("Product created successfully");
-      navigate("/dashboard");
+      toast.success("Event created successfully");
+      navigate("/dashboard-events");
       window.location.reload();
     }
   }, [dispatch, error, success]);
@@ -31,6 +31,37 @@ const CreateProduct = () => {
   const [originalPrice, setOriginalPrice] = useState("");
   const [discountPrice, setDiscountPrice] = useState("");
   const [stock, setStock] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const handleStartDateChange = (e) => {
+    if (!e.target.value) {
+      setStartDate(null);
+      setEndDate(null);
+      document.getElementById("end-date").min = "";
+      return;
+    }
+    const startDate = new Date(e.target.value);
+    const minEndDate = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000);
+    setStartDate(startDate);
+    setEndDate(null);
+    document.getElementById("end-date").min = minEndDate
+      .toISOString()
+      .slice(0, 10);
+  };
+
+  const handleEndDateChange = (e) => {
+    const endDate = new Date(e.target.value);
+    setEndDate(endDate);
+  };
+
+  const today = new Date().toISOString().slice(0, 10);
+  const minEndDate =
+    startDate && !isNaN(startDate)
+      ? new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .slice(0, 10)
+      : today;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,7 +78,9 @@ const CreateProduct = () => {
     newForm.append("discountPrice", discountPrice);
     newForm.append("stock", stock);
     newForm.append("shopId", seller._id);
-    dispatch(createProduct(newForm));
+    newForm.append("start_Date", startDate.toISOString());
+    newForm.append("finish_Date", endDate.toISOString());
+    dispatch(createEvent(newForm));
   };
 
   const handleImageChange = (e) => {
@@ -59,7 +92,7 @@ const CreateProduct = () => {
 
   return (
     <div className="800px:w-[50%] w-[90%] bg-white h-[80vh] rounded-sm p-3 overflow-y-auto ">
-      <h5 className="text-3xl font-[Poppins] text-center">Create Product</h5>
+      <h5 className="text-3xl font-[Poppins] text-center">Create Event</h5>
       {/* PRODUCT CREATION FORM */}
       <form onSubmit={handleSubmit}>
         <br />
@@ -73,7 +106,7 @@ const CreateProduct = () => {
             value={name}
             className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setName(e.target.value)}
-            placeholder="Product name..."
+            placeholder="Event product name..."
             required
           />
         </div>
@@ -90,7 +123,7 @@ const CreateProduct = () => {
             value={description}
             className="mt-2 appearance-none block w-full border pt-2 px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Product description..."
+            placeholder="Event product description..."
             required
           ></textarea>
         </div>
@@ -123,7 +156,7 @@ const CreateProduct = () => {
             value={tags}
             className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setTags(e.target.value)}
-            placeholder="Product tags..."
+            placeholder="Event product tags..."
           />
         </div>
         <br />
@@ -135,7 +168,7 @@ const CreateProduct = () => {
             value={originalPrice}
             className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setOriginalPrice(e.target.value)}
-            placeholder="Product price..."
+            placeholder="Event product price..."
           />
         </div>
         <br />
@@ -150,7 +183,7 @@ const CreateProduct = () => {
             value={discountPrice}
             className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setDiscountPrice(e.target.value)}
-            placeholder="Product price with discount..."
+            placeholder="Event product price with discount..."
           />
         </div>
         <br />
@@ -165,7 +198,45 @@ const CreateProduct = () => {
             required
             className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setStock(e.target.value)}
-            placeholder="Product stock..."
+            placeholder="Event product stock..."
+          />
+        </div>
+        <br />
+        <div className="">
+          <label className="pb-2">
+            Event Start Date <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="date"
+            name="stock"
+            id="start-date"
+            value={startDate ? startDate.toISOString().slice(0, 10) : ""}
+            required
+            className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
+            onChange={handleStartDateChange}
+            min={today}
+            placeholder="Event product stock..."
+          />
+        </div>
+        <br />
+        <div className="">
+          <label className="pb-2">
+            Event End Date <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="date"
+            name="stock"
+            id="end-date"
+            value={
+              endDate && endDate instanceof Date && !isNaN(endDate)
+                ? endDate.toISOString().slice(0, 10)
+                : ""
+            }
+            required
+            className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
+            onChange={handleEndDateChange}
+            min={minEndDate}
+            placeholder="Event product stock..."
           />
         </div>
         <br />
@@ -210,4 +281,4 @@ const CreateProduct = () => {
   );
 };
 
-export default CreateProduct;
+export default CreateEvent;
