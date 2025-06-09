@@ -19,7 +19,7 @@ const DashboardHeader = () => {
       </div>
       <div className="flex items-center">
         <div className="flex items-center mr-4">
-          <Link to="/dashboard/coupons">
+          <Link to="/dashboard-coupons">
             <AiOutlineGift
               color="#555"
               size={30}

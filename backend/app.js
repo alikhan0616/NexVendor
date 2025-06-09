@@ -8,6 +8,7 @@ const userRoute = require("./controller/user");
 const shopRoute = require("./controller/shop");
 const productRoute = require("./controller/product");
 const eventRoute = require("./controller/event");
+const couponRoute = require("./controller/couponCode");
 const app = express();
 
 app.use(express.json());
@@ -26,6 +27,7 @@ app.use("/api/v2/user", userRoute);
 app.use("/api/v2/shop", shopRoute);
 app.use("/api/v2/product", productRoute);
 app.use("/api/v2/event", eventRoute);
+app.use("/api/v2/coupon", couponRoute);
 app.get("/ping", (req, res) => res.send("pong"));
 
 // Its for error handling
