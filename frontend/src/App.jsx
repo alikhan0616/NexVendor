@@ -23,6 +23,7 @@ import {
   ShopCreateEvents,
   ShopAllEvents,
   ShopAllCoupons,
+  ShopPreviewPage,
 } from "./routes/ShopRoutes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
@@ -30,10 +31,12 @@ import { loadSeller, loadUser } from "./redux/actions/user.js";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import ScrollToTop from "./ScrollToTops.jsx";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute.jsx";
+import { getAllProducts } from "./redux/actions/product.js";
 function App() {
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
+    Store.dispatch(getAllProducts());
   }, []);
 
   return (
@@ -67,6 +70,7 @@ function App() {
         {/* SHOP ROUTES */}
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
+        <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
         <Route
           path="/dashboard"
           element={

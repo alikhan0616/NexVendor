@@ -7,9 +7,14 @@ import {
   AiOutlineMessage,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
+import { backend_url } from "../../../server";
+import { Link } from "react-router-dom";
 const ProductDetailsCard = ({ setOpen, data }) => {
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
+
+  const d = data.name;
+  const product_name = d.replace(/\s+g/, "-");
   // const [select, setSelect] = useState(false);
   const handleMessageSubmit = () => {};
   const descrementCount = () => {
@@ -35,18 +40,29 @@ const ProductDetailsCard = ({ setOpen, data }) => {
             <div className="block w-full 800px:flex ">
               {/* LEFT DIV OF DETAILS */}
               <div className="w-full 800px:w-[50%]">
-                <img src={data?.image_Url[0].url} alt="product-img" />
-                <div className="flex">
+                <Link to={`/product/${product_name}`}>
                   <img
-                    src={data.shop.shop_avatar.url}
-                    alt="shop-img"
-                    className="w-[50px] h-[50px] rounded-full mr-2"
+                    src={`${backend_url}${data.images && data.images[0]}`}
+                    alt="product-img"
                   />
+                </Link>
+                <div className="flex">
+                  <Link to={`/shop/preview/${data.shop._id}`}>
+                    <img
+                      src={`${backend_url}${
+                        data.shop.avatar && data.shop.avatar
+                      }`}
+                      alt="shop-img"
+                      className="w-[50px] h-[50px] rounded-full mr-2"
+                    />
+                  </Link>
                   <div className="">
-                    <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
-                    <h5 className="pb-3 text-[15px]">
-                      ({data.shop.ratings}) Ratings
-                    </h5>
+                    <Link to={`/shop/preview/${data.shop._id}`}>
+                      <h3 className={`${styles.shop_name}`}>
+                        {data.shop.name}
+                      </h3>
+                    </Link>
+                    <h5 className="pb-3 text-[15px]">(10) Ratings</h5>
                   </div>
                 </div>
                 <div
@@ -57,24 +73,27 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                     Send Message <AiOutlineMessage className="ml-1" />
                   </span>
                 </div>
-                <h5 className="text-base text-red-600 mt-5">
-                  ({data.total_sell}) Sold
-                </h5>
+                <h5 className="text-base text-red-600 mt-5">(12) Sold</h5>
               </div>
               {/* RIGHT DIV OF DETAILS */}
               <div className="w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px]">
-                <h1 className={`${styles.productTitle} text-xl`}>
-                  {data.name}
-                </h1>
+                <Link to={`/product/${product_name}`}>
+                  <h1 className={`${styles.productTitle} text-xl`}>
+                    {data.name}
+                  </h1>
+                </Link>
                 <p className="text-sm mt-2 text-slate-800">
                   {data.description}
                 </p>
                 <div className="flex pt-3">
                   <h4 className={styles.productDiscountPrice}>
-                    ${data.discount_price}
+                    $
+                    {data.originalPrice === 0
+                      ? data.originalPrice
+                      : data.discountPrice}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.price ? "$" + data.price : null}
+                    {data.originalPrice ? "$" + data.originalPrice : null}
                   </h3>
                 </div>
                 <div className="flex items-center mt-12 justify-between pr-3">
