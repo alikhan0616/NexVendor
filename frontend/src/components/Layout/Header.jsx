@@ -28,13 +28,15 @@ const Header = ({ activeHeading }) => {
   const [openWishlist, setOpenWishList] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const { allProducts } = useSelector((state) => state.product);
+
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
 
     const filteredProducts =
-      productData &&
-      productData.filter((product) =>
+      allProducts &&
+      allProducts.filter((product) =>
         product.name.toLowerCase().includes(term.toLowerCase())
       );
     setSearchData(filteredProducts);
@@ -76,13 +78,11 @@ const Header = ({ activeHeading }) => {
               size={18}
               className="absolute right-2 top-2.5 cursor-pointer"
             />
-            {searchData && searchData.length > 0 ? (
-              <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
+            {searchData && searchData.length > 0 && searchTerm !== "" ? (
+              <div className="absolute min-w-full min-h-[30vh] max-h-[100px] overflow-y-auto bg-slate-50 shadow-sm-2 z-[9] p-4">
                 {searchData &&
                   searchData.map((i, index) => {
-                    const d = i.name;
-
-                    const Product_name = d.replace(/\s+/g, "-");
+                    const d = i._id;
 
                     return (
                       <Link
@@ -91,12 +91,12 @@ const Header = ({ activeHeading }) => {
                           setSearchTerm("");
                           setSearchData([]);
                         }}
-                        to={`/product/${Product_name}`}
+                        to={`/product/${d}`}
                       >
-                        <div className="w-full flex items-start p-3 hover:bg-[#D1D5DB]">
+                        <div className="flex items-start p-3 hover:bg-[#D1D5DB]">
                           <img
                             className="w-[40px] h-[40px] mr-[10px]"
-                            src={i.image_Url[0].url}
+                            src={`${backend_url}${i.images[0]}`}
                             alt="product-icon"
                           />
                           <h1>{i.name}</h1>

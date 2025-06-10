@@ -60,7 +60,7 @@ const ProductDetails = ({ data }) => {
                         <div
                           className={`${
                             select === index ? "border" : "null"
-                          } cursor-pointer`}
+                          } cursor-pointer mt-4 `}
                         >
                           <img
                             src={`${backend_url}${i}`}
