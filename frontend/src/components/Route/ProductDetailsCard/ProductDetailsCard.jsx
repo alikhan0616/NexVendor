@@ -13,8 +13,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
 
-  const d = data.name;
-  const product_name = d.replace(/\s+g/, "-");
+  const id = data._id;
   // const [select, setSelect] = useState(false);
   const handleMessageSubmit = () => {};
   const descrementCount = () => {
@@ -40,7 +39,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
             <div className="block w-full 800px:flex ">
               {/* LEFT DIV OF DETAILS */}
               <div className="w-full 800px:w-[50%]">
-                <Link to={`/product/${product_name}`}>
+                <Link to={`/product/${id}`}>
                   <img
                     src={`${backend_url}${data.images && data.images[0]}`}
                     alt="product-img"
@@ -77,7 +76,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
               </div>
               {/* RIGHT DIV OF DETAILS */}
               <div className="w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px]">
-                <Link to={`/product/${product_name}`}>
+                <Link to={`/product/${id}`}>
                   <h1 className={`${styles.productTitle} text-xl`}>
                     {data.name}
                   </h1>
