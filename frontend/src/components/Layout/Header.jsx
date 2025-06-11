@@ -28,6 +28,7 @@ const Header = ({ activeHeading }) => {
   const [openWishlist, setOpenWishList] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const { cart } = useSelector((state) => state.cart);
   const { allProducts } = useSelector((state) => state.product);
 
   const handleSearchChange = (e) => {
@@ -176,7 +177,7 @@ const Header = ({ activeHeading }) => {
                   color="rgb(255 255 255 / 83%)"
                 />
                 <span className="absolute right-0 top-0 rounded-full bg-[#B66E41] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                  1
+                  {cart && cart.length}
                 </span>
               </div>
             </div>
