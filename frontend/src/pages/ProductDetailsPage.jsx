@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import Footer from "../components/Layout/Footer";
 import SuggestedProduct from "../components/Products/SuggestedProducts";
 import { useSelector } from "react-redux";
+import Loader from "../components/Layout/Loader";
 const ProductDetailsPage = () => {
   const { allProducts } = useSelector((state) => state.product);
   const { id } = useParams();
@@ -13,12 +14,11 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     const data = allProducts && allProducts.find((i) => i._id === id);
     setData(data);
-  }, [id]);
-  console.log(data);
+  }, [id, allProducts]);
   return (
     <div>
       <Header />
-      <ProductDetails data={data} />
+      {data ? <ProductDetails data={data} /> : <Loader />}
       {data && <SuggestedProduct data={data} />}
       <Footer />
     </div>

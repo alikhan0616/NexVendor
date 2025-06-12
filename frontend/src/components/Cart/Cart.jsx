@@ -28,7 +28,7 @@ const Cart = ({ setOpenCart }) => {
 
   return (
     <div className="fixed top-0 left-0 w-full h-screen bg-[#00000041] z-10">
-      <div className="fixed top-0 right-0 h-screen w-[25%] bg-white flex flex-col justify-between shadow-sm">
+      <div className="fixed top-0 right-0 h-screen overflow-y-auto w-[25%] bg-white flex flex-col justify-between shadow-sm">
         {cart && cart.length === 0 ? (
           <div className="w-full h-full flex items-center justify-center">
             <div className="flex w-full justify-end pt-5 pr-5 fixed top-3 right-3">
@@ -129,7 +129,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
         <img
           src={`${backend_url}${data.images[0]}`}
           alt="product-img"
-          className="w-[80px] h-[80px] ml-2 rounded-[5px] object-cover"
+          className="max-w-[80px] max-h-[80px]  ml-2 rounded-[5px] object-cover"
         />
         <div className="pl-[5px]">
           <h1 className="line-clamp-3">{data.name}</h1>
@@ -141,8 +141,8 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           </h4>
         </div>
         <RxCross1
-          className="cursor-pointer"
-          size={40}
+          className="cursor-pointer "
+          size={25}
           onClick={() => removeFromCartHandler(data)}
         />
       </div>

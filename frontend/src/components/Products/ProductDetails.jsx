@@ -10,9 +10,17 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { backend_url } from "../../server";
+import {
+  addTowishlist,
+  removeFromwishlist,
+} from "../../redux/actions/wishlist";
+import { toast } from "react-toastify";
+import { addTocart } from "../../redux/actions/cart";
 
 const ProductDetails = ({ data }) => {
   const { products } = useSelector((state) => state.product);
+  const { cart } = useSelector((state) => state.cart);
+  const { wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,6 +31,7 @@ const ProductDetails = ({ data }) => {
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(0);
   const navigate = useNavigate();
+
   const descrementCount = () => {
     if (count > 1) {
       setCount(count - 1);
@@ -31,6 +40,40 @@ const ProductDetails = ({ data }) => {
   const incrementCount = () => {
     if (count < 25) {
       setCount(count + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (wishlist && wishlist.find((i) => i._id === data._id)) {
+      setClick(true);
+    } else {
+      setClick(false);
+    }
+  }, [wishlist]);
+
+  const removeFromWishlistHandler = (data) => {
+    setClick(!click);
+    dispatch(removeFromwishlist(data));
+  };
+
+  const addToWishListHandler = (data) => {
+    setClick(!click);
+    dispatch(addTowishlist(data));
+  };
+
+  const addToCartHandler = (id) => {
+    const isItemExists = cart && cart.find((i) => i._id === id);
+
+    if (isItemExists) {
+      toast.warning("Item already in cart!");
+    } else {
+      if (data.stock < count) {
+        toast.error("Product stock limited!");
+      } else {
+        const cartData = { ...data, qty: count };
+        dispatch(addTocart(cartData));
+        toast.success("Item added to cart");
+      }
     }
   };
   const handleMessageSubmit = () => {
@@ -112,7 +155,7 @@ const ProductDetails = ({ data }) => {
                         <AiFillHeart
                           size={30}
                           className="cursor-pointer "
-                          onClick={() => setClick(!click)}
+                          onClick={() => removeFromWishlistHandler(data)}
                           color={click ? "red" : "#333"}
                           title="Remove from wishlist"
                         />
@@ -120,7 +163,7 @@ const ProductDetails = ({ data }) => {
                         <AiOutlineHeart
                           size={30}
                           className="cursor-pointer "
-                          onClick={() => setClick(!click)}
+                          onClick={() => addToWishListHandler(data)}
                           color={click ? "red" : "#333"}
                           title="Add to wishlist"
                         />
@@ -128,6 +171,7 @@ const ProductDetails = ({ data }) => {
                     </div>
                   </div>
                   <div
+                    onClick={() => addToCartHandler(data._id)}
                     className={`${styles.button} bg-black !mt-6 !rounded-[4px] !h-11 flex items-center`}
                   >
                     <span className="text-white flex items-center">
@@ -135,15 +179,19 @@ const ProductDetails = ({ data }) => {
                     </span>
                   </div>
                   <div className="flex items-center pt-8">
-                    <img
-                      src={`${backend_url}${data?.shop?.avatar}`}
-                      alt="shop-img"
-                      className="w-[50px] h-[50px] rounded-full mr-2"
-                    />
+                    <Link to={`/shop/preview/${data?.shop?._id}`}>
+                      <img
+                        src={`${backend_url}${data?.shop?.avatar}`}
+                        alt="shop-img"
+                        className="w-[50px] h-[50px] rounded-full mr-2"
+                      />
+                    </Link>
                     <div className="pr-8">
-                      <h3 className={`${styles.shop_name} mb-1 pt-1`}>
-                        {data.shop.name}
-                      </h3>
+                      <Link to={`/shop/preview/${data?.shop?._id}`}>
+                        <h3 className={`${styles.shop_name} mb-1 pt-1`}>
+                          {data.shop.name}
+                        </h3>
+                      </Link>
                       <h5 className="pb-3 -mt-3 text-[15px]">(4/5) Ratings</h5>
                     </div>
                     <div

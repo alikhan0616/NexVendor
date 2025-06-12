@@ -28,6 +28,7 @@ const ShopInfo = ({ isOwner }) => {
     axios.get(`${server}/shop/logout`, { withCredentials: true });
     window.location.reload();
   };
+
   return (
     <>
       {isLoading ? (
@@ -57,7 +58,7 @@ const ShopInfo = ({ isOwner }) => {
           </div>
           <div className="p-3">
             <h5 className="font-semibold">Total Products:</h5>
-            <h4 className="text-[#000000a6]">9</h4>
+            <h4 className="text-[#000000a6]">2</h4>
           </div>
           <div className="p-3">
             <h5 className="font-semibold">Shop Rating:</h5>
