@@ -1,5 +1,6 @@
 import axios from "axios";
 import { server } from "../../server";
+import { toast } from "react-toastify";
 
 // load user
 
@@ -44,3 +45,35 @@ export const loadSeller = () => async (dispatch) => {
     });
   }
 };
+
+// User Update Inofrmation
+
+export const updateUserInfo =
+  (email, password, phoneNumber, name) => async (dispatch) => {
+    try {
+      dispatch({
+        type: "updateUserInfoRequest",
+      });
+      const { data } = await axios.put(
+        `${server}/user/update-user-info`,
+        {
+          email,
+          password,
+          phoneNumber,
+          name,
+        },
+        { withCredentials: true }
+      );
+
+      dispatch({
+        type: "updateUserInfoSuccess",
+        payload: data.user,
+      });
+      toast.success(data.message);
+    } catch (error) {
+      dispatch({
+        type: "updateUserInfoFail",
+        payload: error.response.data.message,
+      });
+    }
+  };

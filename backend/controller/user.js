@@ -9,6 +9,7 @@ const sendMail = require("../utils/sendMail");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated } = require("../middleware/auth");
+const user = require("../model/user");
 const router = express.Router();
 
 router.post("/create-user", upload.single("file"), async (req, res, next) => {
@@ -180,4 +181,67 @@ router.get(
   })
 );
 
+// Update User Info
+
+router.put(
+  "/update-user-info",
+  isAuthenticated,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const { email, password, phoneNumber, name } = req.body;
+
+      const user = await User.findOne({ email }).select("+password");
+      if (!user) {
+        return next(new ErrorHandler("User doesn't exist!", 400));
+      }
+
+      const isPasswordValid = await user.comparePassword(password);
+
+      if (!isPasswordValid) {
+        return next(new ErrorHandler("Invalid Credentials!", 400));
+      }
+
+      user.name = name;
+      user.email = email;
+      user.phoneNumber = phoneNumber;
+      await user.save();
+
+      res.status(201).json({
+        success: true,
+        message: "User info updated!",
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// Update user avatar
+router.put(
+  "/update-avatar",
+  isAuthenticated,
+  upload.single("image"),
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const existUser = await User.findById(req.user.id);
+      const existAvatarPath = `uploads/${existUser.avatar}`;
+
+      fs.unlinkSync(existAvatarPath);
+
+      const fileUrl = path.join(req.file.filename);
+
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        avatar: fileUrl,
+      });
+
+      res.status(200).json({
+        success: true,
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 module.exports = router;
