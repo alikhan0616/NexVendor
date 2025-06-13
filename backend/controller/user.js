@@ -244,4 +244,75 @@ router.put(
     }
   })
 );
+
+// Update/Add user address
+router.put(
+  "/update-user-address",
+  isAuthenticated,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const user = await User.findById(req.user.id);
+
+      const sameTypeAddress = user.addresses.find(
+        (address) => address.addressType === req.body.addressType
+      );
+      if (sameTypeAddress) {
+        return next(
+          new ErrorHandler(
+            `${req.body.addressType} address already exists!`,
+            400
+          )
+        );
+      }
+      const existsAddress = user.addresses.find(
+        (address) => address._id === req.body.id
+      );
+      if (existsAddress) {
+        // updating address
+        Object.assign(existsAddress, req.body);
+      } else {
+        // adding new address
+        user.addresses.push(req.body);
+      }
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Address added/updated",
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// Delete user address
+router.delete(
+  "/delete-user-address/:id",
+  isAuthenticated,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const userId = req.user._id;
+      const addressId = req.params.id;
+
+      await User.updateOne(
+        {
+          _id: userId,
+        },
+        { $pull: { addresses: { _id: addressId } } }
+      );
+
+      const user = await User.findById(userId);
+
+      res.status(200).json({
+        success: true,
+        message: "Address deleted successfully!",
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 module.exports = router;

@@ -77,3 +77,63 @@ export const updateUserInfo =
       });
     }
   };
+
+// update user address
+export const updateUserAddress =
+  (country, city, address1, address2, addressType, zipCode) =>
+  async (dispatch) => {
+    try {
+      dispatch({
+        type: "updateUserAddressRequest",
+      });
+
+      const { data } = await axios.put(
+        `${server}/user/update-user-address`,
+        {
+          country,
+          city,
+          address1,
+          address2,
+          addressType,
+          zipCode,
+        },
+        { withCredentials: true }
+      );
+
+      dispatch({
+        type: "updateUserAddressSuccess",
+        payload: data.user,
+      });
+      toast.success(data.message);
+    } catch (error) {
+      dispatch({
+        type: "updateUserAddressFail",
+        payload: error.message,
+      });
+    }
+  };
+
+// Delete user address
+export const deleteUserAddress = (id) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "removeUserAddressRequest",
+    });
+
+    const { data } = await axios.delete(
+      `${server}/user/delete-user-address/${id}`,
+      { withCredentials: true }
+    );
+
+    dispatch({
+      type: "removeUserAddressSuccess",
+      payload: data.user,
+    });
+    toast.success(data.message);
+  } catch (error) {
+    dispatch({
+      type: "removeUserAddressFail",
+      payload: error.message,
+    });
+  }
+};
