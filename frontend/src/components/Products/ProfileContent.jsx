@@ -170,10 +170,10 @@ const ProfileContent = ({ active, setActive }) => {
         </div>
       )}
 
-      {/* PAYMENT METHODS PAGE */}
+      {/* CHANGE PASSWORD PAGE */}
       {active === 6 && (
         <div className="">
-          <PaymentMethod />
+          <ChangePassword />
         </div>
       )}
 
@@ -438,36 +438,80 @@ const TrackOrder = () => {
   );
 };
 
-const PaymentMethod = () => {
+const ChangePassword = () => {
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const passwordChangeHandler = async (e) => {
+    e.preventDefault();
+
+    await axios
+      .put(
+        `${server}/user/update-password`,
+        { oldPassword, newPassword, confirmPassword },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        toast.success(res.data.message);
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
   return (
-    <div className="w-full px-5">
-      <div className="w-full flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[#000000ba] pb-2">
-          Payment Methods
-        </h1>
-        <div
-          className={`${styles.button} !rounded-md bg-[#B66E41] hover:bg-[#FF6F00] duration-300 `}
+    <div className="w-full  px-5">
+      <h1 className="text-2xl text-center font-semibold text-[#000000ba] pb-2">
+        Change Password
+      </h1>
+      <div className="w-full">
+        <form
+          className="flex flex-col items-center"
+          aria-required
+          onSubmit={passwordChangeHandler}
         >
-          <span className="text-white ">Add New</span>
-        </div>
-      </div>
-      <br />
-      <div className="w-full bg-white h-[70px] rounded-[4px] flex items-center px-3 shadow justify-between pr-10">
-        <div className="flex items-center">
-          <img
-            className="h-5"
-            src="https://1000logos.net/wp-content/uploads/2021/11/VISA-logo.png"
-            alt="payment-icon"
+          <div className="w-full 800px:w-[50%]">
+            <label className="block pb-2">Old Password</label>
+            <input
+              type="password"
+              className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
+              required
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+          </div>
+          <br />
+          <div className="w-full 800px:w-[50%]">
+            <label className="block pb-2">New Password</label>
+            <input
+              type="password"
+              className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
+              required
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+          </div>
+
+          <div className="w-full 800px:w-[50%] mt-2">
+            <label className="block pb-2">Confirm New Password</label>
+            <input
+              type="password"
+              className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <input
+            className="w-[250px] h-[40px] border border-[#1D2D44] text-center text-[#1D2D44] rounded-[3px] mt-8 cursor-pointer"
+            required
+            value="Update"
+            type="submit"
           />
-          <h5 className="pl-5 font-semibold text-slate-900">Ali Khan</h5>
-        </div>
-        <div className="pl-8 flex items-center ">
-          <h6 className="">1234 **** **** ****</h6>
-          <h5 className="pl-6 ">08/2028</h5>
-        </div>
-        <div className="min-w-[10%] flex items-center justify-between pl-8">
-          <AiOutlineDelete size={25} className="cursor-pointer" />
-        </div>
+        </form>
       </div>
     </div>
   );

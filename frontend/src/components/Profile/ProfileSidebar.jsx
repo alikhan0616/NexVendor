@@ -6,6 +6,7 @@ import {
   AiOutlineLogin,
   AiOutlineMessage,
 } from "react-icons/ai";
+import { TbLockPassword } from "react-icons/tb";
 import { MdOutlineTrackChanges } from "react-icons/md";
 import { TbAddressBook } from "react-icons/tb";
 import axios from "axios";
@@ -104,13 +105,13 @@ const ProfileSidebar = ({ active, setActive }) => {
         className="flex items-center cursor-pointer w-full mb-8"
         onClick={() => setActive(6)}
       >
-        <AiOutlineCreditCard size={20} color={active === 6 ? "#FF6F00" : ""} />
+        <TbLockPassword size={20} color={active === 6 ? "#FF6F00" : ""} />
         <span
           className={`${
             active === 6 ? "text-[#FF6F00]" : ""
           } 800px:block hidden pl-3`}
         >
-          Payment Methods
+          Change Password
         </span>
       </div>
       <div
