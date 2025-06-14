@@ -132,7 +132,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           className="max-w-[80px] max-h-[80px]  ml-2 rounded-[5px] object-cover"
         />
         <div className="pl-[5px]">
-          <h1 className="line-clamp-3">{data.name}</h1>
+          <h1 className="text-sm line-clamp-3">{data.name}</h1>
           <h4 className="font-[400] text-base text-[#00000082]">
             US${data.discountPrice} * {data.qty}
           </h4>

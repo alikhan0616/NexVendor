@@ -106,7 +106,7 @@ const WishListSingle = ({
           className="w-[80px] h-[80px] ml-2"
         />
         <div className="pl-[5px]">
-          <h1 className="line-clamp-3">{data.name}</h1>
+          <h1 className="text-sm line-clamp-3">{data.name}</h1>
           <h4 className="font-semibold text-[17px] text-red-600 font-[Roboto]">
             US${data.discountPrice}
           </h4>

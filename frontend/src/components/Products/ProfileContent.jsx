@@ -615,7 +615,7 @@ const Address = () => {
                   </div>
                   <div className="w-full p-2">
                     <label className="block pb-2">
-                      City <span className="text-red-600">*</span>
+                      Province/State <span className="text-red-600">*</span>
                     </label>
 
                     <select
