@@ -15,6 +15,7 @@ import {
   SellerActivationPage,
   ShopLoginPage,
   CheckoutPage,
+  PaymentPage,
 } from "./routes/Routes.js";
 import {
   ShopDashboardPage,
@@ -67,6 +68,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute>
+              <PaymentPage />
             </ProtectedRoute>
           }
         />
