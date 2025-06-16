@@ -26,13 +26,7 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   const paymentSubmit = () => {
-    if (
-      address1 === "" ||
-      address2 === "" ||
-      zipCode === "" ||
-      country === "" ||
-      city === ""
-    ) {
+    if (address1 === "" || zipCode === "" || country === "" || city === "") {
       toast.error("Please select an address or fill it!");
     } else {
       const shippingAddress = {

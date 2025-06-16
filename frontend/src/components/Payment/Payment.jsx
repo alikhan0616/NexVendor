@@ -1,19 +1,119 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
+import {
+  CardNumberElement,
+  CardCvcElement,
+  CardExpiryElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { server } from "../../server";
+import { toast } from "react-toastify";
 
 const Payment = () => {
   const [orderData, setOrderData] = useState([]);
+  const { user } = useSelector((state) => state.user);
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const stripe = useStripe();
+  const elements = useElements();
 
   useEffect(() => {
     const orderData = JSON.parse(localStorage.getItem("latestOrder"));
     setOrderData(orderData);
   }, []);
+
+  const createOrder = (data, action) => {
+    //
+  };
+
+  const onApprove = async (data, action) => {
+    console.log("test");
+  };
+
+  const paypalPaymentHandler = async (paymentInfo) => {
+    //
+  };
+
+  const paymentData = {
+    amount: Math.round(orderData?.totalPrice * 100),
+  };
+
+  const order = {
+    cart: orderData?.cart,
+    shippingAddress: orderData?.shippingAddress,
+    user: user && user,
+    totalPrice: orderData?.totalPrice,
+  };
+
+  const paymentHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        `${server}/payment/process`,
+        paymentData,
+        config
+      );
+      const client_secret = data.client_secret;
+      if (!stripe || !elements) {
+        return;
+      }
+      const result = await stripe.confirmCardPayment(client_secret, {
+        payment_method: {
+          card: elements.getElement(CardNumberElement),
+        },
+      });
+
+      if (result.error) {
+        toast.error(result.error.message);
+      } else {
+        if (result.paymentIntent.status === "succeeded") {
+          order.paymentInfo = {
+            id: result.paymentIntent.id,
+            status: result.paymentIntent.status,
+            type: "Credit Card",
+          };
+
+          await axios
+            .post(`${server}/order/create-order`, order, config)
+            .then((res) => {
+              setOpen(false);
+              navigate("/order/success");
+              toast.success("Order successful!");
+              localStorage.setItem("cartItems", JSON.stringify([]));
+              localStorage.setItem("latestOrder", JSON.stringify([]));
+            });
+        }
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const cashOnDeliveryHandler = async (e) => {
+    e.preventDefault();
+  };
   return (
     <div className="w-full flex flex-col items-center py-8">
       <div className="w-[90%] 1000px:w-[70%] block 800px:flex">
         <div className="w-full 800px:w-[65%]">
-          <PaymentInfo />
+          <PaymentInfo
+            user={user}
+            open={open}
+            setOpen={setOpen}
+            onApprove={onApprove}
+            createOrder={createOrder}
+            paymentHandler={paymentHandler}
+            cashOnDeliveryHandler={cashOnDeliveryHandler}
+          />
         </div>
         <div className="w-full 800px:w-[35%] 800px:mt-0 mt-8">
           <CartData orderData={orderData} />
@@ -23,14 +123,18 @@ const Payment = () => {
   );
 };
 
-const PaymentInfo = () => {
+const PaymentInfo = ({
+  user,
+  open,
+  setOpen,
+  onApprove,
+  createOrder,
+  paymentHandler,
+  cashOnDeliveryHandler,
+  loading,
+}) => {
   const [select, setSelect] = useState(1);
-  const navigate = useNavigate();
-
-  const paymentHandler = (e) => {
-    e.preventDefault();
-    navigate("/order/success/fdbxf9848");
-  };
+  const [name, setName] = useState(user && user.name);
 
   return (
     <div className="w-full 800px:w-[95%] bg-[#fff] rounded-md p-5 pb-8">
@@ -56,23 +160,80 @@ const PaymentInfo = () => {
             <form className="w-full" onSubmit={paymentHandler}>
               <div className="w-full flex pb-3">
                 <div className="w-[50%]">
-                  <label className="block pb-2">Card Number</label>
-                  <input required className={`${styles.input} !w-[95%]`} />
+                  <label className="block pb-2">Name On Card</label>
+                  <input
+                    placeholder={user && user.name + "..."}
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className={`${styles.input} !w-[95%]`}
+                  />
                 </div>
                 <div className="w-[50%]">
                   <label className="block pb-2">Exp Date</label>
-                  <input type="number" required className={`${styles.input}`} />
+                  <CardExpiryElement
+                    className={`${styles.input}`}
+                    options={{
+                      style: {
+                        base: {
+                          fontSize: "19px",
+                          height: "#444",
+                        },
+                        empty: {
+                          color: "#3a120a",
+                          backgroundColor: "transparent",
+                          "::placeholder": {
+                            color: "#444",
+                          },
+                        },
+                      },
+                    }}
+                  />
                 </div>
               </div>
 
               <div className="w-full flex pb-3">
                 <div className="w-[50%]">
-                  <label className="block pb-2">Name On Card</label>
-                  <input required className={`${styles.input} !w-[95%]`} />
+                  <label className="block pb-2">Card Number</label>
+                  <CardNumberElement
+                    className={`${styles.input} !h-[35px] !w-[95%]`}
+                    options={{
+                      style: {
+                        base: {
+                          fontSize: "19px",
+                          height: "#444",
+                        },
+                        empty: {
+                          color: "#3a120a",
+                          backgroundColor: "transparent",
+                          "::placeholder": {
+                            color: "#444",
+                          },
+                        },
+                      },
+                    }}
+                  />
                 </div>
                 <div className="w-[50%]">
-                  <label className="block pb-2">Billing Address</label>
-                  <input type="text" required className={`${styles.input}`} />
+                  <label className="block pb-2">CVV</label>
+                  <CardCvcElement
+                    className={`${styles.input} !h-[35px]`}
+                    options={{
+                      style: {
+                        base: {
+                          fontSize: "19px",
+                          height: "#444",
+                        },
+                        empty: {
+                          color: "#3a120a",
+                          backgroundColor: "transparent",
+                          "::placeholder": {
+                            color: "#444",
+                          },
+                        },
+                      },
+                    }}
+                  />
                 </div>
               </div>
               <input
@@ -170,7 +331,9 @@ const CartData = ({ orderData }) => {
       <br />
       <div className="flex justify-between border-b pb-3">
         <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
-        <h5 className="text-[18px] font-[600]">-${orderData?.discountPrice}</h5>
+        <h5 className="text-[18px] font-[600]">
+          {orderData?.discountPrice ? "-$" + orderData.discountPrice : "-"}
+        </h5>
       </div>
       <div className="flex justify-between items-center">
         <h3 className="text-[16px] font-[400] text-[#000000a4]">Total:</h3>

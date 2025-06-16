@@ -16,6 +16,7 @@ import {
   ShopLoginPage,
   CheckoutPage,
   PaymentPage,
+  OrderSuccessPage,
 } from "./routes/Routes.js";
 import {
   ShopDashboardPage,
@@ -35,17 +36,43 @@ import ScrollToTop from "./ScrollToTops.jsx";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute.jsx";
 import { getAllProducts } from "./redux/actions/product.js";
 import { getAllEvents } from "./redux/actions/event.js";
+import { useState } from "react";
+import axios from "axios";
+import { server } from "./server.js";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 function App() {
+  const [stripeApiKey, setStripeApiKey] = useState("");
+
+  async function getStripeApiKey() {
+    const { data } = await axios.get(`${server}/payment/stripeapikey`);
+    setStripeApiKey(data.stripeApiKey);
+  }
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
+    getStripeApiKey();
   }, []);
 
   return (
     <BrowserRouter>
       <ScrollToTop />
+      {stripeApiKey && (
+        <Elements stripe={loadStripe(stripeApiKey)}>
+          <Routes>
+            <Route
+              path="/payment"
+              element={
+                <ProtectedRoute>
+                  <PaymentPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Elements>
+      )}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -72,14 +99,6 @@ function App() {
           }
         />
         <Route
-          path="/payment"
-          element={
-            <ProtectedRoute>
-              <PaymentPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/activation/:activation_token"
           element={<ActivationPage />}
         />
@@ -87,6 +106,7 @@ function App() {
           path="/seller/activation/:activation_token"
           element={<SellerActivationPage />}
         />
+        <Route path="/order/success" element={<OrderSuccessPage />} />
         {/* SHOP ROUTES */}
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
