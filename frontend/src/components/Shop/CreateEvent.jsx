@@ -15,6 +15,9 @@ const CreateEvent = () => {
   useEffect(() => {
     if (error) {
       toast.error(error);
+      dispatch({
+        type: "clearErrors",
+      });
     }
     if (success) {
       toast.success("Event created successfully");

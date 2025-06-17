@@ -35,9 +35,7 @@ export const getAllEventsShop = (id) => async (dispatch) => {
       type: "getAllEventsShopRequest",
     });
 
-    const { data } = await axios.get(
-      `${server}/event/get-all-events-shop/${id}`
-    );
+    const { data } = await axios.get(`${server}/event/get-all-events/${id}`);
 
     dispatch({
       type: "getAllEventsShopSuccess",

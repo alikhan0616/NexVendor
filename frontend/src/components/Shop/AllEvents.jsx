@@ -11,11 +11,16 @@ import { deleteEvent, getAllEventsShop } from "../../redux/actions/event";
 const AllEvents = () => {
   const { events, isLoading } = useSelector((state) => state.event);
   const { seller } = useSelector((state) => state.seller);
+  const dispatch = useDispatch();
 
   const handleDelete = (id) => {
     dispatch(deleteEvent(id));
     window.location.reload();
   };
+
+  useEffect(() => {
+    dispatch(getAllEventsShop(seller._id));
+  }, []);
 
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
@@ -31,11 +36,10 @@ const AllEvents = () => {
       type: "number",
       sortable: false,
       renderCell: (params) => {
-        const d = params.row.name;
-        const product_name = d.replace(/\s+/g, "-");
+        const d = params.row.id;
         return (
           <>
-            <Link to={`/product/${product_name}`}>
+            <Link to={`/product/${d}?isEvent=true`}>
               <Button>
                 <AiOutlineEye size={20} />
               </Button>
