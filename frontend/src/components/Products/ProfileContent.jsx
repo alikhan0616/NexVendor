@@ -21,6 +21,7 @@ import {
   updateUserInfo,
 } from "../../redux/actions/user";
 import axios from "axios";
+import { getAllOrdersUser } from "../../redux/actions/order";
 
 const ProfileContent = ({ active, setActive }) => {
   const { user, error } = useSelector((state) => state.user);
@@ -188,18 +189,13 @@ const ProfileContent = ({ active, setActive }) => {
 };
 
 const AllOrders = () => {
-  const orders = [
-    {
-      _id: "3bnj1lho219827121",
-      orderItems: [
-        {
-          name: "Iphone 14 Pro Max ",
-        },
-      ],
-      totalPrice: 340,
-      orderStatus: "Processing",
-    },
-  ];
+  const { user } = useSelector((state) => state.user);
+  const { orders } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllOrdersUser(user._id));
+  }, []);
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
     {
@@ -253,9 +249,9 @@ const AllOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
-        total: "PKR " + item.totalPrice,
-        status: item.orderStatus,
+        itemsQty: item.cart.length,
+        total: "US$ " + item.totalPrice,
+        status: item.status,
       });
     });
   return (
@@ -264,7 +260,8 @@ const AllOrders = () => {
         rows={row}
         columns={columns}
         disableRowSelectionOnClick
-        autoPageSize
+        pageSize={10}
+        pagination
       />
     </div>
   );
