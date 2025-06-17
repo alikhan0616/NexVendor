@@ -16,7 +16,7 @@ const OrderSuccessPage = () => {
 
 const Success = () => {
   const defaultOptions = {
-    loop: false,
+    loop: true,
     autoplay: true,
     animationData: animationData,
     rendererSettings: {

@@ -90,6 +90,7 @@ const Payment = () => {
               toast.success("Order successful!");
               localStorage.setItem("cartItems", JSON.stringify([]));
               localStorage.setItem("latestOrder", JSON.stringify([]));
+              window.location.reload();
             });
         }
       }
@@ -100,6 +101,24 @@ const Payment = () => {
 
   const cashOnDeliveryHandler = async (e) => {
     e.preventDefault();
+    order.paymentInfo = {
+      type: "Cash on Delivery",
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    await axios
+      .post(`${server}/order/create-order`, order, config)
+      .then((res) => {
+        setOpen(false);
+        navigate("/order/success");
+        toast.success("Order successful!");
+        localStorage.setItem("cartItems", JSON.stringify([]));
+        localStorage.setItem("latestOrder", JSON.stringify([]));
+        window.location.reload();
+      });
   };
   return (
     <div className="w-full flex flex-col items-center py-8">
@@ -247,7 +266,7 @@ const PaymentInfo = ({
       </div>
 
       <br />
-      {/* paypal payment */}
+      {/* paypal payment
       <div>
         <div className="flex w-full pb-5 border-b mb-2">
           <div
@@ -264,7 +283,7 @@ const PaymentInfo = ({
         </div>
 
         {/* pay with card */}
-        {select === 2 ? (
+      {/* {select === 2 ? (
           <div className="w-full flex border-b">
             <form className="w-full" onSubmit={paymentHandler}>
               <div className="w-full flex pb-3">
@@ -281,7 +300,7 @@ const PaymentInfo = ({
             </form>
           </div>
         ) : null}
-      </div>
+      </div> */}
 
       <br />
       {/* cash on delivery */}
@@ -300,10 +319,10 @@ const PaymentInfo = ({
           </h4>
         </div>
 
-        {/* pay with card */}
+        {/* Cash on Delivery */}
         {select === 3 ? (
           <div className="w-full flex">
-            <form className="w-full" onSubmit={paymentHandler}>
+            <form className="w-full" onSubmit={cashOnDeliveryHandler}>
               <input
                 type="submit"
                 value="Confirm"
@@ -342,20 +361,6 @@ const CartData = ({ orderData }) => {
         </h5>
       </div>
       <br />
-      <form>
-        <input
-          type="text"
-          className={`${styles.input} h-[40px] pl-2`}
-          placeholder="Coupoun code"
-          required
-        />
-        <input
-          className={`w-full h-[40px] border border-[#B66E41] text-center text-[#B66E41]  rounded-[3px] mt-8 cursor-pointer`}
-          required
-          value="Apply code"
-          type="submit"
-        />
-      </form>
     </div>
   );
 };
