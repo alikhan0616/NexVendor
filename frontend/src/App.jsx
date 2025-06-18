@@ -28,6 +28,7 @@ import {
   ShopAllCoupons,
   ShopPreviewPage,
   ShopAllOrders,
+  ShopOrderDetails,
 } from "./routes/ShopRoutes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
@@ -165,6 +166,14 @@ function App() {
           element={
             <SellerProtectedRoute>
               <ShopAllOrders />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/order/:id"
+          element={
+            <SellerProtectedRoute>
+              <ShopOrderDetails />
             </SellerProtectedRoute>
           }
         />
