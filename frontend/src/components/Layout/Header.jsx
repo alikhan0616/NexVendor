@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import logo from "../../assets/N-removebg-preview.png";
-import { categoriesData, productData } from "../../static/data.jsx";
+import { categoriesData } from "../../static/data.jsx";
 import {
   AiOutlineHeart,
   AiOutlineSearch,
@@ -31,6 +31,7 @@ const Header = ({ activeHeading }) => {
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { allProducts } = useSelector((state) => state.product);
+  const { isSeller } = useSelector((state) => state.seller);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -110,11 +111,12 @@ const Header = ({ activeHeading }) => {
             ) : null}
           </div>
           <div
-            className={`${styles.button} rounded-xl bg-[#0D1321] hover:bg-slate-800`}
+            className={`${styles.button}  rounded-xl bg-[#0D1321] hover:bg-slate-800`}
           >
-            <Link to="/shop-create">
+            <Link to={isSeller ? "/dashboard" : "/shop-create"}>
               <h1 className="text-white flex items-center">
-                Become a Seller <IoIosArrowForward className="ml-1 " />
+                {isSeller ? "DashBoard" : "Become a Seller"}{" "}
+                <IoIosArrowForward className="ml-1 " />
               </h1>
             </Link>
           </div>

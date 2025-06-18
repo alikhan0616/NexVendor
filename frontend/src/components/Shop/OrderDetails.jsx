@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../../styles/styles";
 import { BsFillBagFill } from "react-icons/bs";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersShop } from "../../redux/actions/order";
-import { backend_url } from "../../server";
+import { backend_url, server } from "../../server";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const OrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
   const [status, setStatus] = useState("");
+  const navigate = useNavigate();
 
   const { id } = useParams();
 
@@ -18,7 +21,23 @@ const OrderDetails = () => {
     dispatch(getAllOrdersShop(seller._id));
   }, [dispatch]);
 
-  const orderUpdateHandler = (e) => {};
+  const orderUpdateHandler = async (e) => {
+    await axios
+      .put(
+        `${server}/order/update-order-status/${id}`,
+        {
+          status,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        toast.success("Order status updated!");
+        navigate("/dashboard-orders");
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
 
   const data = orders && orders.find((item) => item._id === id);
   return (
@@ -62,11 +81,6 @@ const OrderDetails = () => {
                 US${item.discountPrice} * {item.qty}
               </h5>
             </div>
-            {data?.status === "Delivered" && (
-              <div className={`${styles.button} bg-slate-700 text-white`}>
-                Write a review
-              </div>
-            )}
           </div>
         ))}
 

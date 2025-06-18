@@ -1,7 +1,7 @@
 const express = require("express");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
-const { isAuthenticated } = require("../middleware/auth");
+const { isAuthenticated, isSeller } = require("../middleware/auth");
 const Order = require("../model/order");
 const Product = require("../model/product");
 
@@ -87,6 +87,51 @@ router.get(
         success: true,
         orders,
       });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
+
+// update order status for seller
+router.put(
+  "/update-order-status/:id",
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const order = await Order.findById(req.params.id);
+
+      if (!order) {
+        return next(new ErrorHandler("Order not found", 400));
+      }
+
+      if (req.body.status === "Dispatched to Delivery Partner") {
+        order.cart.forEach(async (order) => {
+          await updateProduct(order._id, order.qty);
+        });
+      }
+
+      order.status = req.body.status;
+
+      if (req.body.status === "Delivered") {
+        order.deliveredAt = Date.now();
+        order.paymentInfo.status = "Succeeded";
+      }
+
+      await order.save({ validateBeforeSave: false });
+
+      res.status(200).json({
+        success: true,
+        order,
+      });
+      async function updateProduct(id, qty) {
+        const product = await Product.findById(id);
+
+        product.stock -= qty;
+        product.sold_out += qty;
+
+        await product.save({ validateBeforeSave: false });
+      }
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }

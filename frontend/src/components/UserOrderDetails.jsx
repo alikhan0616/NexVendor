@@ -5,11 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/styles";
 import { getAllOrdersUser } from "../redux/actions/order";
 import { backend_url } from "../server";
+import { RxCross1 } from "react-icons/rx";
 
 const UserOrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(false);
 
   const { id } = useParams();
 
@@ -42,7 +45,7 @@ const UserOrderDetails = () => {
       <br />
       {data &&
         data?.cart.map((item, index) => (
-          <div className="w-full flex items-start mb-5">
+          <div className="w-full flex items-start mb-5" key={index}>
             <img
               src={`${backend_url}/${item.images[0]}`}
               alt="product-img"
@@ -54,8 +57,34 @@ const UserOrderDetails = () => {
                 US${item.discountPrice} * {item.qty}
               </h5>
             </div>
+            {data?.status === "Delivered" && (
+              <div
+                onClick={() => setOpen(true) || setSelectedItem(item)}
+                className={`${styles.button} bg-slate-700 text-white`}
+              >
+                Write a review
+              </div>
+            )}
           </div>
         ))}
+
+      {/* Review Pop-Up */}
+      {open && (
+        <div className="w-full fixed top-0 left-0 h-screen bg-[#0005] z-50 flex items-center justify-center ">
+          <div className="w-[50%] h-[80vh] bg-[#fff] shadow rounded-md p-3 overflow-y-auto ">
+            <div className="w-full flex justify-end p-3">
+              <RxCross1
+                size={30}
+                onClick={() => setOpen(false)}
+                className="cursor-pointer"
+              />
+            </div>
+            <h2 className="text-3xl font-[500] font-[Poppins] text-center">
+              Write a Review
+            </h2>
+          </div>
+        </div>
+      )}
 
       <div className="border-t border-gray-200 w-full text-right ">
         <h5 className="pt-5 text-[18px]">
