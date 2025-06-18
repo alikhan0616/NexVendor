@@ -17,6 +17,7 @@ import {
   CheckoutPage,
   PaymentPage,
   OrderSuccessPage,
+  OrderDetailsPage,
 } from "./routes/Routes.js";
 import {
   ShopDashboardPage,
@@ -89,6 +90,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/order/:id"
+          element={
+            <ProtectedRoute>
+              <OrderDetailsPage />
             </ProtectedRoute>
           }
         />

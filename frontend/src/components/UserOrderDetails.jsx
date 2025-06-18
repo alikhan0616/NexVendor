@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
-import styles from "../../styles/styles";
 import { BsFillBagFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrdersShop } from "../../redux/actions/order";
-import { backend_url } from "../../server";
+import styles from "../styles/styles";
+import { getAllOrdersUser } from "../redux/actions/order";
+import { backend_url } from "../server";
 
-const OrderDetails = () => {
+const UserOrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
-  const { seller } = useSelector((state) => state.seller);
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const [status, setStatus] = useState("");
 
   const { id } = useParams();
 
   useEffect(() => {
-    dispatch(getAllOrdersShop(seller._id));
+    dispatch(getAllOrdersUser(user._id));
   }, [dispatch]);
 
   const orderUpdateHandler = (e) => {};
@@ -28,13 +27,6 @@ const OrderDetails = () => {
           <BsFillBagFill size={30} color="#5A67D8" />
           <h1 className="pl-2 text-2xl">Order Details</h1>
         </div>
-        <Link to="/dashboard-orders">
-          <div
-            className={`${styles.button} !bg-[#dddff1] !rounded-[4px] text-[#5A67D8] font-semibold !h-[45px] text-lg`}
-          >
-            Order List
-          </div>
-        </Link>
       </div>
 
       <div className="w-full flex items-center justify-between pt-6">
@@ -62,11 +54,6 @@ const OrderDetails = () => {
                 US${item.discountPrice} * {item.qty}
               </h5>
             </div>
-            {data?.status === "Delivered" && (
-              <div className={`${styles.button} bg-slate-700 text-white`}>
-                Write a review
-              </div>
-            )}
           </div>
         ))}
 
@@ -91,51 +78,15 @@ const OrderDetails = () => {
         <div className="w-full 800px:w-[40%]">
           <h4 className="pt-3 text-xl">Payment Info:</h4>
           <h4 className="">
+            Status:{" "}
             {data?.paymentInfo?.status ? data?.paymentInfo.status : "Not Paid"}
           </h4>
         </div>
       </div>
       <br />
-      <br />
-
-      <h4 className="pt-3 text-xl font-semibold">Order Status:</h4>
-      <select
-        className=" border border-gray-300 p-1 mt-2 rounded-md"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-      >
-        {[
-          "Processing",
-          "Dispatched to Delivery Partner",
-          "In Transit",
-          "Arrived at Destination Hub",
-          "Out for Delivery",
-          "Delivered",
-        ]
-          .slice(
-            [
-              "Processing",
-              "Dispatched to Delivery Partner",
-              "In Transit",
-              "Arrived at Destination Hub",
-              "Out for Delivery",
-              "Delivered",
-            ].indexOf(data?.status)
-          )
-          .map((option, index) => (
-            <option value={option} key={index}>
-              {option}
-            </option>
-          ))}
-      </select>
-      <div
-        onClick={orderUpdateHandler}
-        className={`${styles.button} !bg-[#dddff1] !rounded-[4px] text-[#5A67D8] font-semibold !h-[45px] text-lg`}
-      >
-        Update Status
-      </div>
+      <div className={`${styles.button} text-white bg-black`}>Send Message</div>
     </div>
   );
 };
 
-export default OrderDetails;
+export default UserOrderDetails;
