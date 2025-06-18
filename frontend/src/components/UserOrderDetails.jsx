@@ -4,9 +4,11 @@ import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/styles";
 import { getAllOrdersUser } from "../redux/actions/order";
-import { backend_url } from "../server";
+import { backend_url, server } from "../server";
 import { RxCross1 } from "react-icons/rx";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const UserOrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
@@ -15,6 +17,7 @@ const UserOrderDetails = () => {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [rating, setRating] = useState(1);
+  const [comment, setComment] = useState("");
 
   const { id } = useParams();
 
@@ -22,7 +25,30 @@ const UserOrderDetails = () => {
     dispatch(getAllOrdersUser(user._id));
   }, [dispatch]);
 
-  const orderUpdateHandler = (e) => {};
+  const reviewHandler = async (e) => {
+    await axios
+      .put(
+        `${server}/product/create-new-review`,
+        {
+          user,
+          rating,
+          comment,
+          productId: selectedItem._id,
+          orderId: id,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        toast.success(res.data.message);
+        dispatch(getAllOrdersUser(user._id));
+        setComment("");
+        setRating(1);
+        setOpen(false);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
 
   const data = orders && orders.find((item) => item._id === id);
   return (
@@ -62,7 +88,7 @@ const UserOrderDetails = () => {
                 US${item.discountPrice} * {item.qty}
               </h5>
             </div>
-            {data?.status === "Delivered" && (
+            {!item.isReviewed && data?.status === "Delivered" && (
               <div
                 onClick={() => setOpen(true) || setSelectedItem(item)}
                 className={`${styles.button} bg-black text-white`}
@@ -134,6 +160,8 @@ const UserOrderDetails = () => {
               </label>
               <textarea
                 name="comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
                 id=""
                 cols="20"
                 rows="5"
@@ -142,6 +170,7 @@ const UserOrderDetails = () => {
               />
             </div>
             <div
+              onClick={rating > 1 ? reviewHandler : null}
               className={`${styles.button} bg-black !rounded-md text-white ml-3`}
             >
               Submit Review
