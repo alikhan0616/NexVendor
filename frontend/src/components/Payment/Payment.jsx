@@ -75,7 +75,7 @@ const Payment = () => {
       if (result.error) {
         toast.error(result.error.message);
       } else {
-        if (result.paymentIntent.status === "Succeeded") {
+        if (result.paymentIntent.status === "succeeded") {
           order.paymentInfo = {
             id: result.paymentIntent.id,
             status: result.paymentIntent.status,
