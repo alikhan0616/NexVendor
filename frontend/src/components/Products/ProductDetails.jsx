@@ -16,6 +16,7 @@ import {
 } from "../../redux/actions/wishlist";
 import { toast } from "react-toastify";
 import { addTocart } from "../../redux/actions/cart";
+import Ratings from "../Payment/Ratings";
 
 const ProductDetails = ({ data }) => {
   const { products } = useSelector((state) => state.product);
@@ -266,8 +267,30 @@ const ProductDetailsInfo = ({ data, products }) => {
       )}
       {/* PRODUCT REVIEWS */}
       {active === 2 && (
-        <div className="w-full justify-center min-h-[40vh] flex items-center">
-          <p>No Reviews yet!</p>
+        <div className="w-full mt-4 overflow-y-auto min-h-[40vh] flex flex-col items-center">
+          {data &&
+            data?.reviews.map((item, index) => (
+              <div className="w-full flex my-2">
+                <img
+                  src={`${backend_url}/${item.user.avatar}`}
+                  alt="user-icon"
+                  className="w-[50px] h-[50px] rounded-full"
+                />
+                <div className="pl-2">
+                  <div className="w-full flex items-center gap-2">
+                    <h1 className=" text-slate-700 font-[500] ">
+                      {item?.user?.name}
+                    </h1>
+                    <Ratings rating={item?.rating} />
+                  </div>
+                  <p className="">{item?.comment}</p>
+                </div>
+              </div>
+            ))}
+
+          {data && data.reviews.length === 0 && (
+            <h5 className="text-xl">No Reviews Yet!</h5>
+          )}
         </div>
       )}
       {/* SELLER INFORMATION */}

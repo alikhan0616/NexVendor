@@ -18,6 +18,7 @@ import {
 } from "../../../redux/actions/wishlist.js";
 import { addTocart } from "../../../redux/actions/cart.js";
 import { toast } from "react-toastify";
+import Ratings from "../../Payment/Ratings.jsx";
 
 const ProductCard = ({ data }) => {
   const [click, setClick] = useState(false);
@@ -80,29 +81,7 @@ const ProductCard = ({ data }) => {
           <h4 className="pb-3 font-medium">
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
           </h4>
-          <div className="flex">
-            <AiFillStar
-              className="mr-2 cursor-pointer text-yellow-300"
-              size={20}
-            />
-            <AiFillStar
-              className="mr-2 cursor-pointer text-yellow-300"
-              size={20}
-            />
-            <AiFillStar
-              className="mr-2 cursor-pointer text-yellow-300"
-              size={20}
-            />
-            <AiFillStar
-              className="mr-2 cursor-pointer text-yellow-300"
-              size={20}
-            />
-            <AiOutlineStar
-              className="mr-2 cursor-pointer text-yellow-300"
-              size={20}
-            />
-          </div>
-
+          <Ratings rating={data?.ratings} />
           <div className="py-2 flex items-center justify-between">
             <div className="flex">
               <h5 className={`${styles.productDiscountPrice}`}>
@@ -115,7 +94,9 @@ const ProductCard = ({ data }) => {
                 {data.originalPrice ? "$" + data.originalPrice : null}
               </h4>
             </div>
-            <span className="font-[400] text-base text-[#68d284]">50 sold</span>
+            <span className="font-[400] text-base text-[#68d284]">
+              {data?.sold_out} sold
+            </span>
           </div>
           {/* SIDE OPTION ICONS */}
         </Link>
