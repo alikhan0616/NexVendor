@@ -50,6 +50,24 @@ const UserOrderDetails = () => {
       });
   };
 
+  const refundHandler = async () => {
+    await axios
+      .put(
+        `${server}/order/order-refund/${id}`,
+        {
+          status: "Processing refund",
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        toast.success(res.data.message);
+        dispatch(getAllOrdersUser(user._id));
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
+
   const data = orders && orders.find((item) => item._id === id);
   return (
     <div className={`${styles.section} py-4 min-h-screen `}>
@@ -203,10 +221,21 @@ const UserOrderDetails = () => {
             Status:{" "}
             {data?.paymentInfo?.status ? data?.paymentInfo.status : "Not Paid"}
           </h4>
+          <br />
+          {data?.status === "Delivered" && (
+            <div
+              className={`${styles.button} text-white !rounded-md bg-black`}
+              onClick={refundHandler}
+            >
+              Get a Refund
+            </div>
+          )}
         </div>
       </div>
       <br />
-      <div className={`${styles.button} text-white bg-black`}>Send Message</div>
+      <div className={`${styles.button} text-white !rounded-md bg-black`}>
+        Send Message
+      </div>
     </div>
   );
 };

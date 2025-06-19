@@ -11,7 +11,7 @@ const BestSellingPage = () => {
   const { allProducts, isLoading } = useSelector((state) => state.product);
 
   useEffect(() => {
-    const d = allProducts;
+    const d = allProducts.slice().sort((a, b) => b.sold_out - a.sold_out);
     setData(d);
   }, [allProducts]);
   return (

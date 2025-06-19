@@ -39,6 +39,25 @@ const OrderDetails = () => {
       });
   };
 
+  const refundOrderHandler = async (e) => {
+    await axios
+      .put(
+        `${server}/order/order-refund-success/${id}`,
+        {
+          status,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        toast.success("Order status updated!");
+        navigate("/dashboard-orders");
+        dispatch(getAllOrdersShop(seller._id));
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
+
   const data = orders && orders.find((item) => item._id === id);
   return (
     <div className={`${styles.section} py-4 min-h-screen `}>
@@ -113,37 +132,57 @@ const OrderDetails = () => {
       <br />
 
       <h4 className="pt-3 text-xl font-semibold">Order Status:</h4>
+      {data?.status !== "Processing refund" && "Refund Success" && (
+        <select
+          className=" border border-gray-300 p-1 mt-2 rounded-md"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+          {[
+            "Processing",
+            "Dispatched to Delivery Partner",
+            "In Transit",
+            "Arrived at Destination Hub",
+            "Out for Delivery",
+            "Delivered",
+          ]
+            .slice(
+              [
+                "Processing",
+                "Dispatched to Delivery Partner",
+                "In Transit",
+                "Arrived at Destination Hub",
+                "Out for Delivery",
+                "Delivered",
+              ].indexOf(data?.status)
+            )
+            .map((option, index) => (
+              <option value={option} key={index}>
+                {option}
+              </option>
+            ))}
+        </select>
+      )}
+
       <select
-        className=" border border-gray-300 p-1 mt-2 rounded-md"
         value={status}
         onChange={(e) => setStatus(e.target.value)}
+        className=" border border-gray-300 p-1 mt-2 rounded-md"
       >
-        {[
-          "Processing",
-          "Dispatched to Delivery Partner",
-          "In Transit",
-          "Arrived at Destination Hub",
-          "Out for Delivery",
-          "Delivered",
-        ]
-          .slice(
-            [
-              "Processing",
-              "Dispatched to Delivery Partner",
-              "In Transit",
-              "Arrived at Destination Hub",
-              "Out for Delivery",
-              "Delivered",
-            ].indexOf(data?.status)
-          )
+        {["Processing refund", "Refund Success"]
+          .slice(["Processing refund", "Refund Success"].indexOf(data?.status))
           .map((option, index) => (
             <option value={option} key={index}>
               {option}
             </option>
-          ))}
+          ))}{" "}
       </select>
       <div
-        onClick={orderUpdateHandler}
+        onClick={
+          data?.status !== "Processing refund"
+            ? orderUpdateHandler
+            : refundOrderHandler
+        }
         className={`${styles.button} !bg-[#dddff1] !rounded-[4px] text-[#5A67D8] font-semibold !h-[45px] text-lg`}
       >
         Update Status
