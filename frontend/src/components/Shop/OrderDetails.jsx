@@ -132,38 +132,40 @@ const OrderDetails = () => {
       <br />
 
       <h4 className="pt-3 text-xl font-semibold">Order Status:</h4>
-      {data?.status !== "Processing refund" && "Refund Success" && (
-        <select
-          className=" border border-gray-300 p-1 mt-2 rounded-md"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        >
-          {[
-            "Processing",
-            "Dispatched to Delivery Partner",
-            "In Transit",
-            "Arrived at Destination Hub",
-            "Out for Delivery",
-            "Delivered",
-          ]
-            .slice(
-              [
-                "Processing",
-                "Dispatched to Delivery Partner",
-                "In Transit",
-                "Arrived at Destination Hub",
-                "Out for Delivery",
-                "Delivered",
-              ].indexOf(data?.status)
-            )
-            .map((option, index) => (
-              <option value={option} key={index}>
-                {option}
-              </option>
-            ))}
-        </select>
-      )}
+      {data?.status !== "Processing refund" ||
+        (data?.status !== "Refund Success" && (
+          <select
+            className=" border border-gray-300 p-1 mt-2 rounded-md"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            {[
+              "Processing",
+              "Dispatched to Delivery Partner",
+              "In Transit",
+              "Arrived at Destination Hub",
+              "Out for Delivery",
+              "Delivered",
+            ]
+              .slice(
+                [
+                  "Processing",
+                  "Dispatched to Delivery Partner",
+                  "In Transit",
+                  "Arrived at Destination Hub",
+                  "Out for Delivery",
+                  "Delivered",
+                ].indexOf(data?.status)
+              )
+              .map((option, index) => (
+                <option value={option} key={index}>
+                  {option}
+                </option>
+              ))}
+          </select>
+        ))}
 
+      {data?.status === "Processing"}
       <select
         value={status}
         onChange={(e) => setStatus(e.target.value)}

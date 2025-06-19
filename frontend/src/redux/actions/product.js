@@ -27,7 +27,7 @@ export const createProduct = (newForm) => async (dispatch) => {
   }
 };
 
-// Get all products
+// Get all products of a shop
 
 export const getAllProductsShop = (id) => async (dispatch) => {
   try {
