@@ -17,6 +17,7 @@ import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   deleteUserAddress,
+  loadUser,
   updateUserAddress,
   updateUserInfo,
 } from "../../redux/actions/user";
@@ -59,7 +60,8 @@ const ProfileContent = ({ active, setActive }) => {
         withCredentials: true,
       })
       .then((res) => {
-        window.location.reload();
+        dispatch(loadUser());
+        toast.success("Avatar updated successfully!");
       })
       .catch((error) => {
         toast.error(error);
