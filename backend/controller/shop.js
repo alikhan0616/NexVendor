@@ -238,4 +238,36 @@ router.put(
   })
 );
 
+// Update Shop Info
+
+router.put(
+  "/update-shop-info",
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const { name, description, address, phoneNumber, zipCode } = req.body;
+
+      const shop = await Shop.findById(req.seller.id);
+      if (!shop) {
+        return next(new ErrorHandler("Shop doesn't exist!", 400));
+      }
+
+      shop.name = name;
+      shop.description = description;
+      shop.address = address;
+      shop.phoneNumber = phoneNumber;
+      shop.zipCode = zipCode;
+      await shop.save();
+
+      res.status(201).json({
+        success: true,
+        message: "Shop info updated!",
+        shop,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
 module.exports = router;

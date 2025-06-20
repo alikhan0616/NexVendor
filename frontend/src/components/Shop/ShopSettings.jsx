@@ -12,18 +12,38 @@ const ShopSettings = () => {
 
   const dispatch = useDispatch();
 
-  const [name, setName] = useState(seller.name);
+  const [name, setName] = useState(seller && seller.name);
   const [description, setDescription] = useState(
-    seller.description ? seller.description : ""
+    seller && seller.description ? seller.description : ""
   );
-  const [address, setAddress] = useState(seller.address);
-  const [phoneNumber, setPhoneNumber] = useState(seller.phoneNumber);
-  const [zipCode, setZipCode] = useState(seller.zipCode);
+  const [address, setAddress] = useState(seller && seller.address);
+  const [phoneNumber, setPhoneNumber] = useState(seller && seller.phoneNumber);
+  const [zipCode, setZipCode] = useState(seller && seller.zipCode);
 
   const [avatar, setAvatar] = useState();
 
-  const updateHandler = (e) => {
+  const updateHandler = async (e) => {
     e.preventDefault();
+
+    await axios
+      .put(
+        `${server}/shop/update-shop-info`,
+        {
+          name,
+          description,
+          address,
+          phoneNumber,
+          zipCode,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        toast.success("Shop info updated successfully!");
+        dispatch(loadSeller());
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
   };
 
   const handleImage = async (e) => {
@@ -77,7 +97,7 @@ const ShopSettings = () => {
         <form
           onSubmit={updateHandler}
           aria-required={true}
-          className="flex flex-col items-center 800px:px-0 px-3"
+          className="flex flex-col items-center 800px:px-0 px-3 "
         >
           <div className="w-full 800px:w-[50%]">
             <label className="block pb-2">Shop Name</label>
@@ -147,7 +167,7 @@ const ShopSettings = () => {
             <input
               type="submit"
               readOnly
-              value="Create"
+              value="Update"
               className="mt-2 cursor-pointer appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             />
           </div>
