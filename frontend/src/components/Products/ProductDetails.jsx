@@ -95,6 +95,7 @@ const ProductDetails = ({ data }) => {
 
   const averageRating = totalRatings / totalReviewsLength || 0;
 
+  console.log(data?.shop?.avatar);
   return (
     <div className="bg-white">
       {data ? (

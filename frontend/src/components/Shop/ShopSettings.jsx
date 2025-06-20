@@ -70,7 +70,7 @@ const ShopSettings = () => {
   };
   return (
     <div className="w-full min-h-screen flex flex-col items-center">
-      <div className="flex 800px:w-[80%] w-full flex-col justify-center my-20 800px:my-10">
+      <div className="flex 800px:w-[80%] w-full flex-col justify-center my-20 800px:my-10 ">
         <div className="w-full flex items-center justify-center">
           <div className="relative border-2 rounded-full border-slate-700">
             <img

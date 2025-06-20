@@ -33,6 +33,7 @@ import {
   ShopOrderDetails,
   ShopAllRefunds,
   ShopSettingsPage,
+  ShopWithdrawMoneyPage,
 } from "./routes/ShopRoutes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
@@ -178,6 +179,14 @@ function App() {
           element={
             <SellerProtectedRoute>
               <ShopAllRefunds />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-withdraw-money"
+          element={
+            <SellerProtectedRoute>
+              <ShopWithdrawMoneyPage />
             </SellerProtectedRoute>
           }
         />
