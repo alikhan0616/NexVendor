@@ -22,10 +22,12 @@ router.post(
 
       messageData.conversationId = req.body.conversationId;
       messageData.sender = req.body.sender;
+      messageData.text = req.body.text;
 
       const message = new Messages({
         conversationId: messageData.conversationId,
         sender: messageData.sender,
+        text: messageData.text,
         images: messageData.images ? messageData.images : undefined,
       });
 
@@ -36,6 +38,25 @@ router.post(
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// get all messages with conversation id
+router.get(
+  "/get-all-messages/:id",
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const messages = await Messages.find({
+        conversationId: req.params.id,
+      });
+
+      res.status(200).json({
+        success: true,
+        messages,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message), 500);
     }
   })
 );

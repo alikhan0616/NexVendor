@@ -17,6 +17,7 @@ const couponRoute = require("./controller/couponCode");
 const paymentRoute = require("./controller/payment.js");
 const orderRoute = require("./controller/order.js");
 const conversationRoute = require("./controller/conversation.js");
+const messageRoute = require("./controller/messages.js");
 const app = express();
 
 app.use(express.json());
@@ -34,6 +35,8 @@ app.use("/api/v2/coupon", couponRoute);
 app.use("/api/v2/payment", paymentRoute);
 app.use("/api/v2/order", orderRoute);
 app.use("/api/v2/conversation", conversationRoute);
+app.use("/api/v2/message", messageRoute);
+
 app.get("/ping", (req, res) => res.send("pong"));
 
 // Its for error handling
