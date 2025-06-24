@@ -21,7 +21,8 @@ app.get("/", (req, res) => {
 let users = [];
 
 const addUser = (userId, socketId) => {
-  !users.some((user) => user.userId === userId) && users.push(userId, socketId);
+  !users.some((user) => user.userId === userId) &&
+    users.push({ userId, socketId });
 };
 
 const removeUser = (socketId) => {
@@ -104,7 +105,7 @@ io.on("connection", (socket) => {
     console.log("a user disconnected");
     removeUser(socket.id);
 
-    io.emit("getUsers");
+    io.emit("getUsers", users);
   });
 });
 
