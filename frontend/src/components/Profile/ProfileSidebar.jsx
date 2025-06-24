@@ -1,5 +1,5 @@
 import { RxPerson } from "react-icons/rx";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HiOutlineReceiptRefund, HiOutlineShoppingBag } from "react-icons/hi";
 import {
   AiOutlineCreditCard,
@@ -7,13 +7,18 @@ import {
   AiOutlineMessage,
 } from "react-icons/ai";
 import { TbLockPassword } from "react-icons/tb";
-import { MdOutlineTrackChanges } from "react-icons/md";
+import {
+  MdOutlineAdminPanelSettings,
+  MdOutlineTrackChanges,
+} from "react-icons/md";
 import { TbAddressBook } from "react-icons/tb";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const ProfileSidebar = ({ active, setActive }) => {
+  const { user, isLoading } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   const logoutHandler = () => {
@@ -127,14 +132,34 @@ const ProfileSidebar = ({ active, setActive }) => {
           Address
         </span>
       </div>
+      {!isLoading && user && user.role == "Admin" && (
+        <div
+          className="flex items-center cursor-pointer w-full mb-8"
+          onClick={() => setActive(8)}
+        >
+          <Link to="/admin/dashboard" className="flex">
+            <MdOutlineAdminPanelSettings
+              size={20}
+              color={active === 8 ? "#FF6F00" : ""}
+            />
+            <span
+              className={`${
+                active === 8 ? "text-[#FF6F00]" : ""
+              } 800px:block hidden pl-3`}
+            >
+              Admin Dashboard
+            </span>
+          </Link>
+        </div>
+      )}
       <div
         className="flex items-center cursor-pointer w-full mb-8"
-        onClick={() => setActive(8) || logoutHandler()}
+        onClick={() => setActive(9) || logoutHandler()}
       >
-        <AiOutlineLogin size={20} color={active === 8 ? "#FF6F00" : ""} />
+        <AiOutlineLogin size={20} color={active === 9 ? "#FF6F00" : ""} />
         <span
           className={`${
-            active === 8 ? "text-[#FF6F00]" : ""
+            active === 9 ? "text-[#FF6F00]" : ""
           } 800px:block hidden pl-3`}
         >
           Log out

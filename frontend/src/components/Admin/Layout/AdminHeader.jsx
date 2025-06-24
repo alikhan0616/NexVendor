@@ -1,15 +1,16 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import logo from "../../../assets/N-removebg-preview.png";
-import { Link } from "react-router-dom";
 import { AiOutlineGift } from "react-icons/ai";
-import { MdOutlineLocalOffer } from "react-icons/md";
-import { FiPackage, FiShoppingBag } from "react-icons/fi";
 import { BiMessageSquareDetail } from "react-icons/bi";
+import logo from "../../../assets/N-removebg-preview.png";
+import { FiPackage, FiShoppingBag } from "react-icons/fi";
+import { MdOutlineLocalOffer } from "react-icons/md";
+import { Link } from "react-router-dom";
 import { backend_url } from "../../../server";
+import { useSelector } from "react-redux";
 
-const DashboardHeader = () => {
-  const { seller } = useSelector((state) => state.seller);
+const AdminHeader = () => {
+  const { user } = useSelector((state) => state.user);
+
   return (
     <div className="w-full h-[80px] px-4 bg-white shadow sticky top-0 left-0 z-30 flex items-center justify-between">
       <div>
@@ -54,17 +55,15 @@ const DashboardHeader = () => {
               className="mx-5 cursor-pointer 800px:block hidden"
             />
           </Link>
-          <Link to={`/shop/${seller._id}`}>
-            <img
-              src={`${backend_url}${seller.avatar}`}
-              alt="shop-icon"
-              className="w-12 h-12 rounded-full object-cover "
-            />
-          </Link>
+          <img
+            src={`${backend_url}${user?.avatar}`}
+            alt="user-icon"
+            className="w-12 h-12 rounded-full object-cover "
+          />
         </div>
       </div>
     </div>
   );
 };
 
-export default DashboardHeader;
+export default AdminHeader;
