@@ -55,11 +55,13 @@ const AdminHeader = () => {
               className="mx-5 cursor-pointer 800px:block hidden"
             />
           </Link>
-          <img
-            src={`${backend_url}${user?.avatar}`}
-            alt="user-icon"
-            className="w-12 h-12 rounded-full object-cover "
-          />
+          <Link to="/profile">
+            <img
+              src={`${backend_url}${user?.avatar}`}
+              alt="user-icon"
+              className="w-12 h-12 rounded-full object-cover "
+            />
+          </Link>
         </div>
       </div>
     </div>
