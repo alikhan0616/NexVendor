@@ -137,3 +137,51 @@ export const deleteUserAddress = (id) => async (dispatch) => {
     });
   }
 };
+
+// get All sellers admin
+
+export const getAllSellersAdmin = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "AdminGetSellersRequest",
+    });
+
+    const response = await axios.get(`${server}/shop/admin-all-sellers`, {
+      withCredentials: true,
+    });
+
+    dispatch({
+      type: "AdminGetSellersSuccess",
+      payload: response.data.sellers,
+    });
+  } catch (error) {
+    dispatch({
+      type: "AdminGetSellersFail",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// get All sellers admin
+
+export const getAllUsersAdmin = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "GetUsersAdminRequest",
+    });
+
+    const response = await axios.get(`${server}/user/admin-all-users`, {
+      withCredentials: true,
+    });
+
+    dispatch({
+      type: "GetUsersAdminSuccess",
+      payload: response.data.users,
+    });
+  } catch (error) {
+    dispatch({
+      type: "GetUsersAdminFail",
+      payload: error.response.data.message,
+    });
+  }
+};

@@ -10,15 +10,18 @@ import { useState } from "react";
 import Loader from "../../components/Layout/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersAdmin } from "../../redux/actions/order";
+import { getAllSellersAdmin, getAllUsersAdmin } from "../../redux/actions/user";
 
 const AdminDashboardHero = () => {
   const dispatch = useDispatch();
   const { adminOrders, isLoading } = useSelector((state) => state.order);
+  const { adminSellers } = useSelector((state) => state.seller);
+  const { adminUsers } = useSelector((state) => state.user);
   useEffect(() => {
     dispatch(getAllOrdersAdmin());
+    dispatch(getAllSellersAdmin());
   }, [dispatch]);
 
-  console.log(adminOrders);
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
     {
@@ -111,7 +114,9 @@ const AdminDashboardHero = () => {
                   All Sellers <br />
                 </h3>
               </div>
-              <h5 className="pt-2 pl-[35px] text-[22px] font-[500]">8</h5>
+              <h5 className="pt-2 pl-[35px] text-[22px] font-[500]">
+                {adminSellers && adminSellers.length}
+              </h5>
               <Link to="/admin-sellers">
                 <h5 className="pt-4 pl-2 text-[#077f9c] hover:text-[#5A67D8] duration-300">
                   View Sellers

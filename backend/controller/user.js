@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const sendToken = require("../utils/jwtToken");
-const { isAuthenticated } = require("../middleware/auth");
+const { isAuthenticated, isAdmin } = require("../middleware/auth");
 const user = require("../model/user");
 const router = express.Router();
 
@@ -371,4 +371,24 @@ router.get(
     }
   })
 );
+// all users --- for admin
+router.get(
+  "/admin-all-users",
+  isAuthenticated,
+  isAdmin("Admin"),
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const users = await User.find().sort({
+        createdAt: -1,
+      });
+      res.status(201).json({
+        success: true,
+        users,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
 module.exports = router;

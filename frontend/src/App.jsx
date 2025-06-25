@@ -37,7 +37,10 @@ import {
   ShopWithdrawMoneyPage,
   ShopInboxPage,
 } from "./routes/ShopRoutes.js";
-import { AdminDashboardPage } from "./routes/AdminRoutes.js";
+import {
+  AdminDashboardPage,
+  AdminDashboardUsersPage,
+} from "./routes/AdminRoutes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
 import { loadSeller, loadUser } from "./redux/actions/user.js";
@@ -251,11 +254,20 @@ function App() {
           }
         />
         {/* Admin Routes */}
+
         <Route
           path="/admin/dashboard"
           element={
             <AdminProtectedRoute>
               <AdminDashboardPage />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-users"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardUsersPage />
             </AdminProtectedRoute>
           }
         />
