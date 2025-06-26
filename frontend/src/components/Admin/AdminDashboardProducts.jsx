@@ -1,27 +1,31 @@
+import axios from "axios";
 import React from "react";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteProduct, getAllProductsShop } from "../../redux/actions/product";
+import { server } from "../../server";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import Loader from "../Layout/Loader";
 import { Link } from "react-router-dom";
-import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
-import Loader from "../../components/Layout/Loader";
+import { Button } from "@mui/material";
+import { AiOutlineEye } from "react-icons/ai";
 import { DataGrid } from "@mui/x-data-grid";
-import Button from "@mui/material/Button";
 
-const AllProducts = () => {
-  const { products, isLoading } = useSelector((state) => state.product);
-  const { seller } = useSelector((state) => state.seller);
-
-  const dispatch = useDispatch();
-
+const AdminDashboardProducts = () => {
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    dispatch(getAllProductsShop(seller._id));
-  }, [dispatch]);
-
-  const handleDelete = (id) => {
-    dispatch(deleteProduct(id));
-    window.location.reload();
-  };
+    setIsLoading(true);
+    axios
+      .get(`${server}/product/admin-all-products`, { withCredentials: true })
+      .then((res) => {
+        setProducts(res.data.products);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        toast.error(err.response.data.message);
+      });
+  }, []);
 
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
@@ -29,6 +33,7 @@ const AllProducts = () => {
     { field: "price", headerName: "Price", minWidth: 100, flex: 0.6 },
     { field: "sold", headerName: "Sold out", minWidth: 130, flex: 0.6 },
     { field: "stock", headerName: "Stock", minWidth: 100, flex: 0.6 },
+    { field: "shopName", headerName: "Shop Name", minWidth: 100, flex: 0.6 },
     {
       field: "Preview",
       headerName: "Preview",
@@ -49,24 +54,6 @@ const AllProducts = () => {
         );
       },
     },
-    {
-      field: "Delete",
-      headerName: "Delete",
-      minWidth: 120,
-      flex: 0.8,
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        const d = params.row.id;
-        return (
-          <>
-            <Button onClick={() => handleDelete(params.id)}>
-              <AiOutlineDelete size={20} />
-            </Button>
-          </>
-        );
-      },
-    },
   ];
 
   const row = [];
@@ -79,8 +66,11 @@ const AllProducts = () => {
         price: "$" + item.discountPrice,
         stock: item.stock,
         sold: item?.sold_out,
+        shopName: item?.shop.name,
       });
     });
+
+  console.log(products);
   return (
     <>
       {isLoading ? (
@@ -108,4 +98,4 @@ const AllProducts = () => {
   );
 };
 
-export default AllProducts;
+export default AdminDashboardProducts;

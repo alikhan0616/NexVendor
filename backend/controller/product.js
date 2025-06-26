@@ -7,7 +7,7 @@ const Shop = require("../model/shop");
 const fs = require("fs");
 const Product = require("../model/product");
 const Order = require("../model/order");
-const { isSeller, isAuthenticated } = require("../middleware/auth");
+const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
 
 // Create Product
 router.post(
@@ -168,6 +168,26 @@ router.put(
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
+// get all products -- Admin
+router.get(
+  "/admin-all-products",
+  isAuthenticated,
+  isAdmin("Admin"),
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const products = await Product.find().sort({
+        createdAt: -1,
+      });
+      res.status(201).json({
+        success: true,
+        products,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
     }
   })
 );

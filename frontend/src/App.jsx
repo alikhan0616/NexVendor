@@ -42,6 +42,7 @@ import {
   AdminDashboardUsersPage,
   AdminDashboardSellersPage,
   AdminDashboardOrdersPage,
+  AdminDashboardProductsPage,
 } from "./routes/AdminRoutes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
@@ -286,6 +287,14 @@ function App() {
           element={
             <AdminProtectedRoute>
               <AdminDashboardOrdersPage />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-products"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardProductsPage />
             </AdminProtectedRoute>
           }
         />
