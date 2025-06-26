@@ -307,4 +307,28 @@ router.get(
   })
 );
 
+// Delete a shop --- Admin
+router.delete(
+  "/delete-shop/:id",
+  isAuthenticated,
+  isAdmin("Admin"),
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const shop = await Shop.findById(req.params.id);
+
+      if (!shop) {
+        return next(new ErrorHandler("Shop with this id doesn't exist!", 400));
+      }
+
+      await Shop.findByIdAndDelete(req.params.id);
+
+      res.status(200).json({
+        success: true,
+        message: "Shop deleted successfully",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 module.exports = router;

@@ -58,11 +58,11 @@ const AdminSideBar = ({ active }) => {
         <Link to="/admin-sellers" className="w-full flex items-center">
           <GrWorkshop
             size={30}
-            color={`${active === 3 ? "#5A67D8" : "#555"}`}
+            color={`${active === 4 ? "#5A67D8" : "#555"}`}
           />
           <h5
             className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 3 ? "text-[#5A67D8]" : "text-[#555]"
+              active === 4 ? "text-[#5A67D8]" : "text-[#555]"
             } `}
           >
             All Sellers
@@ -73,11 +73,11 @@ const AdminSideBar = ({ active }) => {
         <Link to="/admin-users" className="w-full flex items-center">
           <HiOutlineUserGroup
             size={30}
-            color={`${active === 4 ? "#5A67D8" : "#555"}`}
+            color={`${active === 5 ? "#5A67D8" : "#555"}`}
           />
           <h5
             className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 4 ? "text-[#5A67D8]" : "text-[#555]"
+              active === 5 ? "text-[#5A67D8]" : "text-[#555]"
             } `}
           >
             All Users
