@@ -5,7 +5,7 @@ const Shop = require("../model/shop");
 const ErrorHandler = require("../utils/ErrorHandler");
 const Event = require("../model/event");
 const fs = require("fs");
-const { isSeller } = require("../middleware/auth");
+const { isSeller, isAdmin, isAuthenticated } = require("../middleware/auth");
 const router = express.Router();
 
 // Create Event
@@ -102,6 +102,26 @@ router.delete(
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
+// get all events -- Admin
+router.get(
+  "/admin-all-events",
+  isAuthenticated,
+  isAdmin("Admin"),
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const events = await Event.find().sort({
+        createdAt: -1,
+      });
+      res.status(201).json({
+        success: true,
+        events,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
     }
   })
 );

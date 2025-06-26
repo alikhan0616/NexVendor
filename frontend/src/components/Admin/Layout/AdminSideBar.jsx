@@ -85,7 +85,7 @@ const AdminSideBar = ({ active }) => {
         </Link>
       </div>
       <div className="w-full flex items-center p-4">
-        <Link to="/admin-users" className="w-full flex items-center">
+        <Link to="/admin-events" className="w-full flex items-center">
           <MdOutlineLocalOffer
             size={30}
             color={`${active === 6 ? "#5A67D8" : "#555"}`}
