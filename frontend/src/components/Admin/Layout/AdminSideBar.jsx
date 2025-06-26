@@ -38,31 +38,16 @@ const AdminSideBar = ({ active }) => {
           </h5>
         </Link>
       </div>
-      <div className="w-full flex items-center p-4">
-        <Link to="/admin-products" className="w-full flex items-center">
-          <FiShoppingBag
-            size={30}
-            color={`${active === 2 ? "#1E3A8A" : "#555"}`}
-          />
-          <h5
-            className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 2 ? "text-[#1E3A8A]" : "text-[#555]"
-            } `}
-          >
-            All Products
-          </h5>
-        </Link>
-      </div>
 
       <div className="w-full flex items-center p-4">
         <Link to="/admin-sellers" className="w-full flex items-center">
           <GrWorkshop
             size={30}
-            color={`${active === 4 ? "#5A67D8" : "#555"}`}
+            color={`${active === 3 ? "#5A67D8" : "#555"}`}
           />
           <h5
             className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 4 ? "text-[#5A67D8]" : "text-[#555]"
+              active === 3 ? "text-[#5A67D8]" : "text-[#555]"
             } `}
           >
             All Sellers
@@ -73,11 +58,11 @@ const AdminSideBar = ({ active }) => {
         <Link to="/admin-users" className="w-full flex items-center">
           <HiOutlineUserGroup
             size={30}
-            color={`${active === 5 ? "#5A67D8" : "#555"}`}
+            color={`${active === 4 ? "#5A67D8" : "#555"}`}
           />
           <h5
             className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 5 ? "text-[#5A67D8]" : "text-[#555]"
+              active === 4 ? "text-[#5A67D8]" : "text-[#555]"
             } `}
           >
             All Users
@@ -85,14 +70,29 @@ const AdminSideBar = ({ active }) => {
         </Link>
       </div>
       <div className="w-full flex items-center p-4">
-        <Link to="/admin-users" className="w-full flex items-center">
-          <MdOutlineLocalOffer
+        <Link to="/admin-products" className="w-full flex items-center">
+          <FiShoppingBag
             size={30}
-            color={`${active === 5 ? "#5A67D8" : "#555"}`}
+            color={`${active === 5 ? "#1E3A8A" : "#555"}`}
           />
           <h5
             className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 5 ? "text-[#5A67D8]" : "text-[#555]"
+              active === 5 ? "text-[#1E3A8A]" : "text-[#555]"
+            } `}
+          >
+            All Products
+          </h5>
+        </Link>
+      </div>
+      <div className="w-full flex items-center p-4">
+        <Link to="/admin-users" className="w-full flex items-center">
+          <MdOutlineLocalOffer
+            size={30}
+            color={`${active === 6 ? "#5A67D8" : "#555"}`}
+          />
+          <h5
+            className={`pl-2 text-lg font-[400] 800px:block hidden ${
+              active === 6 ? "text-[#5A67D8]" : "text-[#555]"
             } `}
           >
             All Events

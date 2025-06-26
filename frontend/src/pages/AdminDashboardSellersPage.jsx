@@ -10,7 +10,7 @@ const AdminDashboardSellersPage = () => {
         <AdminHeader />
         <div className="flex items-start justify-between w-full">
           <div className="800px:w-[330px] w-[80px]">
-            <AdminSideBar active={4} />
+            <AdminSideBar active={3} />
           </div>
           <AdminDashboardSellers />
         </div>

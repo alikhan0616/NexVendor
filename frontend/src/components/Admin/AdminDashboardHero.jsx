@@ -40,6 +40,13 @@ const AdminDashboardHero = () => {
       minWidth: 130,
       flex: 0.7,
     },
+    {
+      field: "createdAt",
+      headerName: "Placed On",
+      type: "number",
+      minWidth: 130,
+      flex: 0.7,
+    },
 
     {
       field: "total",
@@ -47,25 +54,6 @@ const AdminDashboardHero = () => {
       type: "number",
       minWidth: 130,
       flex: 0.8,
-    },
-    {
-      field: " ",
-      flex: 1,
-      minWidth: 130,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`/order/${params.id}`}>
-              <Button>
-                <AiOutlineArrowRight size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
     },
   ];
 
@@ -77,6 +65,7 @@ const AdminDashboardHero = () => {
         id: item._id,
         itemsQty: item.cart.reduce((acc, item) => acc + item.qty, 0),
         total: "US$ " + item.totalPrice,
+        createdAt: item?.createdAt.slice(0, 10),
         status: item.status,
       });
     });

@@ -39,7 +39,7 @@ const AdminDashboardSellers = () => {
     { field: "id", headerName: "User ID", minWidth: 150, flex: 0.7 },
     {
       field: "name",
-      headerName: "Username",
+      headerName: "Shop Name",
       type: "string",
       minWidth: 130,
       flex: 0.7,
