@@ -4,6 +4,7 @@ import AdminDashboardSellersPage from "../pages/AdminDashboardSellersPage.jsx";
 import AdminDashboardOrdersPage from "../pages/AdminDashboardOrdersPage.jsx";
 import AdminDashboardProductsPage from "../pages/AdminDashboardProductsPage.jsx";
 import AdminDashboardEventsPage from "../pages/AdminDashboardEventsPage.jsx";
+import AdminDashboardWithdraw from "../pages/AdminDashboardWithdraw.jsx";
 export {
   AdminDashboardPage,
   AdminDashboardUsersPage,
@@ -11,4 +12,5 @@ export {
   AdminDashboardOrdersPage,
   AdminDashboardProductsPage,
   AdminDashboardEventsPage,
+  AdminDashboardWithdraw,
 };

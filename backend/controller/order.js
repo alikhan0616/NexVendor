@@ -4,6 +4,7 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const { isAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
 const Order = require("../model/order");
 const Product = require("../model/product");
+const Shop = require("../model/shop");
 
 const router = express.Router();
 
@@ -116,6 +117,8 @@ router.put(
       if (req.body.status === "Delivered") {
         order.deliveredAt = Date.now();
         order.paymentInfo.status = "Succeeded";
+        const serviceCharge = order.totalPrice * 0.1;
+        await updateSellerBalance(order.totalPrice - serviceCharge);
       }
 
       await order.save({ validateBeforeSave: false });
@@ -131,6 +134,14 @@ router.put(
         product.sold_out += qty;
 
         await product.save({ validateBeforeSave: false });
+      }
+
+      async function updateSellerBalance(amount) {
+        const seller = await Shop.findById(req.seller._id);
+
+        seller.availableBalance = amount;
+
+        await seller.save();
       }
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));

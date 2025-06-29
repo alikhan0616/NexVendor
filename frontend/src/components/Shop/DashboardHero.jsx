@@ -22,20 +22,6 @@ const DashboardHero = () => {
     dispatch(getAllProductsShop(seller._id));
   }, [dispatch]);
 
-  useEffect(() => {
-    if (orders && Array.isArray(orders)) {
-      const orderData = orders.filter((item) => item.status === "Delivered");
-      setDeliveredOrder(orderData);
-    }
-  }, [orders]);
-
-  const totalEarningWithoutTax =
-    deliveredOrder &&
-    deliveredOrder.reduce((acc, item) => acc + item.totalPrice, 0);
-
-  const serviceCharge = totalEarningWithoutTax * 0.1;
-  const availableBalance = totalEarningWithoutTax - serviceCharge;
-
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
     {
@@ -114,7 +100,7 @@ const DashboardHero = () => {
             </h3>
           </div>
           <h5 className="pt-2 pl-[35px] text-[22px] font-[500]">
-            ${isLoading ? "-" : availableBalance && availableBalance.toFixed(2)}{" "}
+            ${isLoading ? "-" : seller.availableBalance.toFixed(2)}{" "}
           </h5>
           <Link to="/dashboard-withdraw-money">
             <h5 className="pt-4 pl-2 text-[#077f9c] hover:text-[#5A67D8] duration-300">

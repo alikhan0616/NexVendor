@@ -14,7 +14,6 @@ const OrderDetails = () => {
   const dispatch = useDispatch();
   const [status, setStatus] = useState("");
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   useEffect(() => {
@@ -132,8 +131,8 @@ const OrderDetails = () => {
       <br />
 
       <h4 className="pt-3 text-xl font-semibold">Order Status:</h4>
-      {data?.status !== "Processing refund" ||
-        (data?.status !== "Refund Success" && (
+      {data?.status !== "Processing refund" &&
+        data?.status !== "Refund Success" && (
           <select
             className=" border border-gray-300 p-1 mt-2 rounded-md"
             value={status}
@@ -163,22 +162,25 @@ const OrderDetails = () => {
                 </option>
               ))}
           </select>
-        ))}
+        )}
 
-      {data?.status === "Processing"}
-      <select
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        className=" border border-gray-300 p-1 mt-2 rounded-md"
-      >
-        {["Processing refund", "Refund Success"]
-          .slice(["Processing refund", "Refund Success"].indexOf(data?.status))
-          .map((option, index) => (
-            <option value={option} key={index}>
-              {option}
-            </option>
-          ))}{" "}
-      </select>
+      {data?.status === "Processing Refund" && (
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          className=" border border-gray-300 p-1 mt-2 rounded-md"
+        >
+          {["Processing refund", "Refund Success"]
+            .slice(
+              ["Processing refund", "Refund Success"].indexOf(data?.status)
+            )
+            .map((option, index) => (
+              <option value={option} key={index}>
+                {option}
+              </option>
+            ))}{" "}
+        </select>
+      )}
       <div
         onClick={
           data?.status !== "Processing refund"

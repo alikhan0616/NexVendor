@@ -331,4 +331,50 @@ router.delete(
     }
   })
 );
+
+// update seller withdraw methods --seller
+router.post(
+  `/update-payment-method`,
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const { withdrawMethod } = req.body;
+
+      const seller = await Shop.findByIdAndUpdate(req.seller._id, {
+        withdrawMethod,
+      });
+
+      res.status(201).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// delete seller withdraw methods --seller
+router.delete(
+  "/delete-withdraw-method",
+  isSeller,
+  catchAsyncError(async (req, res, next) => {
+    try {
+      const seller = await Shop.findById(req.seller._id);
+
+      if (!seller) {
+        return next(new ErrorHandler("Seller with this id doesn't exist!"));
+      }
+
+      seller.withdrawMethod = null;
+      await seller.save();
+      res.status(200).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 module.exports = router;

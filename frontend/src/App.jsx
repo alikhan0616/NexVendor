@@ -44,6 +44,7 @@ import {
   AdminDashboardOrdersPage,
   AdminDashboardProductsPage,
   AdminDashboardEventsPage,
+  AdminDashboardWithdraw,
 } from "./routes/AdminRoutes.js";
 import { ToastContainer, Bounce } from "react-toastify";
 import Store from "./redux/store.js";
@@ -304,6 +305,14 @@ function App() {
           element={
             <AdminProtectedRoute>
               <AdminDashboardEventsPage />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-withdraw-request"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardWithdraw />
             </AdminProtectedRoute>
           }
         />
