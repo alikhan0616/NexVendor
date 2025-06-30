@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../components/Layout/Header";
 import { useSelector } from "react-redux";
 import { format } from "timeago.js";
@@ -8,6 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FiSend } from "react-icons/fi";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import { RiGalleryLine } from "react-icons/ri";
 import styles from "../styles/styles";
 const ENDPOINT = "http://localhost:4000/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
@@ -23,6 +24,8 @@ const UserInbox = () => {
   const [userData, setUserData] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [activeStatus, setActiveStatus] = useState(false);
+
+  const scrollRef = useRef();
 
   useEffect(() => {
     socketId.on("getMessage", (data) => {
@@ -146,6 +149,10 @@ const UserInbox = () => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   return (
     <div className="w-full">
       <Header />
@@ -182,6 +189,7 @@ const UserInbox = () => {
           messages={messages}
           userId={user._id}
           userData={userData}
+          scrollRef={scrollRef}
           activeStatus={onlineCheck(currentChat)}
         />
       )}
@@ -265,6 +273,7 @@ const Inbox = ({
   userId,
   userData,
   activeStatus,
+  scrollRef,
 }) => {
   return (
     <div className="w-full flex flex-col justify-between min-h-full mt-30">
@@ -298,6 +307,7 @@ const Inbox = ({
           messages.map((item, index) => (
             <>
               <div
+                ref={scrollRef}
                 key={index}
                 className={`flex  w-full ${
                   item?.sender === userId ? "justify-end" : "flex"
@@ -333,6 +343,12 @@ const Inbox = ({
         onSubmit={sendMessageHandler}
         className="p-3 w-full relative flex justify-between items-center"
       >
+        <div className="w-[3%]">
+          <input type="file" id="image" className="hidden" />
+          <label htmlFor="image">
+            <RiGalleryLine size={20} />
+          </label>
+        </div>
         <div className="w-[97%] relative">
           <input
             type="text"

@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { backend_url, server } from "../../server";
 import { useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { FiSend } from "react-icons/fi";
 import styles from "../../styles/styles";
 import { format } from "timeago.js";
+import { RiGalleryLine } from "react-icons/ri";
 import socketIO from "socket.io-client";
 const ENDPOINT = "http://localhost:4000/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
@@ -22,7 +23,10 @@ const DashboardMessages = () => {
   const [newMessage, setNewMessage] = useState("");
   const [userData, setUserData] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [activeStatus, setActiveStatus] = useState(false);
+
+  const [images, setImages] = useState();
+
+  const scrollRef = useRef();
 
   useEffect(() => {
     socketId.on("getMessage", (data) => {
@@ -146,6 +150,62 @@ const DashboardMessages = () => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleImageUpload = async (e) => {
+    console.log("Selected file", e.target.files[0]);
+    const file = e.target.files[0];
+    setImages(file);
+    sendImageHandler(file);
+  };
+
+  const sendImageHandler = async (image) => {
+    const formData = new FormData();
+
+    formData.append("images", image);
+    formData.append("sender", seller._id);
+    formData.append("text", newMessage);
+    formData.append("conversationId", currentChat._id);
+
+    const receiverId = currentChat.members.find(
+      (member) => member !== seller._id
+    );
+
+    socketId.emit("sendMessage", {
+      senderId: seller._id,
+      receiverId,
+      images: image,
+    });
+
+    try {
+      await axios
+        .post(`${server}/message/create-new-message`, formData, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          setImages();
+          setMessages([...messages, res.data.message]);
+          setNewMessage("");
+          updateLastMessageForImage();
+        });
+    } catch (error) {
+      console.log(error.message);
+      console.log("wrong");
+    }
+  };
+
+  const updateLastMessageForImage = async () => {
+    await axios.put(
+      `${server}/conversation/update-last-message/${currentChat._id}`,
+      {
+        lastMessage: "Photo",
+        lastMessageId: seller._id,
+      }
+    );
+  };
   return (
     <div className="w-[90%] bg-white m-5 h-[85vh] overflow-y-auto rounded">
       {/* All messages */}
@@ -183,6 +243,8 @@ const DashboardMessages = () => {
           messages={messages}
           sellerId={seller._id}
           userData={userData}
+          scrollRef={scrollRef}
+          handleImageUpload={handleImageUpload}
           activeStatus={onlineCheck(currentChat)}
         />
       )}
@@ -264,6 +326,8 @@ const SellerInbox = ({
   sellerId,
   userData,
   activeStatus,
+  scrollRef,
+  handleImageUpload,
 }) => {
   return (
     <div className="w-full flex flex-col justify-between min-h-full">
@@ -298,7 +362,10 @@ const SellerInbox = ({
             <>
               <div
                 key={index}
-                className={`flex -mb-5 w-full ${
+                ref={scrollRef}
+                className={`flex 
+
+                -mb-5 w-full ${
                   item?.sender === sellerId ? "justify-end" : "flex"
                 } my-2`}
               >
@@ -309,18 +376,40 @@ const SellerInbox = ({
                     alt="avatar"
                   />
                 )}
-                <div className="">
-                  <div className="w-max p-2 rounded-md bg-[#DCF8C6] h-min">
-                    <p className="text-[#000000]">{item.text}</p>
+
+                {item.images && (
+                  <div>
+                    <img
+                      src={`${backend_url}${item.images}`}
+                      alt="corrupted-image"
+                      className="w-[300px] h-[300px] object-cover rounded-[10px] m-5"
+                    />
+
+                    <p
+                      className={`${
+                        item.sender === sellerId ? "text-end" : "text-start"
+                      } text-xs text-[#000000d3]`}
+                    >
+                      {format(item?.createdAt)}
+                    </p>
                   </div>
-                  <p
-                    className={`${
-                      item.sender === sellerId ? "text-end" : "text-start"
-                    } text-xs text-[#000000d3]`}
-                  >
-                    {format(item?.createdAt)}
-                  </p>
-                </div>
+                )}
+                {item.text !== "" && (
+                  <div className="">
+                    <div className="w-max p-2 rounded-md bg-[#DCF8C6] h-min">
+                      <p className="text-[#000000]">{item.text}</p>
+                    </div>
+                    {!item.images && (
+                      <p
+                        className={`${
+                          item.sender === sellerId ? "text-end" : "text-start"
+                        } text-xs text-[#000000d3]`}
+                      >
+                        {format(item?.createdAt)}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </>
           ))}
@@ -332,6 +421,18 @@ const SellerInbox = ({
         onSubmit={sendMessageHandler}
         className="p-3 w-full relative flex justify-between items-center"
       >
+        <div className="w-[3%]">
+          <input
+            type="file"
+            accept="image/*"
+            id="image"
+            className="hidden"
+            onChange={handleImageUpload}
+          />
+          <label htmlFor="image">
+            <RiGalleryLine size={20} className="cursor-pointer" />
+          </label>
+        </div>
         <div className="w-[97%] relative">
           <input
             type="text"
