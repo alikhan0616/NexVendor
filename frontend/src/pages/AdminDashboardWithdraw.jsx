@@ -1,7 +1,7 @@
 import React from "react";
 import AdminHeader from "../components/Admin/Layout/AdminHeader";
 import AdminSideBar from "../components/Admin/Layout/AdminSideBar";
-
+import AdminWithdraw from "../components/Admin/AdminWithdraw.jsx";
 const AdminDashboardWithdraw = () => {
   return (
     <div>
@@ -12,6 +12,7 @@ const AdminDashboardWithdraw = () => {
             <AdminSideBar active={7} />
           </div>
           {/* Withdrawx */}
+          <AdminWithdraw />
         </div>
       </div>
     </div>
