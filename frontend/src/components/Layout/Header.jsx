@@ -235,24 +235,34 @@ const Header = ({ activeHeading }) => {
             </Link>
           </div>
           <div className="">
-            <div className="relative mr-[20px]">
+            <div
+              className="relative mr-[20px]"
+              onClick={() => setOpenCart(true)}
+            >
               <AiOutlineShoppingCart className="cursor-pointer" size={30} />
               <span className="absolute right-0 top-0 rounded-full bg-[#B66E41] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                1
+                {cart && cart.length}
               </span>
             </div>
           </div>
         </div>
         {/* HEADER SIDEBAR */}
+        {/* CART POP UP */}
+        {openCart ? <Cart setOpenCart={setOpenCart} /> : null}
+        {/* WISHLIST POP UP */}
+        {openWishlist ? <WishList setOpenWishList={setOpenWishList} /> : null}
         {open && (
           <div className="fixed w-full bg-[#0000005f] z-20 h-full top-0 left-0">
-            <div className="fixed w-[60%] bg-[#fff] h-screen top-0 left-0 z-10 overflow-y-scroll">
+            <div className="fixed w-[70%] bg-[#fff] h-screen top-0 left-0 z-10 overflow-y-scroll">
               <div className="w-full justify-between flex pr-3">
                 <div className="">
-                  <div className="relative mr-[15px]">
+                  <div
+                    className="relative mr-[15px]"
+                    onClick={() => setOpenWishList(true) || setOpen(false)}
+                  >
                     <AiOutlineHeart size={30} className="mt-5 ml-3" />
                     <span className="absolute right-0 top-0 rounded-full bg-[#B66E41] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                      0
+                      {wishlist && wishlist.length}
                     </span>
                   </div>
                 </div>
@@ -304,9 +314,10 @@ const Header = ({ activeHeading }) => {
               <div
                 className={`${styles.button} ml-4 rounded-xl bg-[#0D1321] hover:bg-slate-800`}
               >
-                <Link to="/shop-create">
+                <Link to={isSeller ? "/dashboard" : "/shop-create"}>
                   <h1 className="text-white flex items-center">
-                    Become a Seller <IoIosArrowForward className="ml-1 " />
+                    {isSeller ? "DashBoard" : "Become a Seller"}{" "}
+                    <IoIosArrowForward className="ml-1 " />
                   </h1>
                 </Link>
               </div>

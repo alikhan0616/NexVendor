@@ -722,10 +722,10 @@ const Address = () => {
               </h5>
             </div>
             <div className="pl-8 flex items-center ">
-              <h6 className="">{`${i.address1}  ${i?.address2}`}</h6>
+              <h6 className="text-xs 800px:text-base">{`${i.address1}  ${i?.address2}`}</h6>
             </div>
             <div className="pl-8 flex items-center ">
-              <h6 className="">{user?.phoneNumber}</h6>
+              <h6 className="hidden 800px:inline">{user?.phoneNumber}</h6>
             </div>
             <div className="min-w-[10%] flex items-center justify-between pl-8">
               <AiOutlineDelete

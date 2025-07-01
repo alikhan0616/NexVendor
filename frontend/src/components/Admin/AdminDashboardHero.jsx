@@ -96,7 +96,7 @@ const AdminDashboardHero = () => {
                 </h3>
               </div>
               <h5 className="pt-2 pl-[35px] text-[22px] font-[500]">
-                ${adminEarning.toFixed(2)}
+                ${adminEarning && adminEarning.toFixed(2)}
               </h5>
             </div>
 
@@ -147,8 +147,16 @@ const AdminDashboardHero = () => {
                 rows={row}
                 columns={columns}
                 disableRowSelectionOnClick
-                pageSize={4}
-                autoHeight
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 4, // Set to 5 items per page
+                      page: 0, // Start at the first page
+                    },
+                  },
+                }}
+                pageSizeOptions={[4]} // Optional: Only allow 5 items per page
+                pagination // Enable pagination
               />
             </div>
           </div>

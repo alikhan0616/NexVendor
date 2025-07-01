@@ -432,7 +432,7 @@ const Inbox = ({
             <RiGalleryLine className="cursor-pointer" size={20} />
           </label>
         </div>
-        <div className="w-[97%] relative">
+        <div className="800px:w-[97%] w-[90%] relative">
           <input
             type="text"
             required
