@@ -7,10 +7,6 @@ import { getAllEvents } from "../../../redux/actions/event";
 const Events = () => {
   const { allEvents, isLoading } = useSelector((state) => state.event);
 
-  useEffect(() => {
-    const data = allEvents && allEvents.find((a, b) => a.sold_out - b.sold_out);
-  }, [allEvents]);
-
   return (
     <div className="">
       {isLoading ? (
@@ -20,9 +16,16 @@ const Events = () => {
           <div className={`${styles.heading}`}>
             <h1>Popular Products</h1>
           </div>
-          <div className="w-full grid ">
-            <EventCard data={allEvents && allEvents[0]} />
-          </div>
+          {allEvents.length !== 0 && (
+            <div className="w-full grid ">
+              <EventCard data={allEvents && allEvents[0]} />
+            </div>
+          )}
+          {allEvents?.length === 0 && (
+            <h1 className="my-5 text-center font-semibold text-2xl text-orange-600">
+              No Running Events!
+            </h1>
+          )}
         </div>
       )}
     </div>
