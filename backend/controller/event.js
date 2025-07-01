@@ -5,6 +5,7 @@ const Shop = require("../model/shop");
 const ErrorHandler = require("../utils/ErrorHandler");
 const Event = require("../model/event");
 const fs = require("fs");
+const cloudinary = require("cloudinary");
 const { isSeller, isAdmin, isAuthenticated } = require("../middleware/auth");
 const router = express.Router();
 
@@ -19,12 +20,29 @@ router.post(
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
-        const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
-        const eventData = req.body;
-        eventData.images = imageUrls;
-        eventData.shop = shop;
+        let images = [];
 
+        if (typeof req.body.images === "string") {
+          images.push(req.body.images);
+        } else {
+          images = req.body.images;
+        }
+
+        const imageLinks = [];
+
+        for (let i = 0; i < images.length; i++) {
+          const result = await cloudinary.v2.uploader.upload(images[i], {
+            folder: "events",
+          });
+
+          imageLinks.push({
+            public_id: result.public_id,
+            url: result.secure_url,
+          });
+        }
+        const eventData = req.body;
+        eventData.images = imageLinks;
+        eventData.shop = shop;
         const event = await Event.create(eventData);
 
         res.status(201).json({
@@ -74,6 +92,7 @@ router.get(
 
 router.delete(
   "/delete-shop-event/:id",
+  isSeller,
   catchAsyncError(async (req, res, next) => {
     try {
       const eventId = req.params.id;

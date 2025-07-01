@@ -99,7 +99,7 @@ const Header = ({ activeHeading }) => {
                         <div className="flex items-start p-3 hover:bg-[#D1D5DB]">
                           <img
                             className="w-[40px] h-[40px] mr-[10px]"
-                            src={`${backend_url}${i.images[0]}`}
+                            src={i.images[0].url}
                             alt="product-icon"
                           />
                           <h1>{i.name}</h1>
@@ -345,7 +345,7 @@ const Header = ({ activeHeading }) => {
                     <Link to="/profile">
                       <img
                         className="w-[60px] h-[60px] rounded-full object-cover border-[3px] border-[#1D2D44]"
-                        src={`${backend_url}${user.avatar}`}
+                        src={user?.avatar?.url}
                         alt="user-icon"
                       />
                     </Link>

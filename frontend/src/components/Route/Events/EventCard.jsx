@@ -35,7 +35,7 @@ const EventCard = ({ active, data }) => {
     >
       <div className="w-full lg:w-[50%] m-auto">
         <img
-          src={`${backend_url}${data.images[0]}`}
+          src={data.images[0].url}
           alt="product-img"
           className="max-w-[450px] max-h-[450px]"
         />
@@ -53,7 +53,7 @@ const EventCard = ({ active, data }) => {
             </h5>
           </div>
           <span className={`pr-3 font-normal text-base text-[#44a55e]`}>
-            120 Sold
+            {data?.sold_out} Sold
           </span>
         </div>
         <CountDown data={data} />

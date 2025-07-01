@@ -69,28 +69,48 @@ const CreateEvent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newForm = new FormData();
-    images.forEach((image) => {
-      newForm.append("images", image);
-    });
-    newForm.append("name", name);
-    newForm.append("description", description);
-    newForm.append("category", category);
-    newForm.append("tags", tags);
-    newForm.append("originalPrice", originalPrice);
-    newForm.append("discountPrice", discountPrice);
-    newForm.append("stock", stock);
-    newForm.append("shopId", seller._id);
-    newForm.append("start_Date", startDate.toISOString());
-    newForm.append("finish_Date", endDate.toISOString());
-    dispatch(createEvent(newForm));
+    dispatch(
+      createEvent({
+        name,
+        description,
+        category,
+        tags,
+        originalPrice,
+        discountPrice,
+        stock,
+        images,
+        shopId: seller._id,
+        start_Date: startDate.toISOString(),
+        finish_Date: endDate.toISOString(),
+      })
+    );
   };
 
   const handleImageChange = (e) => {
     e.preventDefault();
+    const files = Array.from(e.target.files);
 
-    let files = Array.from(e.target.files);
-    setImages((prevImages) => [...prevImages, ...files]);
+    // Check if adding these files would exceed 6 images
+    if (images.length + files.length > 6) {
+      toast.error("You can only upload up to 6 images.");
+      return;
+    }
+
+    files.forEach((file) => {
+      const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Image should be in JPEG, JPG, or PNG format only.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setImages((old) => [...old, reader.result]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   return (
@@ -253,7 +273,7 @@ const CreateEvent = () => {
             className="hidden"
             multiple
             onChange={handleImageChange}
-            accept="image/*"
+            accept=".jpg,.jpeg,.png"
             required
           />
           <div className="w-full flex items-center flex-wrap">
@@ -263,7 +283,7 @@ const CreateEvent = () => {
             {images &&
               images.map((i, index) => (
                 <img
-                  src={URL.createObjectURL(i)}
+                  src={i}
                   key={index}
                   alt=""
                   className="h-[120px] w-[120px] object-cover m-2"
