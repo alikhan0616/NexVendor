@@ -23,7 +23,8 @@ const UserInbox = () => {
   const [newMessage, setNewMessage] = useState("");
   const [userData, setUserData] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [activeStatus, setActiveStatus] = useState(false);
+
+  const [images, setImages] = useState();
 
   const scrollRef = useRef();
 
@@ -153,6 +154,61 @@ const UserInbox = () => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+  const handleImageUpload = async (e) => {
+    console.log("Selected file", e.target.files[0]);
+    const file = e.target.files[0];
+    setImages(file);
+    sendImageHandler(file);
+  };
+
+  const sendImageHandler = async (image) => {
+    const formData = new FormData();
+
+    formData.append("images", image);
+    formData.append("sender", user._id);
+    formData.append("text", newMessage);
+    formData.append("conversationId", currentChat._id);
+
+    const receiverId = currentChat.members.find(
+      (member) => member !== user._id
+    );
+
+    socketId.emit("sendMessage", {
+      senderId: user._id,
+      receiverId,
+      images: image,
+    });
+
+    try {
+      await axios
+        .post(`${server}/message/create-new-message`, formData, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          setImages();
+          setMessages([...messages, res.data.message]);
+          setNewMessage("");
+          updateLastMessageForImage();
+        });
+    } catch (error) {
+      console.log(error.message);
+      console.log("wrong");
+    }
+  };
+
+  const updateLastMessageForImage = async () => {
+    socketId.emit("updateLastMessage", {
+      lastMessage: "Photo",
+      lastMessageId: user._id,
+    });
+    await axios.put(
+      `${server}/conversation/update-last-message/${currentChat._id}`,
+      {
+        lastMessage: "Photo",
+        lastMessageId: user._id,
+      }
+    );
+  };
   return (
     <div className="w-full">
       <Header />
@@ -190,6 +246,7 @@ const UserInbox = () => {
           userId={user._id}
           userData={userData}
           scrollRef={scrollRef}
+          handleImageUpload={handleImageUpload}
           activeStatus={onlineCheck(currentChat)}
         />
       )}
@@ -274,6 +331,7 @@ const Inbox = ({
   userData,
   activeStatus,
   scrollRef,
+  handleImageUpload,
 }) => {
   return (
     <div className="w-full flex flex-col justify-between min-h-full mt-30">
@@ -320,17 +378,36 @@ const Inbox = ({
                     alt="avatar"
                   />
                 )}
+                {item.images && (
+                  <div>
+                    <img
+                      src={`${backend_url}${item.images}`}
+                      alt="corrupted-image"
+                      className="w-[300px] h-[300px] object-cover rounded-[10px] m-5"
+                    />
+
+                    <p
+                      className={`${
+                        item.sender === userId ? "text-end" : "text-start"
+                      } text-xs text-[#000000d3]`}
+                    >
+                      {format(item?.createdAt)}
+                    </p>
+                  </div>
+                )}
                 <div className="">
                   <div className="w-max p-2 rounded-md bg-[#DCF8C6] h-min">
                     <p className="text-[#000000]">{item.text}</p>
                   </div>
-                  <p
-                    className={`${
-                      item.sender === userId ? "text-end" : "text-start"
-                    } text-xs text-[#000000d3]`}
-                  >
-                    {format(item?.createdAt)}
-                  </p>
+                  {!item.images && (
+                    <p
+                      className={`${
+                        item.sender === userId ? "text-end" : "text-start"
+                      } text-xs text-[#000000d3]`}
+                    >
+                      {format(item?.createdAt)}
+                    </p>
+                  )}
                 </div>
               </div>
             </>
@@ -344,9 +421,15 @@ const Inbox = ({
         className="p-3 w-full relative flex justify-between items-center"
       >
         <div className="w-[3%]">
-          <input type="file" id="image" className="hidden" />
+          <input
+            type="file"
+            id="image"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
           <label htmlFor="image">
-            <RiGalleryLine size={20} />
+            <RiGalleryLine className="cursor-pointer" size={20} />
           </label>
         </div>
         <div className="w-[97%] relative">

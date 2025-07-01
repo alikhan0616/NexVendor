@@ -154,7 +154,6 @@ const DashboardMessages = () => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
   const handleImageUpload = async (e) => {
     console.log("Selected file", e.target.files[0]);
     const file = e.target.files[0];
@@ -198,6 +197,10 @@ const DashboardMessages = () => {
   };
 
   const updateLastMessageForImage = async () => {
+    socketId.emit("updateLastMessage", {
+      lastMessage: "Photo",
+      lastMessageId: seller._id,
+    });
     await axios.put(
       `${server}/conversation/update-last-message/${currentChat._id}`,
       {
@@ -382,13 +385,13 @@ const SellerInbox = ({
                     <img
                       src={`${backend_url}${item.images}`}
                       alt="corrupted-image"
-                      className="w-[300px] h-[300px] object-cover rounded-[10px] m-5"
+                      className="w-[300px] h-[300px] object-cover rounded-[10px] mt-5 mr-5 mb-1"
                     />
 
                     <p
                       className={`${
                         item.sender === sellerId ? "text-end" : "text-start"
-                      } text-xs text-[#000000d3]`}
+                      } text-xs text-[#000000d3] mb-5`}
                     >
                       {format(item?.createdAt)}
                     </p>
@@ -403,7 +406,7 @@ const SellerInbox = ({
                       <p
                         className={`${
                           item.sender === sellerId ? "text-end" : "text-start"
-                        } text-xs text-[#000000d3]`}
+                        } text-xs text-[#000000d3] mb-5`}
                       >
                         {format(item?.createdAt)}
                       </p>
