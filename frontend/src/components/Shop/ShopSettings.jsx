@@ -47,26 +47,38 @@ const ShopSettings = () => {
   };
 
   const handleImage = async (e) => {
-    e.preventDefault();
     const file = e.target.files[0];
-    setAvatar(file);
+    if (!file) return;
 
-    const formData = new FormData();
+    // Allowed types
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Image should be in JPEG, JPG, or PNG format only.");
+      return;
+    }
 
-    formData.append("image", e.target.files[0]);
-
-    await axios
-      .put(`${server}/shop/update-avatar`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      })
-      .then((res) => {
-        dispatch(loadSeller());
-        toast.success("Shop avatar updated successfully!");
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+    const reader = new FileReader();
+    reader.onload = async () => {
+      if (reader.readyState === 2) {
+        setAvatar(reader.result);
+        await axios
+          .put(
+            `${server}/shop/update-avatar`,
+            { avatar: reader.result },
+            {
+              withCredentials: true,
+            }
+          )
+          .then((res) => {
+            dispatch(loadSeller());
+            toast.success("Shop avatar updated successfully!");
+          })
+          .catch((error) => {
+            toast.error(error.response.data.message);
+          });
+      }
+    };
+    reader.readAsDataURL(file);
   };
   return (
     <div className="w-full min-h-screen flex flex-col items-center">
@@ -74,7 +86,7 @@ const ShopSettings = () => {
         <div className="w-full flex items-center justify-center">
           <div className="relative border-2 rounded-full border-slate-700">
             <img
-              src={`${backend_url}/${seller.avatar}`}
+              src={seller?.avatar.url}
               alt="product-img"
               className="w-[200px] h-[200px] rounded-full cursor-pointer object-contain"
             />
@@ -82,7 +94,7 @@ const ShopSettings = () => {
               <input
                 type="file"
                 id="image"
-                accept="image/*"
+                accept=".jpg,.jpeg,.png"
                 className="hidden"
                 onChange={handleImage}
               />

@@ -65,7 +65,7 @@ const ShopInfo = ({ isOwner }) => {
             <div className="w-full flex items-center justify-center">
               <img
                 className="w-[150px] h-[150px] object-cover rounded-full"
-                src={`${backend_url}${data?.avatar}`}
+                src={data?.avatar?.url}
                 alt="shop-icon"
               />
             </div>
