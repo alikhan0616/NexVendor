@@ -9,6 +9,7 @@ import { RxCross1 } from "react-icons/rx";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { toast } from "react-toastify";
 import axios from "axios";
+import AllProducts from "./Shop/AllProducts";
 
 const UserOrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
@@ -44,6 +45,7 @@ const UserOrderDetails = () => {
         setComment("");
         setRating(1);
         setOpen(false);
+        dispatch(AllProducts());
       })
       .catch((err) => {
         toast.error(err.response.data.message);
@@ -96,7 +98,7 @@ const UserOrderDetails = () => {
             key={index}
           >
             <img
-              src={`${backend_url}/${item.images[0]}`}
+              src={item.images[0].url}
               alt="product-img"
               className="w-[80px] h-[80px] object-contain"
             />
@@ -134,7 +136,7 @@ const UserOrderDetails = () => {
             <br />
             <div className="w-full flex">
               <img
-                src={`${backend_url}/${selectedItem.images[0]}`}
+                src={selectedItem.images[0].url}
                 alt="product-img"
                 className="w-[80px] h-[80px] object-contain "
               />

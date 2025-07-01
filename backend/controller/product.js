@@ -7,12 +7,13 @@ const Shop = require("../model/shop");
 const fs = require("fs");
 const Product = require("../model/product");
 const Order = require("../model/order");
+const cloudinary = require("cloudinary");
 const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
 
 // Create Product
 router.post(
   "/create-product",
-  upload.array("images"),
+  isSeller,
   catchAsyncError(async (req, res, next) => {
     try {
       const shopId = req.body.shopId;
@@ -20,10 +21,28 @@ router.post(
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
-        const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
+        let images = [];
+
+        if (typeof req.body.images === "string") {
+          images.push(req.body.images);
+        } else {
+          images = req.body.images;
+        }
+
+        const imageLinks = [];
+
+        for (let i = 0; i < images.length; i++) {
+          const result = await cloudinary.v2.uploader.upload(images[i], {
+            folder: "products",
+          });
+
+          imageLinks.push({
+            public_id: result.public_id,
+            url: result.secure_url,
+          });
+        }
         const productData = req.body;
-        productData.images = imageUrls;
+        productData.images = imageLinks;
         productData.shop = shop;
 
         const product = await Product.create(productData);

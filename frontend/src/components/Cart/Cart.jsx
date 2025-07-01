@@ -127,7 +127,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           </div>
         </div>
         <img
-          src={`${backend_url}${data.images[0]}`}
+          src={data.images[0].url}
           alt="product-img"
           className="max-w-[80px] max-h-[80px]  ml-2 rounded-[5px] object-cover"
         />

@@ -7,6 +7,7 @@ import { getAllOrdersShop } from "../../redux/actions/order";
 import { backend_url, server } from "../../server";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { loadSeller } from "../../redux/actions/user";
 
 const OrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
@@ -51,6 +52,7 @@ const OrderDetails = () => {
         toast.success("Order status updated!");
         navigate("/dashboard-orders");
         dispatch(getAllOrdersShop(seller._id));
+        dispatch(loadSeller());
       })
       .catch((err) => {
         toast.error(err.response.data.message);
@@ -89,7 +91,7 @@ const OrderDetails = () => {
         data?.cart.map((item, index) => (
           <div className="w-full flex items-start mb-5">
             <img
-              src={`${backend_url}/${item.images[0]}`}
+              src={item.images[0].url}
               alt="product-img"
               className="w-[80px] h-[80px]"
             />
@@ -164,7 +166,7 @@ const OrderDetails = () => {
           </select>
         )}
 
-      {data?.status === "Processing Refund" && (
+      {data?.status === "Processing refund" && (
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}

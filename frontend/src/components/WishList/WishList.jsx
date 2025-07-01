@@ -101,7 +101,7 @@ const WishListSingle = ({
           onClick={() => removeFromWishlistHandler(data)}
         />
         <img
-          src={`${backend_url}${data.images[0]}`}
+          src={data.images[0].url}
           alt="product-img"
           className="w-[80px] h-[80px] ml-2"
         />

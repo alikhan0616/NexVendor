@@ -127,9 +127,9 @@ const ProductDetails = ({ data }) => {
                 {/* LEFT BOX */}
                 <div className="w-full 800px:w-[50%]">
                   <img
-                    src={`${backend_url}${data && data.images[select]}`}
+                    src={data && data.images[select].url}
                     className="w-[80%] max-h-[600px] "
-                    alt=""
+                    alt="big-product-img"
                   />
                   <div className="w-full flex flex-wrap">
                     {data &&
@@ -140,8 +140,8 @@ const ProductDetails = ({ data }) => {
                           } cursor-pointer mt-4 `}
                         >
                           <img
-                            src={`${backend_url}${i}`}
-                            alt=""
+                            src={i.url}
+                            alt="product-img"
                             className="max-h-[80px] max-w-[80px] object-cover overflow-hidden mr-3 mt-3"
                             onClick={() => setSelect(index)}
                           />
@@ -215,7 +215,7 @@ const ProductDetails = ({ data }) => {
                   <div className="flex items-center pt-8">
                     <Link to={`/shop/preview/${data?.shop?._id}`}>
                       <img
-                        src={`${backend_url}${data?.shop?.avatar}`}
+                        src={data?.shop?.avatar.url}
                         alt="shop-img"
                         className="w-[50px] h-[50px] rounded-full mr-2"
                       />
@@ -317,7 +317,7 @@ const ProductDetailsInfo = ({
             data?.reviews.map((item, index) => (
               <div className="w-full flex my-2">
                 <img
-                  src={`${backend_url}/${item.user.avatar}`}
+                  src={item.user.avatar.url}
                   alt="user-icon"
                   className="w-[50px] h-[50px] rounded-full"
                 />
@@ -345,7 +345,7 @@ const ProductDetailsInfo = ({
             <div className="w-full 800px:w-[50%] ">
               <div className="flex items-center">
                 <img
-                  src={`${backend_url}${data?.shop?.avatar}`}
+                  src={data?.shop?.avatar.url}
                   alt="shop-img"
                   className="w-[50px] h-[50px] rounded-full "
                 />
