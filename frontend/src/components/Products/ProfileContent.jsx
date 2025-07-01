@@ -46,26 +46,35 @@ const ProfileContent = ({ active, setActive }) => {
 
   const handleImage = async (e) => {
     const file = e.target.files[0];
-    setAvatar(file);
+    if (!file) return;
 
-    const formData = new FormData();
+    // Allowed types
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Image should be in JPEG, JPG, or PNG format only.");
+      return;
+    }
 
-    formData.append("image", e.target.files[0]);
-
-    await axios
-      .put(`${server}/user/update-avatar`, formData, {
-        headers: {
-          "Content-Type": "multiport/form-data",
-        },
-        withCredentials: true,
-      })
-      .then((res) => {
-        dispatch(loadUser());
-        toast.success("Avatar updated successfully!");
-      })
-      .catch((error) => {
-        toast.error(error);
-      });
+    const reader = new FileReader();
+    reader.onload = async () => {
+      if (reader.readyState === 2) {
+        setAvatar(reader.result);
+        await axios
+          .put(
+            `${server}/user/update-avatar`,
+            { avatar: reader.result },
+            { withCredentials: true }
+          )
+          .then((res) => {
+            dispatch(loadUser());
+            toast.success("Avatar updated successfully!");
+          })
+          .catch((error) => {
+            toast.error(error);
+          });
+      }
+    };
+    reader.readAsDataURL(file);
   };
   return (
     <div className="w-full ">
@@ -75,7 +84,7 @@ const ProfileContent = ({ active, setActive }) => {
           <div className="flex justify-center w-full">
             <div className="relative">
               <img
-                src={`${backend_url}${user?.avatar}`}
+                src={user?.avatar.url}
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#1D2D44]"
                 alt="profile-icon"
               />
@@ -83,7 +92,7 @@ const ProfileContent = ({ active, setActive }) => {
                 <input
                   type="file"
                   id="image"
-                  accept="image/*"
+                  accept=".jpg,.jpeg,.png"
                   className="hidden"
                   onChange={handleImage}
                 />

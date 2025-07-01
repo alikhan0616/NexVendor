@@ -57,7 +57,7 @@ const AdminHeader = () => {
           </Link>
           <Link to="/profile">
             <img
-              src={`${backend_url}${user?.avatar}`}
+              src={user?.avatar.url}
               alt="user-icon"
               className="w-12 h-12 rounded-full object-cover "
             />
