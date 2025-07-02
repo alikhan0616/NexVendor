@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { backend_url, server } from "../../server";
+import { server } from "../../server";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import socketIO from "socket.io-client";
 const ENDPOINT = "http://localhost:4000/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 const DashboardMessages = () => {
-  const { seller } = useSelector((state) => state.seller);
+  const { seller, isLoading } = useSelector((state) => state.seller);
 
   const [conversation, setConversation] = useState([]);
   const [open, setOpen] = useState(false);
@@ -154,21 +154,30 @@ const DashboardMessages = () => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Image upload Funtionality
   const handleImageUpload = async (e) => {
-    console.log("Selected file", e.target.files[0]);
     const file = e.target.files[0];
-    setImages(file);
-    sendImageHandler(file);
+    if (!file) return;
+    // Allowed types
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Image should be in JPEG, JPG, or PNG format only.");
+      return;
+    }
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setImages(reader.result);
+        sendImageHandler(reader.result);
+      }
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const sendImageHandler = async (image) => {
-    const formData = new FormData();
-
-    formData.append("images", image);
-    formData.append("sender", seller._id);
-    formData.append("text", newMessage);
-    formData.append("conversationId", currentChat._id);
-
     const receiverId = currentChat.members.find(
       (member) => member !== seller._id
     );
@@ -181,9 +190,18 @@ const DashboardMessages = () => {
 
     try {
       await axios
-        .post(`${server}/message/create-new-message`, formData, {
-          withCredentials: true,
-        })
+        .post(
+          `${server}/message/create-new-message`,
+          {
+            images: image,
+            sender: seller._id,
+            text: newMessage,
+            conversationId: currentChat._id,
+          },
+          {
+            withCredentials: true,
+          }
+        )
         .then((res) => {
           setImages();
           setMessages([...messages, res.data.message]);
@@ -229,6 +247,7 @@ const DashboardMessages = () => {
                 userData={userData}
                 setUserData={setUserData}
                 online={onlineCheck(item)}
+                isLoading={isLoading}
               />
             ))
           ) : (
@@ -263,6 +282,7 @@ const MessageList = ({
   userData,
   setUserData,
   online,
+  isLoading,
 }) => {
   const [user, setUser] = useState([]);
   const navigate = useNavigate();
@@ -311,8 +331,10 @@ const MessageList = ({
 
         {user && user.name && (
           <p className="text-[14px] text-[#000c] ">
-            {data?.lastMessageId !== user?._id ? "You" : user?.name.split(" ")}:{" "}
-            {data?.lastMessage || "-"}
+            {!isLoading && data?.lastMessageId !== user?._id
+              ? "You"
+              : user?.name.split(" ")}
+            : {data?.lastMessage || "-"}
           </p>
         )}
       </div>
@@ -383,9 +405,9 @@ const SellerInbox = ({
                 {item.images && (
                   <div>
                     <img
-                      src={`${backend_url}${item.images}`}
+                      src={item.images.url}
                       alt="corrupted-image"
-                      className="w-[300px] h-[300px] object-cover rounded-[10px] mt-5 mr-5 mb-1"
+                      className="w-[300px] h-[300px] object-contain rounded-[10px] mt-5 mr-5 mb-1"
                     />
 
                     <p
@@ -427,7 +449,7 @@ const SellerInbox = ({
         <div className="w-[3%]">
           <input
             type="file"
-            accept="image/*"
+            accept=".jpg,.jpeg,.png"
             id="image"
             className="hidden"
             onChange={handleImageUpload}

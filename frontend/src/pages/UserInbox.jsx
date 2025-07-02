@@ -13,7 +13,7 @@ import styles from "../styles/styles";
 const ENDPOINT = "http://localhost:4000/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 const UserInbox = () => {
-  const { user } = useSelector((state) => state.user);
+  const { user, loading } = useSelector((state) => state.user);
 
   const [conversation, setConversation] = useState([]);
   const [open, setOpen] = useState(false);
@@ -154,21 +154,30 @@ const UserInbox = () => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Image upload Funtionality
   const handleImageUpload = async (e) => {
-    console.log("Selected file", e.target.files[0]);
     const file = e.target.files[0];
-    setImages(file);
-    sendImageHandler(file);
+    if (!file) return;
+    // Allowed types
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Image should be in JPEG, JPG, or PNG format only.");
+      return;
+    }
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setImages(reader.result);
+        sendImageHandler(reader.result);
+      }
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const sendImageHandler = async (image) => {
-    const formData = new FormData();
-
-    formData.append("images", image);
-    formData.append("sender", user._id);
-    formData.append("text", newMessage);
-    formData.append("conversationId", currentChat._id);
-
     const receiverId = currentChat.members.find(
       (member) => member !== user._id
     );
@@ -181,9 +190,18 @@ const UserInbox = () => {
 
     try {
       await axios
-        .post(`${server}/message/create-new-message`, formData, {
-          withCredentials: true,
-        })
+        .post(
+          `${server}/message/create-new-message`,
+          {
+            images: image,
+            sender: user._id,
+            text: newMessage,
+            conversationId: currentChat._id,
+          },
+          {
+            withCredentials: true,
+          }
+        )
         .then((res) => {
           setImages();
           setMessages([...messages, res.data.message]);
@@ -274,8 +292,6 @@ const MessageList = ({
 
   useEffect(() => {
     const userId = data.members.find((user) => user != me);
-
-    console.log(user);
 
     const getUser = async () => {
       try {
@@ -381,9 +397,9 @@ const Inbox = ({
                 {item.images && (
                   <div>
                     <img
-                      src={`${backend_url}${item.images}`}
+                      src={item.images.url}
                       alt="corrupted-image"
-                      className="w-[300px] h-[300px] object-cover rounded-[10px] m-5"
+                      className="w-[300px] h-[300px] object-contain rounded-[10px] m-5"
                     />
 
                     <p
@@ -424,7 +440,7 @@ const Inbox = ({
           <input
             type="file"
             id="image"
-            accept="image/*"
+            accept=".jpg,.jpeg,.png"
             onChange={handleImageUpload}
             className="hidden"
           />
