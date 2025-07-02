@@ -60,22 +60,7 @@ const TrackOrder = () => {
     }
   }, [dispatch, user?._id]);
 
-  const dummyOrder = {
-    _id: "testorder123456",
-    createdAt: "2025-07-02T12:00:00Z",
-    items: [
-      {
-        name: "Sample Product",
-        quantity: 2,
-        price: 25,
-      },
-    ],
-    totalPrice: 50,
-    status: "Refund Success", // Change this to test different statuses
-  };
-
-  const order = dummyOrder;
-  // orders?.find((item) => item._id === id);
+  const order = orders?.find((item) => item._id === id);
 
   const getCurrentStepIndex = () => {
     const isRefundOrder =
