@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 const ProtectedRoute = ({ children }) => {
   const { loading, isAuthenticated } = useSelector((state) => state.user);
   if (loading === false) {
-    if (!isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       return <Navigate to={"/login"} replace />;
     }
     return children;
