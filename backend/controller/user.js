@@ -37,7 +37,7 @@ router.post("/create-user", async (req, res, next) => {
 
     const activationToken = createActivationToken(user);
 
-    const activationUrl = `https://nex-vendor-ssk2.vercel.app/user/activation/${activationToken}`;
+    const activationUrl = `https://nex-vendor-ssk2.vercel.app/activation/${activationToken}`;
     try {
       await sendMail({
         email: user.email,
