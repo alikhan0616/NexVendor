@@ -38,7 +38,7 @@ router.post("/create-shop", async (req, res, next) => {
 
     const activationToken = createActivationToken(seller);
 
-    const activationUrl = `http://localhost:5173/seller/activation/${activationToken}`;
+    const activationUrl = `https://nex-vendor-ssk2.vercel.app/seller/activation/${activationToken}`;
 
     try {
       await sendMail({

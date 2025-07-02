@@ -6,7 +6,7 @@ const LoginPage = () => {
   const { isAuthenticated, loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
   useEffect(() => {
-    if (isAuthenticated === true) {
+    if (!loading && isAuthenticated === true) {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
