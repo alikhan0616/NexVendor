@@ -2,7 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 if (process.env.NODE_ENV !== "PRODUCTION") {
   dotenv.config({
-    path: "backend/config/.env",
+    path: "config/.env",
   });
 }
 const ErrorHandler = require("./middleware/error.js");
@@ -23,10 +23,12 @@ const app = express();
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 app.use(express.json({ limit: "50mb" }));
-// app.use(express.json());
 app.use(cookieParser());
-app.use("/", express.static("uploads"));
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+
+app.use("/", (req, res) => {
+  res.send("Hello backend");
+});
 
 // Import routes
 app.use("/api/v2/user", userRoute);

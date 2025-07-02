@@ -2,7 +2,6 @@ import { useState } from "react";
 import Header from "../components/Layout/Header";
 import styles from "../styles/styles";
 import { useEffect } from "react";
-import { productData } from "../static/data";
 import ProductCard from "../components/Route/ProductCard/ProductCard";
 import { useSelector } from "react-redux";
 import Loader from "../components/Layout/Loader";
