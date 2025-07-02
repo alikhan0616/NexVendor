@@ -22,7 +22,7 @@ const withdrawRoute = require("./controller/withdraw.js");
 const app = express();
 app.use(
   cors({
-    origin: "nex-vendor-ssk2.vercel.app",
+    origin: "https://nex-vendor-ssk2.vercel.app",
     credentials: true,
   })
 );
