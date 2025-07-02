@@ -47,7 +47,7 @@ const TrackOrder = () => {
             </div>
 
             {/* Stepper */}
-            <div className="flex items-center justify-between w-full mb-6">
+            <div className="flex items-center w-full mb-6">
               {[
                 "Processing",
                 "Dispatched to Delivery Partner",
@@ -56,7 +56,6 @@ const TrackOrder = () => {
                 "Out for Delivery",
                 "Delivered",
               ].map((step, idx, arr) => {
-                // Find the index of the current status
                 const statusOrder = [
                   "Processing",
                   "Dispatched to Delivery Partner",
@@ -67,7 +66,6 @@ const TrackOrder = () => {
                 ];
                 const currentIdx = statusOrder.indexOf(data.status);
 
-                // Step color logic
                 let circleColor = "bg-slate-300";
                 let borderColor = "border-slate-300";
                 let icon = (
@@ -116,29 +114,23 @@ const TrackOrder = () => {
                 }
 
                 return (
-                  <div
-                    className="flex-1 flex flex-col items-center"
-                    key={step}
-                  >
-                    <div
-                      className={`relative flex items-center justify-center`}
-                    >
+                  <div className="flex-1 flex flex-col items-center relative" key={step}>
+                    {/* Line to previous step */}
+                    {idx !== 0 && (
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${circleColor} ${borderColor} transition-all duration-300`}
-                      >
-                        {icon}
-                      </div>
-                      {idx !== arr.length - 1 && (
-                        <div
-                          className={`absolute left-full top-1/2 -translate-y-1/2 w-12 h-1 ${
-                            idx < currentIdx
-                              ? "bg-slate-700"
-                              : idx === currentIdx
-                              ? "bg-orange-600"
-                              : "bg-slate-300"
-                          } transition-all duration-300`}
-                        ></div>
-                      )}
+                        className={`absolute left-0 top-1/2 -translate-y-1/2 h-1 ${idx <= currentIdx ? "bg-slate-700" : "bg-slate-300"} z-0`}
+                        style={{ width: "50%" }}
+                      ></div>
+                    )}
+                    {/* Line to next step */}
+                    {idx !== arr.length - 1 && (
+                      <div
+                        className={`absolute right-0 top-1/2 -translate-y-1/2 h-1 ${idx < currentIdx ? "bg-slate-700" : idx === currentIdx ? "bg-orange-600" : "bg-slate-300"} z-0`}
+                        style={{ width: "50%" }}
+                      ></div>
+                    )}
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 z-10 ${circleColor} ${borderColor} transition-all duration-300`}>
+                      {icon}
                     </div>
                     <span
                       className={`mt-2 text-xs text-center ${
