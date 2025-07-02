@@ -1,213 +1,296 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  FaBox,
+  FaCheck,
+  FaClock,
+  FaTruck,
+  FaMapMarkerAlt,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaSync,
+} from "react-icons/fa";
 import { getAllOrdersUser } from "../../redux/actions/order";
 
-const TrackOrder = () => {
-  const { orders } = useSelector((state) => state.order);
-  const { user } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+const statusSteps = [
+  { key: "Processing", label: "Processing", icon: FaClock },
+  {
+    key: "Dispatched to Delivery Partner",
+    label: "Dispatched to Delivery Partner",
+    icon: FaBox,
+  },
+  { key: "In Transit", label: "In Transit", icon: FaTruck },
+  {
+    key: "Arrived at Destination Hub",
+    label: "Arrived at Destination Hub",
+    icon: FaMapMarkerAlt,
+  },
+  { key: "Out for Delivery", label: "Out for Delivery", icon: FaTruck },
+  { key: "Delivered", label: "Delivered", icon: FaCheckCircle },
+];
 
+const refundSteps = [
+  { key: "Processing refund", label: "Processing Refund", icon: FaSync },
+  { key: "Refund Success", label: "Refund Success", icon: FaCheckCircle },
+];
+
+const statusMessages = {
+  Processing: "Your order is processing in the shop.",
+  "Dispatched to Delivery Partner":
+    "Your order is on the way to the delivery partner.",
+  "In Transit": "Your order is with our delivery partner.",
+  "Arrived at Destination Hub":
+    "Your order has reached your city. It will be delivered soon.",
+  "Out for Delivery": "Your order is out for delivery.",
+  Delivered: "Your order has been delivered.",
+  "Processing refund": "We're processing your refund.",
+  "Refund Success": "Your refund has been completed.",
+};
+
+const TrackOrder = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+  const { orders } = useSelector((state) => state.order);
 
   useEffect(() => {
-    dispatch(getAllOrdersUser(user._id));
-  }, [dispatch]);
+    if (user?._id) {
+      dispatch(getAllOrdersUser(user._id));
+    }
+  }, [dispatch, user?._id]);
 
-  const data = orders && orders.find((item) => item._id === id);
+  const dummyOrder = {
+    _id: "testorder123456",
+    createdAt: "2025-07-02T12:00:00Z",
+    items: [
+      {
+        name: "Sample Product",
+        quantity: 2,
+        price: 25,
+      },
+    ],
+    totalPrice: 50,
+    status: "Refund Success", // Change this to test different statuses
+  };
+
+  const order = dummyOrder;
+  // orders?.find((item) => item._id === id);
+
+  const getCurrentStepIndex = () => {
+    const isRefundOrder =
+      order?.status === "Processing refund" ||
+      order?.status === "Refund Success";
+    const steps = isRefundOrder ? refundSteps : statusSteps;
+    return steps.findIndex((step) => step.key === order?.status);
+  };
+
+  const getActiveSteps = () => {
+    const isRefundOrder =
+      order?.status === "Processing refund" ||
+      order?.status === "Refund Success";
+    return isRefundOrder ? refundSteps : statusSteps;
+  };
+
+  // COLOR SCHEME CHANGES BELOW
+  const getStatusColor = (status) => {
+    if (status === "Delivered" || status === "Refund Success")
+      return "text-orange-600";
+    if (status === "Processing refund") return "text-orange-600";
+    return "text-slate-700";
+  };
+
+  const getStatusBgColor = (status) => {
+    if (status === "Delivered" || status === "Refund Success")
+      return "bg-orange-50 border-orange-200";
+    if (status === "Processing refund") return "bg-orange-50 border-orange-200";
+    return "bg-slate-100 border-slate-200";
+  };
 
   return (
-    <div className="w-full min-h-[80vh] flex flex-col items-center justify-center bg-gray-50 py-10">
-      <div className="bg-white rounded-lg shadow-md p-8 w-full max-w-2xl">
-        <h2 className="text-2xl font-bold text-slate-700 mb-2 text-center">
-          Track Your Order
-        </h2>
-        <p className="text-slate-500 text-center mb-6">
-          Stay updated with your order status
-        </p>
-        {data && (
-          <>
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <span className="font-semibold text-slate-700">
-                  Order #{data._id.slice(-7)}
-                </span>
-                <div className="text-xs text-slate-400">
-                  Placed on {new Date(data.createdAt).toLocaleDateString()}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-slate-700 mb-2">
+            Track Your Order
+          </h1>
+          <p className="text-slate-500">Stay updated with your order status</p>
+        </div>
+
+        {order ? (
+          <div className="bg-white rounded-sm shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-6 border-b border-gray-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold text-slate-700">
+                    Order #{order._id.slice(-8)}
+                  </h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Placed on{" "}
+                    {new Date(order.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusBgColor(
+                      order.status
+                    )} ${getStatusColor(order.status)}`}
+                  >
+                    {order.status}
+                  </div>
+                  {order.totalPrice && (
+                    <p className="text-lg font-semibold text-slate-700 mt-1">
+                      ${order.totalPrice}
+                    </p>
+                  )}
                 </div>
               </div>
-              <div className="flex flex-col items-end">
-                <span className="bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold mb-1">
-                  {data.status}
-                </span>
-                <span className="text-slate-700 font-bold text-lg">
-                  ${data.totalPrice || data.totalAmount || "N/A"}
-                </span>
+            </div>
+
+            <div className="p-6 sm:p-8">
+              <div className="relative">
+                <div className="absolute top-6 left-0 w-full h-0.5 bg-slate-200 hidden sm:block" />
+                <div
+                  className="absolute top-6 left-0 h-0.5 bg-orange-600 transition-all duration-500 hidden sm:block"
+                  style={{
+                    width: `${
+                      (getCurrentStepIndex() / (getActiveSteps().length - 1)) *
+                      100
+                    }%`,
+                  }}
+                />
+
+                <div className="relative z-10">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 sm:gap-4">
+                    {getActiveSteps().map((step, index) => {
+                      const isActive = index <= getCurrentStepIndex();
+                      const isCompleted = index < getCurrentStepIndex();
+                      const IconComponent = step.icon;
+
+                      return (
+                        <div
+                          key={step.key}
+                          className="flex flex-col items-center text-center"
+                        >
+                          <div
+                            className={`
+                            w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 mb-3
+                            ${
+                              isCompleted
+                                ? "bg-slate-700 text-white"
+                                : isActive
+                                ? "bg-orange-600 text-white"
+                                : "bg-slate-200 text-slate-400"
+                            }
+                          `}
+                          >
+                            {isCompleted ? (
+                              <FaCheck className="w-5 h-5" />
+                            ) : (
+                              <IconComponent className="w-5 h-5" />
+                            )}
+                          </div>
+                          <h3
+                            className={`
+                            text-sm font-medium transition-colors duration-300
+                            ${isActive ? "text-slate-700" : "text-slate-400"}
+                          `}
+                          >
+                            {step.label}
+                          </h3>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Stepper */}
-            <div className="relative flex items-center w-full mb-6">
-              {/* Horizontal line behind all steps */}
-              <div
-                className="absolute top-1/2 left-0 w-full h-1 bg-slate-300 z-0"
-                style={{ transform: "translateY(-50%)" }}
-              ></div>
-              {[
-                "Processing",
-                "Dispatched to Delivery Partner",
-                "In Transit",
-                "Arrived at Destination Hub",
-                "Out for Delivery",
-                "Delivered",
-              ].map((step, idx, arr) => {
-                const statusOrder = [
-                  "Processing",
-                  "Dispatched to Delivery Partner",
-                  "In Transit",
-                  "Arrived at Destination Hub",
-                  "Out for Delivery",
-                  "Delivered",
-                ];
-                const currentIdx = statusOrder.indexOf(data.status);
-
-                let circleColor = "bg-slate-300";
-                let borderColor = "border-slate-300";
-                let icon = (
-                  <span className="text-xs font-bold text-white">
-                    {idx + 1}
-                  </span>
-                );
-                if (idx < currentIdx) {
-                  circleColor = "bg-slate-700";
-                  borderColor = "border-slate-700";
-                  icon = (
-                    <svg
-                      className="w-4 h-4 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={3}
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  );
-                } else if (idx === currentIdx) {
-                  circleColor = "bg-orange-600";
-                  borderColor = "border-orange-600";
-                  icon = (
-                    <svg
-                      className="w-4 h-4 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={3}
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                      />
-                      <circle cx="12" cy="12" r="5" fill="white" />
-                    </svg>
-                  );
-                }
-
-                // For completed steps, overlay a colored line segment
-                const isCompleted = idx < currentIdx;
-                const isCurrent = idx === currentIdx;
-
-                return (
-                  <div
-                    className="flex-1 flex flex-col items-center relative z-10"
-                    key={step}
+            <div
+              className={`mx-6 mb-6 p-4 rounded-sm border ${getStatusBgColor(
+                order.status
+              )}`}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className={`flex-shrink-0 w-6 h-6 rounded-sm flex items-center justify-center ${getStatusColor(
+                    order.status
+                  )} mt-0.5`}
+                >
+                  {order.status === "Delivered" ||
+                  order.status === "Refund Success" ? (
+                    <FaCheckCircle className="w-4 h-4" />
+                  ) : order.status === "Processing refund" ? (
+                    <FaExclamationCircle className="w-4 h-4" />
+                  ) : (
+                    <FaClock className="w-4 h-4" />
+                  )}
+                </div>
+                <div>
+                  <h4
+                    className={`font-medium ${getStatusColor(
+                      order.status
+                    )} mb-1`}
                   >
-                    {/* Overlay colored line for completed steps */}
-                    {idx !== 0 && isCompleted && (
-                      <div
-                        className="absolute left-0 top-1/2 h-1 bg-slate-700 z-10"
-                        style={{
-                          width: "50%",
-                          transform: "translateY(-50%)",
-                        }}
-                      ></div>
-                    )}
-                    {/* Overlay colored line for current step */}
-                    {idx !== 0 && isCurrent && (
-                      <div
-                        className="absolute left-0 top-1/2 h-1 bg-orange-600 z-10"
-                        style={{
-                          width: "50%",
-                          transform: "translateY(-50%)",
-                        }}
-                      ></div>
-                    )}
+                    Current Status: {order.status}
+                  </h4>
+                  <p className="text-slate-700 text-sm leading-relaxed">
+                    {statusMessages[order.status]}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {order.items && order.items.length > 0 && (
+              <div className="border-t border-gray-200 p-6">
+                <h3 className="font-semibold text-slate-700 mb-4">
+                  Order Items
+                </h3>
+                <div className="space-y-3">
+                  {order.items.map((item, index) => (
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${circleColor} ${borderColor} transition-all duration-300`}
+                      key={index}
+                      className="flex justify-between items-center py-2"
                     >
-                      {icon}
+                      <div className="flex-1">
+                        <span className="font-medium text-slate-700">
+                          {item.name}
+                        </span>
+                        <span className="text-slate-500 ml-2">
+                          ×{item.quantity}
+                        </span>
+                      </div>
+                      <span className="font-medium text-slate-700">
+                        ${item.price}
+                      </span>
                     </div>
-                    <span
-                      className={`mt-2 text-xs text-center ${
-                        idx < currentIdx
-                          ? "text-slate-700 font-semibold"
-                          : idx === currentIdx
-                          ? "text-orange-600 font-semibold"
-                          : "text-slate-400"
-                      }`}
-                    >
-                      {step}
+                  ))}
+                </div>
+                <div className="border-t border-gray-200 mt-4 pt-4">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-slate-700">Total</span>
+                    <span className="font-bold text-lg text-slate-700">
+                      ${order.totalPrice}
                     </span>
                   </div>
-                );
-              })}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white rounded-sm shadow-sm border border-gray-200 p-12 text-center">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FaBox className="w-8 h-8 text-slate-400" />
             </div>
-
-            {/* Current Status Box */}
-            <div className="w-full bg-slate-100 rounded-md p-4 mt-2">
-              <span className="block text-slate-700 font-semibold mb-1">
-                Current Status:{" "}
-                <span className="text-orange-600">{data.status}</span>
-              </span>
-              <span className="text-slate-600 text-sm">
-                {(() => {
-                  switch (data.status) {
-                    case "Processing":
-                      return "Your order is processing in shop.";
-                    case "Dispatched to Delivery Partner":
-                      return "Your order is on the way to the delivery partner.";
-                    case "In Transit":
-                      return "Your order is being shipped to destination hub.";
-                    case "Arrived at Destination Hub":
-                      return "Your order has arrived at destination hub, waiting to be delivered.";
-                    case "Out for Delivery":
-                      return "Your order has been dispatched for delivery to your address.";
-                    case "Delivered":
-                      return "Your order was delivered successfully to your address.";
-                    case "Processing refund":
-                      return "Your refund is being processed.";
-                    case "Refund Success":
-                      return "You have been refunded successfully.";
-                    default:
-                      return "";
-                  }
-                })()}
-              </span>
-            </div>
-          </>
-        )}
-        {!data && (
-          <div className="text-center text-slate-700">
-            <h2 className="text-xl font-semibold mb-2">Order Not Found</h2>
-            <p className="text-slate-500">
-              We couldn't find an order with this ID.
+            <h2 className="text-xl font-semibold text-slate-700 mb-2">
+              Order Not Found
+            </h2>
+            <p className="text-slate-500 max-w-md mx-auto">
+              Please check the order ID or try again later.
             </p>
           </div>
         )}
