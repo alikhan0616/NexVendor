@@ -200,14 +200,14 @@ export const brandingData = [
 export const categoriesData = [
   {
     id: 1,
-    title: "Computers & Laptops",
+    title: "Electronics",
     subTitle: "",
     image_Url:
       "https://cdn.shopify.com/s/files/1/1706/9177/products/NEWAppleMacbookProwithM1ProChip14InchLaptop2021ModelMKGQ3LL_A_16GB_1TBSSD_custommacbd.jpg?v=1659592838",
   },
   {
     id: 2,
-    title: "Cosmetics & Body Care",
+    title: "Self-Care",
     subTitle: "",
     image_Url: cosmetics,
   },
@@ -237,20 +237,20 @@ export const categoriesData = [
   },
   {
     id: 7,
-    title: "Pet Care",
+    title: "Pet-Care",
     subTitle: "",
     image_Url: petCare,
   },
   {
     id: 8,
-    title: "Mobile & Tablets",
+    title: "Mobile/Tablets",
     subTitle: "",
     image_Url:
       "https://st-troy.mncdn.com/mnresize/1500/1500/Content/media/ProductImg/original/mpwp3tua-apple-iphone-14-256gb-mavi-mpwp3tua-637986832343472449.jpg",
   },
   {
     id: 9,
-    title: "Music & Gaming",
+    title: "Music/Gaming",
     subTitle: "",
     image_Url: music,
   },
