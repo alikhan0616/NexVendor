@@ -6,7 +6,11 @@ import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import Loader from "../../components/Layout/Loader";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
-import { deleteEvent, getAllEventsShop } from "../../redux/actions/event";
+import {
+  deleteEvent,
+  getAllEvents,
+  getAllEventsShop,
+} from "../../redux/actions/event";
 
 const AllEvents = () => {
   const { events, isLoading } = useSelector((state) => state.event);
@@ -15,7 +19,8 @@ const AllEvents = () => {
 
   const handleDelete = (id) => {
     dispatch(deleteEvent(id));
-    window.location.reload();
+    dispatch(getAllEvents());
+    window.location.reload(true);
   };
 
   useEffect(() => {

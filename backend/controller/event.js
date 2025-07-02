@@ -102,18 +102,15 @@ router.delete(
       if (!event) {
         return next(new ErrorHandler("Event with this id doesn't exist!", 500));
       }
-      event.images.forEach((imageUrl) => {
-        const filename = imageUrl;
-        const filePath = `uploads/${filename}`;
 
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.log(err);
-          }
-        });
-      });
+      for (let i = 0; i < event.images.length; i++) {
+        const result = await cloudinary.v2.uploader.destroy(
+          event.images[i].public_id
+        );
+      }
 
       await Event.findByIdAndDelete(eventId);
+
       res.status(201).json({
         success: true,
         message: "Event deleted successfully!",

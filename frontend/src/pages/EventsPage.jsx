@@ -17,6 +17,11 @@ const EventsPage = () => {
             allEvents.map((i, index) => (
               <EventCard active={true} data={i} key={index} />
             ))}
+          {allEvents?.length === 0 && (
+            <h1 className="mt-20 text-center font-semibold text-2xl text-orange-600">
+              No Running Events!
+            </h1>
+          )}
         </>
       )}
     </div>

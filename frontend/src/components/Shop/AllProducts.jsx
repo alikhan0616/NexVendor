@@ -1,7 +1,11 @@
 import React from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteProduct, getAllProductsShop } from "../../redux/actions/product";
+import {
+  deleteProduct,
+  getAllProducts,
+  getAllProductsShop,
+} from "../../redux/actions/product";
 import { Link } from "react-router-dom";
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import Loader from "../../components/Layout/Loader";
@@ -20,7 +24,8 @@ const AllProducts = () => {
 
   const handleDelete = (id) => {
     dispatch(deleteProduct(id));
-    window.location.reload();
+    dispatch(getAllProducts());
+    window.location.reload(true);
   };
 
   const columns = [

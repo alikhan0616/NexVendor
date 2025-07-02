@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BsFillBagFill } from "react-icons/bs";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/styles";
 import { getAllOrdersUser } from "../redux/actions/order";
@@ -13,7 +13,7 @@ import AllProducts from "./Shop/AllProducts";
 
 const UserOrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
-  const { user } = useSelector((state) => state.user);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -21,6 +21,8 @@ const UserOrderDetails = () => {
   const [comment, setComment] = useState("");
 
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getAllOrdersUser(user._id));
@@ -71,6 +73,26 @@ const UserOrderDetails = () => {
   };
 
   const data = orders && orders.find((item) => item._id === id);
+
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data.cart[0].shopId + user._id;
+      const userId = user._id;
+      const sellerId = data.cart[0].shopId;
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox/?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else toast.error("Please login to contact seller");
+  };
   return (
     <div className={`${styles.section} py-4 min-h-screen `}>
       <div className="w-full flex items-center justify-between">
@@ -235,7 +257,10 @@ const UserOrderDetails = () => {
         </div>
       </div>
       <br />
-      <div className={`${styles.button} text-white !rounded-md bg-black`}>
+      <div
+        onClick={handleMessageSubmit}
+        className={`${styles.button} text-white !rounded-md bg-black`}
+      >
         Send Message
       </div>
     </div>
