@@ -47,7 +47,12 @@ const TrackOrder = () => {
             </div>
 
             {/* Stepper */}
-            <div className="flex items-center w-full mb-6">
+            <div className="relative flex items-center w-full mb-6">
+              {/* Horizontal line behind all steps */}
+              <div
+                className="absolute top-1/2 left-0 w-full h-1 bg-slate-300 z-0"
+                style={{ transform: "translateY(-50%)" }}
+              ></div>
               {[
                 "Processing",
                 "Dispatched to Delivery Partner",
@@ -69,7 +74,9 @@ const TrackOrder = () => {
                 let circleColor = "bg-slate-300";
                 let borderColor = "border-slate-300";
                 let icon = (
-                  <span className="text-xs font-bold text-white">{idx + 1}</span>
+                  <span className="text-xs font-bold text-white">
+                    {idx + 1}
+                  </span>
                 );
                 if (idx < currentIdx) {
                   circleColor = "bg-slate-700";
@@ -113,23 +120,38 @@ const TrackOrder = () => {
                   );
                 }
 
+                // For completed steps, overlay a colored line segment
+                const isCompleted = idx < currentIdx;
+                const isCurrent = idx === currentIdx;
+
                 return (
-                  <div className="flex-1 flex flex-col items-center relative" key={step}>
-                    {/* Line to previous step */}
-                    {idx !== 0 && (
+                  <div
+                    className="flex-1 flex flex-col items-center relative z-10"
+                    key={step}
+                  >
+                    {/* Overlay colored line for completed steps */}
+                    {idx !== 0 && isCompleted && (
                       <div
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 h-1 ${idx <= currentIdx ? "bg-slate-700" : "bg-slate-300"} z-0`}
-                        style={{ width: "50%" }}
+                        className="absolute left-0 top-1/2 h-1 bg-slate-700 z-10"
+                        style={{
+                          width: "50%",
+                          transform: "translateY(-50%)",
+                        }}
                       ></div>
                     )}
-                    {/* Line to next step */}
-                    {idx !== arr.length - 1 && (
+                    {/* Overlay colored line for current step */}
+                    {idx !== 0 && isCurrent && (
                       <div
-                        className={`absolute right-0 top-1/2 -translate-y-1/2 h-1 ${idx < currentIdx ? "bg-slate-700" : idx === currentIdx ? "bg-orange-600" : "bg-slate-300"} z-0`}
-                        style={{ width: "50%" }}
+                        className="absolute left-0 top-1/2 h-1 bg-orange-600 z-10"
+                        style={{
+                          width: "50%",
+                          transform: "translateY(-50%)",
+                        }}
                       ></div>
                     )}
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 z-10 ${circleColor} ${borderColor} transition-all duration-300`}>
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${circleColor} ${borderColor} transition-all duration-300`}
+                    >
                       {icon}
                     </div>
                     <span
