@@ -3,14 +3,14 @@ import Header from "../components/Layout/Header";
 import { useSelector } from "react-redux";
 import { format } from "timeago.js";
 import socketIO from "socket.io-client";
-import { backend_url, server } from "../server";
+import { server } from "../server";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FiSend } from "react-icons/fi";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { RiGalleryLine } from "react-icons/ri";
 import styles from "../styles/styles";
-const ENDPOINT = "http://localhost:4000/";
+const ENDPOINT = "https://nexvendor-socket.onrender.com";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 const UserInbox = () => {
   const { user, loading } = useSelector((state) => state.user);
