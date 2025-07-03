@@ -220,4 +220,11 @@ Full-Stack Developer | MERN Stack | Real-Time Systems | Scalable Web Apps
 
 - 💼 [LinkedIn](https://www.linkedin.com/in/m-alikhan0616/)  
 - 💻 [GitHub](https://github.com/alikhan0616)  
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](./LICENSE).
+
 - ✉️ m.akhan0616@gmail.com
