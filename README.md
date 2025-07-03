@@ -219,7 +219,8 @@ NexVendor was more than a build — it was a full-stack journey. From role-based
 Full-Stack Developer | MERN Stack | Real-Time Systems | Scalable Web Apps
 
 - 💼 [LinkedIn](https://www.linkedin.com/in/m-alikhan0616/)  
-- 💻 [GitHub](https://github.com/alikhan0616)  
+- 💻 [GitHub](https://github.com/alikhan0616)
+- ✉️ m.akhan0616@gmail.com
 
 ---
 
@@ -227,4 +228,4 @@ Full-Stack Developer | MERN Stack | Real-Time Systems | Scalable Web Apps
 
 This project is licensed under the [MIT License](./LICENSE).
 
-- ✉️ m.akhan0616@gmail.com
+
