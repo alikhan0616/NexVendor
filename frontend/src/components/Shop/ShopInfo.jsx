@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { backend_url, server } from "../../server";
+import { server } from "../../server";
 import styles from "../../styles/styles";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -70,57 +70,77 @@ const ShopInfo = ({ isOwner }) => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div>
-          <div className="w-full py-5">
-            <div className="w-full flex items-center justify-center">
-              <img
-                className="w-[150px] h-[150px] object-cover rounded-full"
-                src={data?.avatar?.url}
-                alt="shop-icon"
-              />
-            </div>
-            <h3 className="text-center py-2 text-xl ">{data?.name}</h3>
-            <p className="text-base text-slate-800 p-2.5 flex items-center">
+        <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-6 mt-6">
+          {/* Shop Avatar & Name */}
+          <div className="flex flex-col items-center">
+            <img
+              className="w-36 h-36 object-cover rounded-full border-4 border-[#B66E41] shadow"
+              src={data?.avatar?.url}
+              alt="shop-icon"
+            />
+            <h3 className="text-center py-3 text-2xl font-bold text-[#B66E41]">
+              {data?.name}
+            </h3>
+            <p className="text-base text-slate-700 px-2 text-center">
               {data?.description}
             </p>
           </div>
-          <div className="p-3">
-            <h5 className="font-semibold">Address:</h5>
-            <h4 className="text-[#000000a6]">{data?.address}</h4>
+          {/* Shop Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            <div className="bg-slate-50 rounded-lg p-4 flex flex-col items-center border border-orange-100 shadow-sm">
+              <span className="text-xs text-slate-500 font-medium mb-1">
+                Total Products
+              </span>
+              <span className="text-xl font-bold text-orange-600">
+                {products && products.length}
+              </span>
+            </div>
+            <div className="bg-slate-50 rounded-lg p-4 flex flex-col items-center border border-orange-100 shadow-sm">
+              <span className="text-xs text-slate-500 font-medium mb-1">
+                Shop Rating
+              </span>
+              <span className="text-xl font-bold text-orange-600">
+                {averageRating ? averageRating.toFixed(1) : "0"}/5
+              </span>
+            </div>
           </div>
-          <div className="p-3">
-            <h5 className="font-semibold">Phone Number:</h5>
-            <h4 className="text-[#000000a6]">{data?.phoneNumber}</h4>
+          <div className="grid grid-cols-1 gap-4 mt-4">
+            <div className="bg-slate-50 rounded-lg p-4 flex flex-col items-center border border-orange-100 shadow-sm">
+              <span className="text-xs text-slate-500 font-medium mb-1">
+                Phone Number
+              </span>
+              <span className="text-base font-semibold text-slate-700">
+                {data?.phoneNumber}
+              </span>
+            </div>
+            <div className="bg-slate-50 rounded-lg p-4 flex flex-col items-center border border-orange-100 shadow-sm">
+              <span className="text-xs text-slate-500 font-medium mb-1">
+                Joined On
+              </span>
+              <span className="text-base font-semibold text-slate-700">
+                {data.createdAt ? data.createdAt.slice(0, 10) : ""}
+              </span>
+            </div>
           </div>
-          <div className="p-3">
-            <h5 className="font-semibold">Total Products:</h5>
-            <h4 className="text-[#000000a6]">{products && products.length}</h4>
+          {/* Address */}
+          <div className="mt-6 bg-[#B66E41]/10 rounded-lg p-4 text-center">
+            <h5 className="font-semibold text-[#B66E41] mb-1">Address</h5>
+            <h4 className="text-slate-700">{data?.address}</h4>
           </div>
-          <div className="p-3">
-            <h5 className="font-semibold">Shop Rating:</h5>
-            <h4 className="text-[#000000a6]">{averageRating}/5</h4>
-          </div>
-          <div className="p-3">
-            <h5 className="font-semibold">Joined On:</h5>
-            <h4 className="text-[#000000a6]">
-              {data.createdAt ? data.createdAt.slice(0, 10) : ""}
-            </h4>
-          </div>
+          {/* Owner Actions */}
           {isOwner && (
-            <div className="py-3 px-4">
+            <div className="flex flex-col gap-3 mt-6">
               <Link to="/settings">
-                <div
-                  className={`${styles.button} !w-full !h-[42px] !rounded-[5px] bg-black`}
-                >
-                  <span className="text-white">Edit Shop</span>
-                </div>
+                <button className="w-full py-3 rounded-md bg-[#B66E41] hover:bg-orange-600 text-white font-semibold shadow transition">
+                  Edit Shop
+                </button>
               </Link>
-              <div
+              <button
                 onClick={logoutHandler}
-                className={`${styles.button} !w-full !h-[42px] !rounded-[5px] bg-red-600`}
+                className="w-full py-3 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold shadow transition"
               >
-                <span className="text-white">Log Out</span>
-              </div>
+                Log Out
+              </button>
             </div>
           )}
         </div>

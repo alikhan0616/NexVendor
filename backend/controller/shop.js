@@ -17,7 +17,7 @@ router.post("/create-shop", async (req, res, next) => {
     const { email, avatar } = req.body;
     const sellerEmail = await Shop.findOne({ email });
     if (sellerEmail) {
-      return next(new ErrorHandler("User already exists!", 400));
+      return next(new ErrorHandler("Shop already exists!", 400));
     }
 
     const myCloud = await cloudinary.v2.uploader.upload(avatar, {
@@ -44,8 +44,10 @@ router.post("/create-shop", async (req, res, next) => {
       await sendMail({
         email: seller.email,
         subject: "Activate your Shop",
-        message: `Hello ${seller.name}, please click on this link to activate your shop: ${activationUrl}`,
+        name: seller.name,
+        activationUrl,
       });
+
       res.status(201).json({
         success: true,
         message: `please check your email:- ${seller.email} to activate your shop!`,

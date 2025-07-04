@@ -9,11 +9,11 @@ import { toast } from "react-toastify";
 import Loader from "../../components/Layout/Loader";
 import { AiOutlineDelete } from "react-icons/ai";
 import { loadSeller } from "../../redux/actions/user";
+
 const WithdrawMoney = () => {
   const { seller, isLoading } = useSelector((state) => state.seller);
   const [open, setOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(false);
-
   const [withdrawAmount, setWithdrawAmount] = useState(30);
   const [bankInfo, setBankInfo] = useState({
     bankName: "",
@@ -32,320 +32,189 @@ const WithdrawMoney = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const withdrawMethod = { ...bankInfo };
 
-    const withdrawMethod = {
-      bankName: bankInfo.bankName,
-      bankCountry: bankInfo.bankCountry,
-      bankAccountNumber: bankInfo.bankAccountNumber,
-      bankHolderName: bankInfo.bankHolderName,
-      bankAddress: bankInfo.bankAddress,
-    };
-
-    await axios
-      .post(
+    try {
+      await axios.post(
         `${server}/shop/update-payment-method`,
         { withdrawMethod },
         { withCredentials: true }
-      )
-      .then((res) => {
-        toast.success("Withdraw method added successfully!");
-        setBankInfo({
-          bankName: "",
-          bankCountry: "",
-          bankSwiftCode: "",
-          bankAccountNumber: "",
-          bankHolderName: "",
-          bankAddress: "",
-        });
-        dispatch(loadSeller());
-        setPaymentMethod(false);
-        setOpen(false);
-      })
-      .catch((err) => {
-        console.log(err.response.data.message);
+      );
+      toast.success("Withdraw method added successfully!");
+      setBankInfo({
+        bankName: "",
+        bankCountry: "",
+        bankSwiftCode: "",
+        bankAccountNumber: "",
+        bankHolderName: "",
+        bankAddress: "",
       });
+      dispatch(loadSeller());
+      setPaymentMethod(false);
+      setOpen(false);
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
   };
 
   const deleteHandler = async () => {
-    await axios
-      .delete(`${server}/shop/delete-withdraw-method`, {
+    try {
+      await axios.delete(`${server}/shop/delete-withdraw-method`, {
         withCredentials: true,
-      })
-      .then((res) => {
-        toast.success("Withdraw method deleted successfully!");
-        dispatch(loadSeller());
       });
+      toast.success("Withdraw method deleted successfully!");
+      dispatch(loadSeller());
+    } catch (err) {
+      toast.error("Failed to delete withdraw method");
+    }
   };
 
   const withdrawHandler = async () => {
     if (withdrawAmount < 30 || withdrawAmount > seller.availableBalance) {
       toast.error("You can't withdraw with this amount");
-    } else {
-      const amount = withdrawAmount;
-
-      await axios
-        .post(
-          `${server}/withdraw/create-withdraw-request`,
-          { amount },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          toast.success("Withdraw money request is successful! ");
-          dispatch(loadSeller());
-        });
+      return;
+    }
+    try {
+      await axios.post(
+        `${server}/withdraw/create-withdraw-request`,
+        { amount: withdrawAmount },
+        { withCredentials: true }
+      );
+      toast.success("Withdraw money request is successful!");
+      dispatch(loadSeller());
+    } catch (err) {
+      toast.error("Failed to request withdrawal");
     }
   };
 
-  return (
-    <>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div className="w-full h-[90vh] p-8">
-          <div className="w-full bg-white h-full rounded shadow flex items-center justify-center flex-col">
-            <h5 className="text-xl pb-4">
-              Available Balance ${seller.availableBalance.toFixed(2)}
-            </h5>
-            <div
-              onClick={() =>
-                seller.availableBalance < 30 || NaN
-                  ? toast.error(
-                      "Insufficent Funds to withdraw! (minimum amount: $30)"
-                    )
-                  : setOpen(true)
-              }
-              className={`${styles.button} text-white bg-black !rounded-lg !h-[42px] `}
-            >
-              Withdraw
-            </div>
-          </div>
-          {open && (
-            <div className="w-full h-screen fixed top-0 left-0 flex items-center justify-center z-999 bg-[#0000003a]">
-              <div
-                className={`w-[95%] 800px:w-[50%] ${
-                  paymentMethod ? "h-[80vh] overflow-y-auto py-2" : "h-[unset]"
-                } bg-white shadow rounded min-h-[40vh]`}
-              >
-                <div
-                  className="w-full flex justify-end p-4"
-                  onClick={() => setOpen(false) || setPaymentMethod(false)}
-                >
-                  <RxCross1 size={25} className="cursor-pointer" />
-                </div>
-                {paymentMethod ? (
-                  <div className="">
-                    <h3 className="font-[Poppins] text-center text-[24px]">
-                      Add New Withdraw Method:
-                    </h3>
-                    <form onSubmit={handleSubmit} className="px-5">
-                      <div className="">
-                        <label>
-                          Bank Name: <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          value={bankInfo.bankName}
-                          onChange={(e) =>
-                            setBankInfo({
-                              ...bankInfo,
-                              bankName: e.target.value,
-                            })
-                          }
-                          required
-                          type="text"
-                          placeholder="Enter your bank name"
-                          className={`${styles.input} border-gray-200 mt-2`}
-                        />
-                      </div>
-                      <div className="">
-                        <label>
-                          Bank Country: <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          value={bankInfo.bankCountry}
-                          onChange={(e) =>
-                            setBankInfo({
-                              ...bankInfo,
-                              bankCountry: e.target.value,
-                            })
-                          }
-                          required
-                          type="text"
-                          placeholder="Enter your bank country"
-                          className={`${styles.input} border-gray-200 mt-2`}
-                        />
-                      </div>
-                      <div className="mt-2">
-                        <label>
-                          Bank Swift Code:{" "}
-                          <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          value={bankInfo.bankSwiftCode}
-                          onChange={(e) =>
-                            setBankInfo({
-                              ...bankInfo,
-                              bankSwiftCode: e.target.value,
-                            })
-                          }
-                          required
-                          type="text"
-                          placeholder="Enter bank swift code"
-                          className={`${styles.input} border-gray-200 mt-2`}
-                        />
-                      </div>
-                      <div className="mt-2">
-                        <label>
-                          Bank Account Number:{" "}
-                          <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          value={bankInfo.bankAccountNumber}
-                          onChange={(e) =>
-                            setBankInfo({
-                              ...bankInfo,
-                              bankAccountNumber: e.target.value,
-                            })
-                          }
-                          required
-                          type="number"
-                          placeholder="Enter your account number"
-                          className={`${styles.input} border-gray-200 mt-2`}
-                        />
-                      </div>
-                      <div className="mt-2">
-                        <label>
-                          Bank Holder Name:{" "}
-                          <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          required
-                          value={bankInfo.bankHolderName}
-                          onChange={(e) =>
-                            setBankInfo({
-                              ...bankInfo,
-                              bankHolderName: e.target.value,
-                            })
-                          }
-                          type="text"
-                          placeholder="Enter your account name"
-                          className={`${styles.input} border-gray-200 mt-2`}
-                        />
-                      </div>
-                      <div className="mt-2 mb-5">
-                        <label>
-                          Bank Address: <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          required
-                          value={bankInfo.bankAddress}
-                          onChange={(e) =>
-                            setBankInfo({
-                              ...bankInfo,
-                              bankAddress: e.target.value,
-                            })
-                          }
-                          type="text"
-                          placeholder="Enter your bank address"
-                          className={`${styles.input} border-gray-200 mt-2`}
-                        />
-                      </div>
+  return isLoading ? (
+    <Loader />
+  ) : (
+    <div className="w-full h-full px-6 py-10">
+      <div className="w-full max-w-xl mx-auto bg-white rounded-xl shadow-md p-6 text-center">
+        <h2 className="text-2xl font-semibold text-slate-800 mb-4">
+          Available Balance: ${seller.availableBalance.toFixed(2)}
+        </h2>
+        <button
+          className="bg-black text-white py-2 px-6 rounded-md font-medium hover:bg-slate-800 transition"
+          onClick={() =>
+            seller.availableBalance < 30
+              ? toast.error("Insufficient funds to withdraw! (Min: $30)")
+              : setOpen(true)
+          }
+        >
+          Withdraw
+        </button>
+      </div>
 
-                      <button
+      {open && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div
+            className={`bg-white w-full max-w-2xl mx-auto rounded-xl shadow-lg relative p-6 overflow-y-auto ${
+              paymentMethod ? "max-h-[85vh]" : "min-h-[30vh]"
+            }`}
+          >
+            <button
+              onClick={() => setOpen(false) || setPaymentMethod(false)}
+              className="absolute top-4 right-4 text-slate-500 hover:text-black"
+            >
+              <RxCross1 size={22} />
+            </button>
+
+            {paymentMethod ? (
+              <div>
+                <h3 className="text-xl font-semibold text-center mb-4">
+                  Add New Withdraw Method
+                </h3>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {Object.entries(bankInfo).map(([key, val], idx) => (
+                    <div key={idx}>
+                      <label className="block text-sm font-medium text-slate-700">
+                        {key
+                          .replace(/([A-Z])/g, " $1")
+                          .replace(/^./, (s) => s.toUpperCase())}
+                        :<span className="text-red-500"> *</span>
+                      </label>
+                      <input
+                        type="text"
                         required
-                        type="submit"
-                        className={`${styles.button} bg-black text-white mx-auto rounded-md`}
-                      >
-                        Add Method
-                      </button>
-                    </form>
-                  </div>
-                ) : (
-                  <>
-                    <h3 className="font-[Poppins] text-center text-[24px]">
-                      Available Withdraw Methods:
-                    </h3>
-                    <div>
-                      {isLoading ? (
-                        <Loader />
-                      ) : seller && seller?.withdrawMethod ? (
-                        <div className="p-5">
-                          <div className="flex flex-col 800px:flex-row w-full justify-between items-center">
-                            <div className="w-[50%]">
-                              <h5>
-                                <span className="font-semibold">
-                                  Account Number:
-                                </span>{" "}
-                                {"*".repeat(
-                                  seller.withdrawMethod.bankAccountNumber
-                                    .length - 3
-                                ) +
-                                  seller.withdrawMethod.bankAccountNumber.slice(
-                                    -3
-                                  )}
-                              </h5>
-                              <h5>
-                                <span className="font-semibold">
-                                  Bank Name:
-                                </span>{" "}
-                                {seller.withdrawMethod.bankName}
-                              </h5>
-                            </div>
-                            <div className="w-[50%]">
-                              <AiOutlineDelete
-                                onClick={() => deleteHandler()}
-                                size={20}
-                                className="cursor-pointer"
-                              />
-                            </div>
-                          </div>
-                          <br />
-                          <span className="font-semibold">
-                            Available Balance:
-                          </span>{" "}
-                          <h4> ${seller.availableBalance.toFixed(2)}</h4>
-                          <br />
-                          <div className="800px:flex w-full items-center justify-start gap-2">
-                            <input
-                              type="number"
-                              value={withdrawAmount}
-                              onChange={(e) =>
-                                setWithdrawAmount(e.target.value)
-                              }
-                              placeholder="Enter withdraw amount..."
-                              className={`${styles.input} border-gray-200 w-full 800px:max-w-[250px]`}
-                            />
-                            <div
-                              onClick={() => withdrawHandler()}
-                              className={`${styles.button} text-white bg-black rounded-lg`}
-                            >
-                              Withdraw
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <p className="text-center text-red-500 text-[18px] font-semibold">
-                            No Withdraw Methods Available!
-                          </p>
-                          <div className="w-full flex items-center justify-center">
-                            <div
-                              onClick={() => setPaymentMethod(true)}
-                              className={`${styles.button} bg-black rounded-md text-[#fff]`}
-                            >
-                              Add new
-                            </div>
-                          </div>
-                        </>
-                      )}
+                        value={val}
+                        onChange={(e) =>
+                          setBankInfo({ ...bankInfo, [key]: e.target.value })
+                        }
+                        className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-700"
+                        placeholder={`Enter your ${key}`}
+                      />
                     </div>
-                  </>
-                )}
+                  ))}
+                  <button
+                    type="submit"
+                    className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-slate-800 transition"
+                  >
+                    Add Method
+                  </button>
+                </form>
               </div>
-            </div>
-          )}
+            ) : seller.withdrawMethod ? (
+              <div>
+                <h3 className="text-xl font-semibold text-center mb-4">
+                  Available Withdraw Method
+                </h3>
+                <div className="flex justify-between items-center border p-4 rounded-md">
+                  <div>
+                    <p className="text-sm text-slate-700">
+                      <span className="font-medium">Account Number:</span>{" "}
+                      {"*".repeat(
+                        seller.withdrawMethod.bankAccountNumber.length - 3
+                      ) + seller.withdrawMethod.bankAccountNumber.slice(-3)}
+                    </p>
+                    <p className="text-sm text-slate-700">
+                      <span className="font-medium">Bank Name:</span>{" "}
+                      {seller.withdrawMethod.bankName}
+                    </p>
+                  </div>
+                  <AiOutlineDelete
+                    onClick={deleteHandler}
+                    className="text-red-500 cursor-pointer hover:text-red-700"
+                    size={20}
+                  />
+                </div>
+                <div className="mt-5">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Withdraw Amount:
+                  </label>
+                  <input
+                    type="number"
+                    value={withdrawAmount}
+                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-700"
+                    placeholder="Enter amount..."
+                  />
+                  <button
+                    onClick={withdrawHandler}
+                    className="w-full mt-4 bg-black text-white py-2 px-4 rounded-md hover:bg-slate-800 transition"
+                  >
+                    Confirm Withdraw
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">
+                <p className="text-red-500 font-medium text-lg mb-4">
+                  No Withdraw Methods Available!
+                </p>
+                <button
+                  onClick={() => setPaymentMethod(true)}
+                  className="bg-black text-white py-2 px-6 rounded-md hover:bg-slate-800 transition"
+                >
+                  Add New
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

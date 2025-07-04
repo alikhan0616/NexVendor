@@ -27,18 +27,20 @@ const Cart = ({ setOpenCart }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-screen bg-[#00000041] z-10">
-      <div className="fixed top-0 right-0 h-screen overflow-y-auto w-[80%] 800px:w-[25%] bg-white flex flex-col justify-between shadow-sm">
+    <div className="fixed top-0 left-0 w-full h-screen bg-[#00000041] z-[9999]">
+      <div className="fixed top-0 right-0 h-screen overflow-y-auto w-[90%] 800px:w-[28%] bg-white flex flex-col justify-between shadow-lg rounded-l-xl">
         {cart && cart.length === 0 ? (
           <div className="w-full h-full flex items-center justify-center">
             <div className="flex w-full justify-end pt-5 pr-5 fixed top-3 right-3">
               <RxCross1
                 size={25}
-                className="cursor-pointer"
+                className="cursor-pointer text-slate-700 hover:text-orange-600"
                 onClick={() => setOpenCart(false)}
               />
             </div>
-            <h5>Cart Items are empty</h5>
+            <h5 className="text-slate-700 text-lg font-medium">
+              Cart is empty
+            </h5>
           </div>
         ) : (
           <>
@@ -47,19 +49,16 @@ const Cart = ({ setOpenCart }) => {
                 <RxCross1
                   onClick={() => setOpenCart(false)}
                   size={25}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-slate-700 hover:text-orange-600"
                 />
               </div>
-              {/* ITEM LENGTH */}
-              <div className={`${styles.normalFlex} p-4`}>
-                <IoBagHandleOutline size={25} />
-                <h5 className="pl-2 text-lg font-semibold">
+              <div className="flex items-center p-4 border-b border-gray-200">
+                <IoBagHandleOutline size={25} className="text-slate-700" />
+                <h5 className="pl-2 text-lg font-semibold text-slate-700">
                   {cart && cart.length} Item(s)
                 </h5>
               </div>
-              {/* CART SINGLE ITEMS */}
-              <br />
-              <div className="w-full border-t border-gray-200">
+              <div className="divide-y divide-gray-200">
                 {cart &&
                   cart.map((i, index) => (
                     <CartSingle
@@ -71,12 +70,11 @@ const Cart = ({ setOpenCart }) => {
                   ))}
               </div>
             </div>
-            <div className="px-5 mb-3">
-              {/* CHECKOUT BUTTON */}
+            <div className="p-5 border-t border-gray-200">
               <Link to="/checkout">
-                <div className="h-11 flex items-center justify-center w-[100%] bg-[#D97B45]  rounded-[5px]">
-                  <h1 className="text-white text-lg font-bold">
-                    Checkout Now (USD ${totalPrice})
+                <div className="h-11 flex items-center justify-center w-full bg-orange-600 hover:bg-orange-500 transition-colors duration-300 rounded-lg shadow-sm">
+                  <h1 className="text-white text-lg font-semibold">
+                    Checkout Now (USD ${totalPrice.toFixed(2)})
                   </h1>
                 </div>
               </Link>
@@ -109,43 +107,43 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
   };
 
   return (
-    <div className="border-b border-gray-200  p-4">
-      <div className="w-full flex items-center ">
-        <div>
-          <div
-            className={`bg-[#F4B183] border border-[#D99873] rounded-full w-[25px] h-[25px] ${styles.normalFlex} justify-center cursor-pointer`}
-            onClick={() => increment(data)}
-          >
-            <HiPlus size={18} className="text-white" />
-          </div>
-          <span className="pl-[8px] pt-[2px] ">{data.qty}</span>
-          <div
-            className="bg-[#a7abb14f] rounded-full w-[25px] h-[25px] flex items-center justify-center cursor-pointer"
-            onClick={() => decrement(data)}
-          >
-            <HiOutlineMinus size={18} />
-          </div>
-        </div>
-        <img
-          src={data.images[0].url}
-          alt="product-img"
-          className="max-w-[80px] max-h-[80px]  ml-2 rounded-[5px] object-cover"
-        />
-        <div className="pl-[5px]">
-          <h1 className="text-sm line-clamp-3">{data.name}</h1>
-          <h4 className="font-[400] text-base text-[#00000082]">
-            US${data.discountPrice} * {data.qty}
-          </h4>
-          <h4 className="font-semibold text-[17px] text-red-600 font-[Roboto]">
-            US${totalPrice}
-          </h4>
-        </div>
-        <RxCross1
-          className="cursor-pointer "
-          size={25}
-          onClick={() => removeFromCartHandler(data)}
-        />
+    <div className="flex items-center gap-3 p-4">
+      <div className="flex flex-col items-center">
+        <button
+          className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-orange-500"
+          onClick={() => increment(data)}
+        >
+          <HiPlus size={16} />
+        </button>
+        <span className="py-1 text-slate-700 font-medium">{data.qty}</span>
+        <button
+          className="bg-slate-200 text-slate-700 rounded-full w-6 h-6 flex items-center justify-center hover:bg-slate-300"
+          onClick={() => decrement(data)}
+        >
+          <HiOutlineMinus size={16} />
+        </button>
       </div>
+      <img
+        src={data.images[0].url}
+        alt="product-img"
+        className="w-16 h-16 rounded-md object-cover border border-gray-200"
+      />
+      <div className="flex-1">
+        <h1 className="text-sm font-semibold text-slate-700 line-clamp-2">
+          {data.name}
+        </h1>
+        <p className="text-sm text-slate-500">
+          US${data.discountPrice} x {data.qty}
+        </p>
+        <p className="text-base font-bold text-orange-600">
+          US${totalPrice.toFixed(2)}
+        </p>
+      </div>
+      <RxCross1
+        className="cursor-pointer text-slate-500 hover:text-red-600"
+        size={20}
+        onClick={() => removeFromCartHandler(data)}
+      />
     </div>
   );
 };

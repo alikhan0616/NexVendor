@@ -22,9 +22,17 @@ const AllOrders = () => {
       headerName: "Status",
       minWidth: 130,
       flex: 0.7,
-      cellClassName: (params) => {
-        return params.value === "Delivered" ? "greenColor" : "redColor";
-      },
+      renderCell: (params) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            params.value === "Delivered"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "itemsQty",
@@ -33,7 +41,6 @@ const AllOrders = () => {
       minWidth: 130,
       flex: 0.7,
     },
-
     {
       field: "total",
       headerName: "Total",
@@ -48,17 +55,13 @@ const AllOrders = () => {
       headerName: "",
       type: "number",
       sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`/order/${params.id}`}>
-              <Button>
-                <AiOutlineArrowRight size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <Link to={`/order/${params.id}`}>
+          <Button className="!text-slate-700 hover:!text-white hover:!bg-slate-700 !rounded-full !min-w-0 !p-2">
+            <AiOutlineArrowRight size={18} />
+          </Button>
+        </Link>
+      ),
     },
   ];
 
@@ -83,8 +86,43 @@ const AllOrders = () => {
             rows={row}
             columns={columns}
             disableRowSelectionOnClick
-            pageSize={5}
-            autoHeight
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 4, // Set to 4 items per page
+                  page: 0, // Start at the first page
+                },
+              },
+            }}
+            pageSizeOptions={[4]} // Optional: Only allow 4 items per page
+            pagination // Enable pagination
+            sx={{
+              borderRadius: 3,
+              border: "none",
+              boxShadow: 1,
+              background: "#fff",
+              "& .MuiDataGrid-columnHeaders": {
+                background: "#FFF7F0",
+                color: "#B66E41",
+                fontWeight: "bold",
+                fontSize: 16,
+                borderRadius: "12px 12px 0 0",
+              },
+              "& .MuiDataGrid-row": {
+                borderBottom: "1px solid #F3E8E0",
+              },
+              "& .MuiDataGrid-cell": {
+                fontSize: 15,
+              },
+              "& .MuiDataGrid-footerContainer": {
+                background: "#FFF7F0",
+                borderTop: "none",
+                borderRadius: "0 0 12px 12px",
+              },
+              "& .MuiDataGrid-selectedRowCount": {
+                color: "#B66E41",
+              },
+            }}
           />
         </div>
       )}

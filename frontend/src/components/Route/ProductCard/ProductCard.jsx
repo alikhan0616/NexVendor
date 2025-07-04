@@ -65,88 +65,104 @@ const ProductCard = ({ data, isEvent }) => {
 
   return (
     <>
-      <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer ">
-        <div className="flex justify-end"></div>
-        <Link
-          to={
-            isEvent === true
-              ? `/product/${data._id}?isEvent=true`
-              : `/product/${data._id}`
-          }
-        >
-          <img
-            src={data.images && data.images[0].url}
-            alt="product-img"
-            className="w-full h-[170px] object-contain"
-          />
-        </Link>
-        <Link to={`/shop/preview/${data?.shop?._id}`}>
-          <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
-        </Link>
-        <Link
-          to={
-            isEvent === true
-              ? `/product/${data._id}?isEvent=true`
-              : `/product/${data._id}`
-          }
-        >
-          <h4 className="pb-3 font-medium">
-            {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
-          </h4>
-          <Ratings rating={data?.ratings} />
-          <div className="py-2 flex items-center justify-between">
-            <div className="flex">
-              <h5 className={`${styles.productDiscountPrice}`}>
-                $
-                {data.originalPrice === 0
-                  ? data.originalPrice
-                  : data.discountPrice}
-              </h5>
-              <h4 className={`${styles.price}`}>
-                {data.originalPrice ? "$" + data.originalPrice : null}
-              </h4>
-            </div>
-            <span className="font-[400] text-base text-[#68d284]">
-              {data?.sold_out} sold
-            </span>
-          </div>
-          {/* SIDE OPTION ICONS */}
-        </Link>
-        <div>
+      <div className="w-full h-[390px] bg-white rounded-xl shadow-lg p-4 relative cursor-pointer transition-transform duration-200 hover:-translate-y-1 hover:shadow-2xl border border-slate-100">
+        {/* Quick Actions Row (absolute, only in card) */}
+        <div className="absolute right-3 top-3 flex flex-col gap-3 z-3">
           {click ? (
             <AiFillHeart
               size={22}
-              className="cursor-pointer absolute right-2 top-5"
+              className="cursor-pointer"
               onClick={() => removeFromWishlistHandler(data)}
-              color={click ? "red" : "#333"}
+              color="#ea580c"
               title="Remove from wishlist"
             />
           ) : (
             <AiOutlineHeart
               size={22}
-              className="cursor-pointer absolute right-2 top-5"
+              className="cursor-pointer"
               onClick={() => addToWishListHandler(data)}
-              color={click ? "red" : "#333"}
+              color="#334155"
               title="Add to wishlist"
             />
           )}
           <AiOutlineEye
             size={22}
-            className="cursor-pointer absolute right-2 top-14"
+            className="cursor-pointer"
             onClick={() => setOpen(!open)}
-            color={"#333"}
+            color="#334155"
             title="Quick view"
           />
           <AiOutlineShoppingCart
             size={25}
-            className="cursor-pointer absolute right-2 top-24"
+            className="cursor-pointer"
             onClick={() => addToCartHandler(data._id)}
-            color={"#333"}
+            color="#ea580c"
             title="Add to cart"
           />
-          {open ? <ProductDetailCard setOpen={setOpen} data={data} /> : null}
         </div>
+
+        {/* Product Image */}
+        <Link
+          to={
+            isEvent === true
+              ? `/product/${data._id}?isEvent=true`
+              : `/product/${data._id}`
+          }
+        >
+          <div className="w-full h-[170px] flex items-center justify-center mb-2 bg-slate-50 rounded-lg overflow-hidden">
+            <img
+              src={data.images && data.images[0].url}
+              alt="product-img"
+              className="max-h-[160px] object-contain"
+            />
+          </div>
+        </Link>
+
+        {/* Shop Name */}
+        <Link to={`/shop/preview/${data?.shop?._id}`}>
+          <h5
+            className="text-[#B66E41] font-semibold text-sm mb-1 hover:underline"
+            style={{ letterSpacing: "0.5px" }}
+          >
+            {data.shop.name}
+          </h5>
+        </Link>
+
+        {/* Product Name */}
+        <Link
+          to={
+            isEvent === true
+              ? `/product/${data._id}?isEvent=true`
+              : `/product/${data._id}`
+          }
+        >
+          <h4 className="pb-2 font-semibold text-slate-700 text-base leading-tight min-h-[40px]">
+            {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
+          </h4>
+          <Ratings rating={data?.ratings} />
+          <div className="py-2 flex items-center justify-between">
+            <div className="flex items-end gap-2">
+              <h5 className="text-lg font-bold text-orange-600">
+                $
+                {data.originalPrice === 0
+                  ? data.originalPrice
+                  : data.discountPrice}
+              </h5>
+              {data.originalPrice && (
+                <h4 className="text-sm line-through text-slate-400">
+                  ${data.originalPrice}
+                </h4>
+              )}
+            </div>
+            <span className="font-medium text-xs px-2 py-1 rounded bg-[#B66E41]/10 text-[#B66E41]">
+              {data?.sold_out} sold
+            </span>
+          </div>
+        </Link>
+
+        {/* Product Detail Modal */}
       </div>
+      {open ? <ProductDetailCard setOpen={setOpen} data={data} /> : null}
     </>
   );
 };

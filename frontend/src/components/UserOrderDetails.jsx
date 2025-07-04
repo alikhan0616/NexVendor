@@ -93,110 +93,126 @@ const UserOrderDetails = () => {
         });
     } else toast.error("Please login to contact seller");
   };
+
   return (
-    <div className={`${styles.section} py-4 min-h-screen `}>
-      <div className="w-full flex items-center justify-between">
-        <div className="flex items-center">
-          <BsFillBagFill size={30} color="#5A67D8" />
-          <h1 className="pl-2 text-2xl">Order Details</h1>
+    <div className={`${styles.section} py-4 min-h-screen`}>
+      {/* Header */}
+      <div className="w-full flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="bg-orange-100 rounded-full p-2 shadow">
+            <BsFillBagFill size={28} color="#B66E41" />
+          </div>
+          <h1 className="text-2xl font-bold text-[#B66E41] tracking-wide">
+            Order Details
+          </h1>
         </div>
       </div>
 
-      <div className="w-full flex items-center justify-between pt-6">
-        <h5 className="text-[#00000084]">
-          Order ID: <span>{data?._id.slice(0, 8)}</span>
+      {/* Order Info */}
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 pb-4 border-b border-slate-100">
+        <h5 className="text-slate-500 text-base">
+          <span className="font-semibold text-slate-700">Order ID:</span>{" "}
+          {data?._id.slice(0, 8)}
         </h5>
-        <h5 className="text-[#00000084]">
-          Placed on: <span>{data?.createdAt?.slice(0, 10)}</span>
+        <h5 className="text-slate-500 text-base">
+          <span className="font-semibold text-slate-700">Placed on:</span>{" "}
+          {data?.createdAt?.slice(0, 10)}
         </h5>
       </div>
+
       {/* Order Items */}
-      <br />
-      <br />
-      {data &&
-        data?.cart.map((item, index) => (
-          <div
-            className="w-full flex flex-col 800px:flex-row items-start mb-5"
-            key={index}
-          >
-            <img
-              src={item.images[0].url}
-              alt="product-img"
-              className="w-[80px] h-[80px] object-contain"
-            />
-            <div className="w-full">
-              <h5 className="pl-3 text-xl">{item.name}</h5>
-              <h5 className="pl-3 text-xl text-slate-700">
-                US${item.discountPrice} * {item.qty}
-              </h5>
-            </div>
-            {!item.isReviewed && data?.status === "Delivered" && (
-              <div
-                onClick={() => setOpen(true) || setSelectedItem(item)}
-                className={`${styles.button} bg-black text-white`}
-              >
-                Write a review
+      <div className="mt-6 space-y-6">
+        {data &&
+          data?.cart.map((item, index) => (
+            <div
+              className="w-full flex flex-col md:flex-row items-center md:items-start bg-white rounded-xl shadow p-4 gap-4"
+              key={index}
+            >
+              <img
+                src={item.images[0].url}
+                alt="product-img"
+                className="w-[80px] h-[80px] object-contain rounded-lg border border-orange-100"
+              />
+              <div className="flex-1 w-full">
+                <h5 className="text-lg font-semibold text-slate-700">
+                  {item.name}
+                </h5>
+                <h5 className="text-base text-orange-700 font-bold mt-1">
+                  US${item.discountPrice}{" "}
+                  <span className="font-normal text-slate-500">
+                    × {item.qty}
+                  </span>
+                </h5>
               </div>
-            )}
-          </div>
-        ))}
+              {!item.isReviewed && data?.status === "Delivered" && (
+                <button
+                  onClick={() => {
+                    setOpen(true);
+                    setSelectedItem(item);
+                  }}
+                  className="bg-[#B66E41] hover:bg-orange-600 text-white px-4 py-2 rounded-md shadow transition font-semibold"
+                >
+                  Write a review
+                </button>
+              )}
+            </div>
+          ))}
+      </div>
 
       {/* Review Pop-Up */}
       {open && (
-        <div className="w-full fixed top-0 left-0 h-screen bg-[#0005] z-50 flex items-center justify-center ">
-          <div className="800px:w-[50%] w-full h-min bg-[#fff] shadow rounded-md p-3 overflow-y-auto overflow-x-hidden ">
-            <div className="w-full flex justify-end p-3">
-              <RxCross1
-                size={30}
-                onClick={() => setOpen(false)}
-                className="cursor-pointer"
-              />
-            </div>
-            <h2 className="text-3xl font-[500] font-[Poppins] text-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl p-6 relative">
+            <button
+              className="absolute top-4 right-4 text-slate-400 hover:text-orange-600"
+              onClick={() => setOpen(false)}
+            >
+              <RxCross1 size={28} />
+            </button>
+            <h2 className="text-2xl font-bold text-center text-[#B66E41] mb-4">
               Write a Review
             </h2>
-            <br />
-            <div className="w-full flex">
+            <div className="flex items-center gap-4 mb-4">
               <img
                 src={selectedItem.images[0].url}
                 alt="product-img"
-                className="w-[80px] h-[80px] object-contain "
+                className="w-[70px] h-[70px] object-contain rounded-lg border border-orange-100"
               />
-              <div className="pl-3 text-xl">{selectedItem?.name}</div>
+              <div className="text-lg font-medium text-slate-700">
+                {selectedItem?.name}
+              </div>
             </div>
-            <br />
-            <br />
-
             {/* Ratings */}
-            <h5 className="pl-3 text-xl font-[500]">
-              Give a Rating <span className="text-red-500">*</span>
-            </h5>
-            <div className="flex w-full ml-2 pt-1">
-              {[1, 2, 3, 4, 5].map((i) =>
-                rating >= i ? (
-                  <AiFillStar
-                    key={i}
-                    className="mr-1 cursor-pointer"
-                    color="rgb(246,186,0)"
-                    size={25}
-                    onClick={() => setRating(i)}
-                  />
-                ) : (
-                  <AiOutlineStar
-                    key={i}
-                    className="mr-1 cursor-pointer"
-                    color="rgb(246,186,0)"
-                    size={25}
-                    onClick={() => setRating(i)}
-                  />
-                )
-              )}
+            <div className="mb-4">
+              <label className="block text-base font-semibold text-slate-700 mb-1">
+                Give a Rating <span className="text-red-500">*</span>
+              </label>
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((i) =>
+                  rating >= i ? (
+                    <AiFillStar
+                      key={i}
+                      className="mr-1 cursor-pointer"
+                      color="rgb(246,186,0)"
+                      size={28}
+                      onClick={() => setRating(i)}
+                    />
+                  ) : (
+                    <AiOutlineStar
+                      key={i}
+                      className="mr-1 cursor-pointer"
+                      color="rgb(246,186,0)"
+                      size={28}
+                      onClick={() => setRating(i)}
+                    />
+                  )
+                )}
+              </div>
             </div>
-            <br />
-            <div className="w-full ml-3 items-center">
-              <label className="block text-xl font-[500]">
+            <div className="mb-4">
+              <label className="block text-base font-semibold text-slate-700 mb-1">
                 Write a comment{" "}
-                <span className="font-[400] text-base text-[#00000052]">
+                <span className="font-normal text-sm text-slate-400">
                   (Optional)
                 </span>
               </label>
@@ -204,64 +220,87 @@ const UserOrderDetails = () => {
                 name="comment"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                id=""
-                cols="20"
-                rows="5"
+                rows="4"
                 placeholder="Write your review..."
-                className="mt-2 w-[95%] border border-gray-200 p-2 outline-none"
+                className="w-full border border-slate-200 rounded-md p-2 focus:ring-2 focus:ring-orange-600 focus:border-orange-600 outline-none resize-none"
               />
             </div>
-            <div
+            <button
               onClick={rating > 1 ? reviewHandler : null}
-              className={`${styles.button} bg-black !rounded-md text-white ml-3`}
+              className="w-full bg-[#B66E41] hover:bg-orange-600 text-white py-2 rounded-md font-semibold shadow transition"
             >
               Submit Review
-            </div>
+            </button>
           </div>
         </div>
       )}
 
-      <div className="border-t border-gray-200 w-full text-right ">
-        <h5 className="pt-5 text-[18px]">
-          Total Price: <strong>US${data?.totalPrice}</strong>
+      {/* Total Price */}
+      <div className="border-t border-slate-100 w-full text-right mt-8 pt-6">
+        <h5 className="text-lg font-semibold text-slate-700">
+          Total Price:{" "}
+          <span className="text-orange-600 font-bold">
+            US${data?.totalPrice}
+          </span>
         </h5>
       </div>
-      <br />
-      <br />
 
-      <div className="w-full 800px:flex items-center">
-        <div className="w-full 800px:w-[60%]">
-          <h4 className="pt-3 text-xl font-semibold">Shipping Address:</h4>
-          <h4 className="pt-3 text-xl">
-            {data?.shippingAddress.address1 + data?.shippingAddress.address2}
+      {/* Shipping & Payment Info */}
+      <div className="w-full flex flex-col md:flex-row gap-8 mt-8">
+        <div className="w-full md:w-2/3 bg-white rounded-xl shadow p-6">
+          <h4 className="text-lg font-semibold text-[#B66E41] mb-2">
+            Shipping Address
           </h4>
-          <h4 className="pt-3 text-xl">{data?.shippingAddress.country}</h4>
-          <h4 className="pt-3 text-xl">{data?.shippingAddress.city}</h4>
-          <h4 className="pt-3 text-xl">{data?.user?.phoneNumber}</h4>
+          <div className="text-base text-slate-700 space-y-1">
+            <div>
+              {data?.shippingAddress.address1 +
+                " " +
+                data?.shippingAddress.address2}
+            </div>
+            <div>{data?.shippingAddress.country}</div>
+            <div>{data?.shippingAddress.city}</div>
+            <div>{data?.user?.phoneNumber}</div>
+          </div>
         </div>
-        <div className="w-full 800px:w-[40%]">
-          <h4 className="pt-3 text-xl">Payment Info:</h4>
-          <h4 className="">
-            Status:{" "}
-            {data?.paymentInfo?.status ? data?.paymentInfo.status : "Not Paid"}
-          </h4>
-          <br />
+        <div className="w-full md:w-1/3 bg-white rounded-xl shadow p-6 flex flex-col justify-between">
+          <div>
+            <h4 className="text-lg font-semibold text-[#B66E41] mb-2">
+              Payment Info
+            </h4>
+            <div className="text-base text-slate-700">
+              Status:{" "}
+              <span
+                className={
+                  data?.paymentInfo?.status === "Paid"
+                    ? "text-green-600 font-semibold"
+                    : "text-red-500 font-semibold"
+                }
+              >
+                {data?.paymentInfo?.status
+                  ? data?.paymentInfo.status
+                  : "Not Paid"}
+              </span>
+            </div>
+          </div>
           {data?.status === "Delivered" && (
-            <div
-              className={`${styles.button} text-white !rounded-md bg-black`}
+            <button
+              className="mt-6 bg-[#B66E41] hover:bg-orange-600 text-white py-2 rounded-md font-semibold shadow transition"
               onClick={refundHandler}
             >
               Get a Refund
-            </div>
+            </button>
           )}
         </div>
       </div>
-      <br />
-      <div
-        onClick={handleMessageSubmit}
-        className={`${styles.button} text-white !rounded-md bg-black`}
-      >
-        Send Message
+
+      {/* Send Message */}
+      <div className="w-full flex justify-end mt-8">
+        <button
+          onClick={handleMessageSubmit}
+          className="bg-[#B66E41] hover:bg-orange-600 text-white px-6 py-2 rounded-md font-semibold shadow transition"
+        >
+          Send Message
+        </button>
       </div>
     </div>
   );

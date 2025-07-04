@@ -24,35 +24,32 @@ const AllProducts = () => {
 
   const handleDelete = (id) => {
     dispatch(deleteProduct(id));
+    window.location.reload();
     dispatch(getAllProducts());
-    window.location.reload(true);
   };
 
   const columns = [
-    { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
+    { field: "id", headerName: "Product ID", minWidth: 150, flex: 0.7 },
     { field: "name", headerName: "Name", minWidth: 180, flex: 1.4 },
     { field: "price", headerName: "Price", minWidth: 100, flex: 0.6 },
-    { field: "sold", headerName: "Sold out", minWidth: 130, flex: 0.6 },
+    { field: "sold", headerName: "Sold Out", minWidth: 130, flex: 0.6 },
     { field: "stock", headerName: "Stock", minWidth: 100, flex: 0.6 },
     {
       field: "Preview",
       headerName: "Preview",
-      minWidth: 100,
-      flex: 0.4,
-      type: "number",
+      minWidth: 90,
+      flex: 0.5,
       sortable: false,
-      renderCell: (params) => {
-        const d = params.row.id;
-        return (
-          <>
-            <Link to={`/product/${d}`}>
-              <Button>
-                <AiOutlineEye size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <Link to={`/product/${params.row.id}`}>
+          <Button
+            className="!bg-[#B66E41] hover:!bg-orange-600 !text-white !rounded-full !min-w-0 !p-2 shadow"
+            style={{ minWidth: 0 }}
+          >
+            <AiOutlineEye size={18} />
+          </Button>
+        </Link>
+      ),
     },
     {
       field: "Delete",
@@ -65,7 +62,10 @@ const AllProducts = () => {
         const d = params.row.id;
         return (
           <>
-            <Button onClick={() => handleDelete(params.id)}>
+            <Button
+              className="!text-red-600 hover:!text-white hover:!bg-red-600 !rounded-full !min-w-0 !p-2"
+              onClick={() => handleDelete(params.id)}
+            >
               <AiOutlineDelete size={20} />
             </Button>
           </>
@@ -106,6 +106,33 @@ const AllProducts = () => {
             }}
             pageSizeOptions={[5]} // Optional: Only allow 5 items per page
             pagination // Enable pagination
+            sx={{
+              borderRadius: 3,
+              border: "none",
+              boxShadow: 1,
+              background: "#fff",
+              "& .MuiDataGrid-columnHeaders": {
+                background: "#FFF7F0",
+                color: "#B66E41",
+                fontWeight: "bold",
+                fontSize: 16,
+                borderRadius: "12px 12px 0 0",
+              },
+              "& .MuiDataGrid-row": {
+                borderBottom: "1px solid #F3E8E0",
+              },
+              "& .MuiDataGrid-cell": {
+                fontSize: 15,
+              },
+              "& .MuiDataGrid-footerContainer": {
+                background: "#FFF7F0",
+                borderTop: "none",
+                borderRadius: "0 0 12px 12px",
+              },
+              "& .MuiDataGrid-selectedRowCount": {
+                color: "#B66E41",
+              },
+            }}
           />
         </div>
       )}

@@ -14,7 +14,10 @@ function SignUp() {
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [visible, setVisible] = useState(false);
-  console.log(avatar);
+  const [passwordError, setPasswordError] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -35,9 +38,28 @@ function SignUp() {
     reader.readAsDataURL(file);
   };
 
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    if (value.length > 0 && value.length < 6) {
+      setPasswordError("Password should be at least 6 characters long");
+    } else {
+      setPasswordError("");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!avatar) {
+      toast.error("Please select an image for avatar.");
+      return;
+    }
+    if (password.length < 6) {
+      setPasswordError("Password should be at least 6 characters long");
+      return;
+    }
+    setLoading(true);
     axios
       .post(`${server}/user/create-user`, { name, email, password, avatar })
       .then((res) => {
@@ -46,27 +68,36 @@ function SignUp() {
         setEmail("");
         setPassword("");
         setAvatar("");
+        setPasswordError("");
+        navigate("/login");
+        setLoading(false);
       })
       .catch((error) => {
         toast.error(error.response.data.message);
+        setLoading(false);
       });
   };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-slate-50 to-orange-100 flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* HEADER */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-          Register as a new user
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-700 tracking-tight">
+          Create your account
         </h2>
+        <p className="mt-2 text-center text-sm text-slate-500">
+          Join NexVendor and start your journey!
+        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-6 shadow-xl rounded-2xl">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="">
+            {/* Name */}
+            <div>
               <label
-                className="bloc text-sm font-medium text-gray-700"
-                htmlFor="email"
+                className="block text-sm font-medium text-slate-700"
+                htmlFor="name"
               >
                 Full Name
               </label>
@@ -78,13 +109,14 @@ function SignUp() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 sm:text-sm"
                 />
               </div>
             </div>
-            <div className="">
+            {/* Email */}
+            <div>
               <label
-                className="bloc text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-slate-700"
                 htmlFor="email"
               >
                 Email address
@@ -97,14 +129,15 @@ function SignUp() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 sm:text-sm"
                 />
               </div>
             </div>
-            <div className="">
+            {/* Password */}
+            <div>
               <label
-                className="bloc text-sm font-medium text-gray-700"
-                htmlFor="email"
+                className="block text-sm font-medium text-slate-700"
+                htmlFor="password"
               >
                 Password
               </label>
@@ -115,32 +148,39 @@ function SignUp() {
                   autoComplete="current-password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  onChange={handlePasswordChange}
+                  className={`block w-full px-3 py-2 border ${
+                    passwordError ? "border-red-500" : "border-slate-200"
+                  } rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 sm:text-sm`}
                 />
                 {visible ? (
                   <AiOutlineEye
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
+                    className="absolute right-2 top-2 cursor-pointer text-slate-400 hover:text-orange-600"
+                    size={22}
                     onClick={() => setVisible(false)}
                   />
                 ) : (
                   <AiOutlineEyeInvisible
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
+                    className="absolute right-2 top-2 cursor-pointer text-slate-400 hover:text-orange-600"
+                    size={22}
                     onClick={() => setVisible(true)}
                   />
                 )}
               </div>
+              {passwordError && (
+                <p className="text-xs text-red-600 mt-1">{passwordError}</p>
+              )}
             </div>
-            {/* PROFULE UPLOAD SECTION */}
-            <div className="">
+            {/* Profile Upload */}
+            <div>
               <label
                 htmlFor="avatar"
-                className="block text-sm font-medium text-gray-700"
-              ></label>
-              <div className="mt-2 flex items-center">
-                <span className="inline-block h-8 w-8 rounded-full overflow-hidden">
+                className="block text-sm font-medium text-slate-700 mb-1"
+              >
+                Profile Picture
+              </label>
+              <div className="flex items-center gap-4">
+                <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-slate-100  shadow">
                   {avatar ? (
                     <img
                       src={avatar}
@@ -148,14 +188,14 @@ function SignUp() {
                       className="h-full w-full object-cover rounded-full"
                     />
                   ) : (
-                    <RxAvatar className="h-8 w-8" />
+                    <RxAvatar className="h-12 w-12 text-[#B66E41]" />
                   )}
                 </span>
                 <label
                   htmlFor="file-input"
-                  className="ml-5 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                  className="ml-2 text-sm font-medium text-[#B66E41] bg-orange-50 hover:bg-orange-100 flex items-center justify-center px-4 py-2 border border-orange-200 rounded-md shadow-sm cursor-pointer transition"
                 >
-                  <span>Upload a file</span>
+                  <span>Upload Image</span>
                   <input
                     type="file"
                     name="avatar"
@@ -167,17 +207,21 @@ function SignUp() {
                 </label>
               </div>
             </div>
-            {/* SUBMIT BUTTON */}
+            {/* Submit Button */}
             <button
-              className="group relative-w-full h-[40px] w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 cursor-pointer"
+              disabled={loading ? "Loading..." : "Register"}
+              className="w-full h-[44px] flex justify-center items-center py-2 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-[#B66E41] hover:bg-orange-600 shadow transition"
               type="submit"
             >
-              SignUp
+              {loading ? "Registering..." : "Sign Up"}
             </button>
-            {/* ASK FOR ALREADY ACCOUNT */}
-            <div className={`${styles.normalFlex}`}>
-              <h4>Already have any account?</h4>
-              <Link to="/login" className="text-blue-600 pl-2">
+            {/* Already have account */}
+            <div className="flex items-center justify-center gap-2 pt-2">
+              <span className="text-slate-600">Already have an account?</span>
+              <Link
+                to="/login"
+                className="text-[#B66E41] font-semibold hover:underline"
+              >
                 Sign In
               </Link>
             </div>

@@ -23,7 +23,7 @@ const ProductPage = () => {
         allProducts && allProducts.filter((i) => i.category === categoryData);
       setData(d);
     }
-  }, [allProducts]);
+  }, [allProducts, searchParams]);
   return (
     <>
       {isLoading ? (

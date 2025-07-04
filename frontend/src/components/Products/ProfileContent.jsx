@@ -31,6 +31,7 @@ const ProfileContent = ({ active, setActive }) => {
   const [phoneNumber, setPhoneNumber] = useState(user && user.phoneNumber);
   const [avatar, setAvatar] = useState(null);
   const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -39,6 +40,7 @@ const ProfileContent = ({ active, setActive }) => {
       dispatch({ type: "clearErrors" });
     }
   }, [error]);
+
   const hanldeSubmit = (e) => {
     e.preventDefault();
     dispatch(updateUserInfo(email, password, phoneNumber, name));
@@ -76,19 +78,30 @@ const ProfileContent = ({ active, setActive }) => {
     };
     reader.readAsDataURL(file);
   };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    if (value.length > 0 && value.length < 6) {
+      setPasswordError("Password should be at least 6 characters long");
+    } else {
+      setPasswordError("");
+    }
+  };
+
   return (
-    <div className="w-full ">
+    <div className="w-full">
       {/* PROFILE PAGE */}
       {active === 1 && (
-        <>
+        <div className="w-full flex flex-col items-center">
           <div className="flex justify-center w-full">
             <div className="relative">
               <img
                 src={user?.avatar.url}
-                className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#1D2D44]"
+                className="w-[140px] h-[140px] rounded-full object-cover border-4 border-[#B66E41] shadow-lg"
                 alt="profile-icon"
               />
-              <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex justify-center  items-center cursor-pointer absolute bottom-[5px] right-[5px]">
+              <div className="w-[36px] h-[36px] bg-orange-100 border-2 border-[#B66E41] rounded-full flex justify-center items-center cursor-pointer absolute bottom-[8px] right-[8px] shadow">
                 <input
                   type="file"
                   id="image"
@@ -97,101 +110,116 @@ const ProfileContent = ({ active, setActive }) => {
                   onChange={handleImage}
                 />
                 <label htmlFor="image">
-                  <AiOutlineCamera className="cursor-pointer" />
+                  <AiOutlineCamera
+                    className="cursor-pointer text-[#B66E41]"
+                    size={22}
+                  />
                 </label>
               </div>
             </div>
           </div>
-          <br />
-          <br />
-          <div className="w-full px-5">
-            <form onSubmit={hanldeSubmit} aria-required={true}>
-              <div className="w-full block 800px:flex pb-3">
-                <div className="800px:w-[50%] w-full ">
-                  <label className="block pb-2">Full Name</label>
-                  <input
-                    type="text"
-                    className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                <div className="800px:w-[50%] w-full ">
-                  <label className="block pb-2">Email Address</label>
-                  <input
-                    type="email"
-                    className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
+          <form
+            onSubmit={hanldeSubmit}
+            aria-required={true}
+            className="w-full max-w-2xl mt-8 bg-white rounded-xl shadow-lg px-8 py-8"
+          >
+            <div className="w-full flex flex-col md:flex-row gap-6 mb-4">
+              <div className="md:w-1/2 w-full">
+                <label className="block pb-2 text-slate-700 font-medium">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 bg-white"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
-              <div className="w-full block 800px:flex pb-3">
-                <div className="800px:w-[50%] w-full ">
-                  <label className="block pb-2">Phone Number</label>
-                  <input
-                    type="number"
-                    className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
-                    required
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                </div>
-                <div className="800px:w-[50%] w-full ">
-                  <label className="block pb-2">Password</label>
-                  <input
-                    type="password"
-                    className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
+              <div className="md:w-1/2 w-full">
+                <label className="block pb-2 text-slate-700 font-medium">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 bg-white"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
-
-              <input
-                className="w-[250px] h-[40px] border border-[#1D2D44] text-center text-[#1D2D44] rounded-[3px] mt-8 cursor-pointer"
-                required
-                value="Update"
-                type="submit"
-              />
-            </form>
-          </div>
-        </>
+            </div>
+            <div className="w-full flex flex-col md:flex-row gap-6 mb-4">
+              <div className="md:w-1/2 w-full">
+                <label className="block pb-2 text-slate-700 font-medium">
+                  Phone Number
+                </label>
+                <input
+                  type="number"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 bg-white"
+                  required
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+              <div className="md:w-1/2 w-full">
+                <label className="block pb-2 text-slate-700 font-medium">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  className={`block w-full px-3 py-2 border ${
+                    passwordError ? "border-red-500" : "border-slate-200"
+                  } rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 bg-white`}
+                  required
+                  value={password}
+                  onChange={handlePasswordChange}
+                />
+                {passwordError && (
+                  <p className="text-xs text-red-600 mt-1">{passwordError}</p>
+                )}
+              </div>
+            </div>
+            <button
+              className="w-full h-[44px] flex justify-center items-center py-2 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-[#B66E41] hover:bg-orange-600 shadow transition mt-4"
+              type="submit"
+            >
+              Update
+            </button>
+          </form>
+        </div>
       )}
 
       {/* ORDER PAGE */}
       {active === 2 && (
-        <div className="">
+        <div className="bg-white rounded-xl shadow-lg px-4 py-6 mt-4">
           <AllOrders />
         </div>
       )}
 
       {/* REFUND ORDER PAGE */}
       {active === 3 && (
-        <div className="">
+        <div className="bg-white rounded-xl shadow-lg px-4 py-6 mt-4">
           <AllRefundOrders />
         </div>
       )}
       {/* TRACK ORDER PAGE */}
       {active === 5 && (
-        <div className="">
+        <div className="bg-white rounded-xl shadow-lg px-4 py-6 mt-4">
           <TrackOrder />
         </div>
       )}
 
       {/* CHANGE PASSWORD PAGE */}
       {active === 6 && (
-        <div className="">
+        <div className="bg-white rounded-xl shadow-lg px-4 py-6 mt-4">
           <ChangePassword />
         </div>
       )}
 
       {/* USER ADDRESS PAGE */}
       {active === 7 && (
-        <div className="">
+        <div className="bg-white rounded-xl shadow-lg px-4 py-6 mt-4">
           <Address />
         </div>
       )}
@@ -225,9 +253,19 @@ const AllOrders = () => {
       headerName: "Status",
       minWidth: 130,
       flex: 0.7,
-      cellClassName: (params) => {
-        return params.value === "Delivered" ? "greenColor" : "redColor";
-      },
+      renderCell: (params) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            params.value === "Delivered"
+              ? "bg-green-100 text-green-700"
+              : params.value === "Processing refund"
+              ? "bg-yellow-100 text-yellow-700"
+              : "bg-orange-100 text-orange-700"
+          }`}
+        >
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "itemsQty",
@@ -235,6 +273,9 @@ const AllOrders = () => {
       type: "number",
       minWidth: 130,
       flex: 0.7,
+      renderCell: (params) => (
+        <span className="font-semibold text-[#B66E41]">{params.value}</span>
+      ),
     },
 
     {
@@ -243,6 +284,9 @@ const AllOrders = () => {
       type: "number",
       minWidth: 130,
       flex: 0.8,
+      renderCell: (params) => (
+        <span className="font-bold text-orange-600">{params.value}</span>
+      ),
     },
     {
       field: " ",
@@ -253,26 +297,55 @@ const AllOrders = () => {
       sortable: false,
       renderCell: (params) => {
         return (
-          <>
-            <Link to={`/user/order/${params.id}`}>
-              <Button>
-                <AiOutlineArrowRight size={20} />
-              </Button>
-            </Link>
-          </>
+          <Link to={`/user/order/${params.id}`}>
+            <Button
+              className="!bg-[#B66E41] hover:!bg-orange-600 !text-white !rounded-full !min-w-0 !p-2 shadow transition"
+              style={{ minWidth: 0 }}
+            >
+              <AiOutlineArrowRight size={20} />
+            </Button>
+          </Link>
         );
       },
     },
   ];
 
   return (
-    <div className="pl-8 pt-1">
+    <div className="pl-0 pt-1">
       <DataGrid
         rows={row}
         columns={columns}
         disableRowSelectionOnClick
         pageSize={10}
         pagination
+        autoHeight
+        sx={{
+          borderRadius: 3,
+          border: "none",
+          boxShadow: 2,
+          background: "#fff",
+          "& .MuiDataGrid-columnHeaders": {
+            background: "#FFF7F0",
+            color: "#B66E41",
+            fontWeight: "bold",
+            fontSize: 16,
+            borderRadius: "12px 12px 0 0",
+          },
+          "& .MuiDataGrid-row": {
+            borderBottom: "1px solid #F3E8E0",
+          },
+          "& .MuiDataGrid-cell": {
+            fontSize: 15,
+          },
+          "& .MuiDataGrid-footerContainer": {
+            background: "#FFF7F0",
+            borderTop: "none",
+            borderRadius: "0 0 12px 12px",
+          },
+          "& .MuiDataGrid-selectedRowCount": {
+            color: "#B66E41",
+          },
+        }}
       />
     </div>
   );
@@ -297,9 +370,19 @@ const AllRefundOrders = () => {
       headerName: "Status",
       minWidth: 130,
       flex: 0.7,
-      cellClassName: (params) => {
-        return params.value === "Delivered" ? "greenColor" : "redColor";
-      },
+      renderCell: (params) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            params.value === "Delivered"
+              ? "bg-green-100 text-green-700"
+              : params.value === "Processing refund"
+              ? "bg-yellow-100 text-yellow-700"
+              : "bg-orange-100 text-orange-700"
+          }`}
+        >
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "itemsQty",
@@ -307,14 +390,19 @@ const AllRefundOrders = () => {
       type: "number",
       minWidth: 130,
       flex: 0.7,
+      renderCell: (params) => (
+        <span className="font-semibold text-[#B66E41]">{params.value}</span>
+      ),
     },
-
     {
       field: "total",
       headerName: "Total",
       type: "number",
       minWidth: 130,
       flex: 0.8,
+      renderCell: (params) => (
+        <span className="font-bold text-orange-600">{params.value}</span>
+      ),
     },
     {
       field: " ",
@@ -323,17 +411,16 @@ const AllRefundOrders = () => {
       headerName: "",
       type: "number",
       sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`/user/order/${params.id}`}>
-              <Button>
-                <AiOutlineArrowRight size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <Link to={`/user/order/${params.id}`}>
+          <Button
+            className="!bg-[#B66E41] hover:!bg-orange-600 !text-white !rounded-full !min-w-0 !p-2 shadow transition"
+            style={{ minWidth: 0 }}
+          >
+            <AiOutlineArrowRight size={20} />
+          </Button>
+        </Link>
+      ),
     },
   ];
 
@@ -348,14 +435,43 @@ const AllRefundOrders = () => {
         status: item.status,
       });
     });
+
   return (
-    <div className="pl-8 pt-1">
+    <div className="pl-0 pt-1">
       <DataGrid
         rows={row}
         columns={columns}
         disableRowSelectionOnClick
         pageSize={10}
         pagination
+        autoHeight
+        sx={{
+          borderRadius: 3,
+          border: "none",
+          boxShadow: 2,
+          background: "#fff",
+          "& .MuiDataGrid-columnHeaders": {
+            background: "#FFF7F0",
+            color: "#B66E41",
+            fontWeight: "bold",
+            fontSize: 16,
+            borderRadius: "12px 12px 0 0",
+          },
+          "& .MuiDataGrid-row": {
+            borderBottom: "1px solid #F3E8E0",
+          },
+          "& .MuiDataGrid-cell": {
+            fontSize: 15,
+          },
+          "& .MuiDataGrid-footerContainer": {
+            background: "#FFF7F0",
+            borderTop: "none",
+            borderRadius: "0 0 12px 12px",
+          },
+          "& .MuiDataGrid-selectedRowCount": {
+            color: "#B66E41",
+          },
+        }}
       />
     </div>
   );
@@ -387,9 +503,19 @@ const TrackOrder = () => {
       headerName: "Status",
       minWidth: 130,
       flex: 0.7,
-      cellClassName: (params) => {
-        return params.value === "Delivered" ? "greenColor" : "redColor";
-      },
+      renderCell: (params) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            params.value === "Delivered"
+              ? "bg-green-100 text-green-700"
+              : params.value === "Processing refund"
+              ? "bg-yellow-100 text-yellow-700"
+              : "bg-orange-100 text-orange-700"
+          }`}
+        >
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "itemsQty",
@@ -397,14 +523,19 @@ const TrackOrder = () => {
       type: "number",
       minWidth: 130,
       flex: 0.7,
+      renderCell: (params) => (
+        <span className="font-semibold text-[#B66E41]">{params.value}</span>
+      ),
     },
-
     {
       field: "total",
       headerName: "Total",
       type: "number",
       minWidth: 130,
       flex: 0.8,
+      renderCell: (params) => (
+        <span className="font-bold text-orange-600">{params.value}</span>
+      ),
     },
     {
       field: " ",
@@ -413,27 +544,55 @@ const TrackOrder = () => {
       headerName: "",
       type: "number",
       sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`/user/track/order/${params.id}`}>
-              <Button>
-                <MdOutlineTrackChanges size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <Link to={`/user/track/order/${params.id}`}>
+          <Button
+            className="!bg-[#B66E41] hover:!bg-orange-600 !text-white !rounded-full !min-w-0 !p-2 shadow transition"
+            style={{ minWidth: 0 }}
+          >
+            <MdOutlineTrackChanges size={20} />
+          </Button>
+        </Link>
+      ),
     },
   ];
 
   return (
-    <div className="pl-8 pt-1">
+    <div className="pl-0 pt-1">
       <DataGrid
         rows={row}
         columns={columns}
         disableRowSelectionOnClick
         pageSize={10}
+        pagination
+        autoHeight
+        sx={{
+          borderRadius: 3,
+          border: "none",
+          boxShadow: 2,
+          background: "#fff",
+          "& .MuiDataGrid-columnHeaders": {
+            background: "#FFF7F0",
+            color: "#B66E41",
+            fontWeight: "bold",
+            fontSize: 16,
+            borderRadius: "12px 12px 0 0",
+          },
+          "& .MuiDataGrid-row": {
+            borderBottom: "1px solid #F3E8E0",
+          },
+          "& .MuiDataGrid-cell": {
+            fontSize: 15,
+          },
+          "& .MuiDataGrid-footerContainer": {
+            background: "#FFF7F0",
+            borderTop: "none",
+            borderRadius: "0 0 12px 12px",
+          },
+          "& .MuiDataGrid-selectedRowCount": {
+            color: "#B66E41",
+          },
+        }}
       />
     </div>
   );
@@ -443,9 +602,22 @@ const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const passwordChangeHandler = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (newPassword.length < 6) {
+      setError("New password should be at least 6 characters long.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError("New password and confirm password do not match.");
+      return;
+    }
 
     await axios
       .put(
@@ -454,64 +626,86 @@ const ChangePassword = () => {
         { withCredentials: true }
       )
       .then((res) => {
-        toast.success(res.data.message);
+        setSuccess(res.data.message);
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");
       })
       .catch((err) => {
-        toast.error(err.response.data.message);
+        setError(err.response.data.message);
       });
   };
+
   return (
-    <div className="w-full  px-5">
-      <h1 className="text-2xl text-center font-semibold text-[#000000ba] pb-2">
-        Change Password
-      </h1>
-      <div className="w-full">
+    <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg px-8 py-8">
+        <h1 className="text-2xl text-center font-semibold text-[#B66E41] pb-4">
+          Change Password
+        </h1>
         <form
-          className="flex flex-col items-center"
+          className="flex flex-col gap-5"
           aria-required
           onSubmit={passwordChangeHandler}
         >
-          <div className="w-full 800px:w-[50%]">
-            <label className="block pb-2">Old Password</label>
+          <div>
+            <label className="block pb-2 text-slate-700 font-medium">
+              Old Password
+            </label>
             <input
               type="password"
-              className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
+              className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 bg-white"
               required
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
+              placeholder="Enter your old password"
             />
           </div>
-          <br />
-          <div className="w-full 800px:w-[50%]">
-            <label className="block pb-2">New Password</label>
+          <div>
+            <label className="block pb-2 text-slate-700 font-medium">
+              New Password
+            </label>
             <input
               type="password"
-              className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
+              className={`block w-full px-3 py-2 border ${
+                error && newPassword.length < 6
+                  ? "border-red-500"
+                  : "border-slate-200"
+              } rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 bg-white`}
               required
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter new password"
             />
           </div>
-
-          <div className="w-full 800px:w-[50%] mt-2">
-            <label className="block pb-2">Confirm New Password</label>
+          <div>
+            <label className="block pb-2 text-slate-700 font-medium">
+              Confirm New Password
+            </label>
             <input
               type="password"
-              className={`${styles.input} bg-white !w-[95%] mb-4 800px:mb-0 `}
+              className={`block w-full px-3 py-2 border ${
+                error && newPassword !== confirmPassword && confirmPassword
+                  ? "border-red-500"
+                  : "border-slate-200"
+              } rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 bg-white`}
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm new password"
             />
           </div>
-          <input
-            className="w-[250px] h-[40px] border border-[#1D2D44] text-center text-[#1D2D44] rounded-[3px] mt-8 cursor-pointer"
-            required
-            value="Update"
+          {error && (
+            <div className="text-red-600 text-sm text-center">{error}</div>
+          )}
+          {success && (
+            <div className="text-green-600 text-sm text-center">{success}</div>
+          )}
+          <button
             type="submit"
-          />
+            className="w-full h-[44px] flex justify-center items-center py-2 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-[#B66E41] hover:bg-orange-600 shadow transition mt-2"
+          >
+            Update Password
+          </button>
         </form>
       </div>
     </div>

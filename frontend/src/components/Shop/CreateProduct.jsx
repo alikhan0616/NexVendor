@@ -15,9 +15,7 @@ const CreateProduct = () => {
   useEffect(() => {
     if (error) {
       toast.error(error);
-      dispatch({
-        type: "clearErrors",
-      });
+      dispatch({ type: "clearErrors" });
     }
     if (success) {
       toast.success("Product created successfully");
@@ -37,7 +35,6 @@ const CreateProduct = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     dispatch(
       createProduct({
         name,
@@ -55,22 +52,17 @@ const CreateProduct = () => {
 
   const handleImageChange = (e) => {
     e.preventDefault();
-
     const files = Array.from(e.target.files);
-
-    // Check if adding these files would exceed 6 images
     if (images.length + files.length > 6) {
       toast.error("You can only upload up to 6 images.");
       return;
     }
-
     files.forEach((file) => {
       const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
       if (!allowedTypes.includes(file.type)) {
         toast.error("Image should be in JPEG, JPG, or PNG format only.");
         return;
       }
-
       const reader = new FileReader();
       reader.onload = () => {
         if (reader.readyState === 2) {
@@ -82,121 +74,104 @@ const CreateProduct = () => {
   };
 
   return (
-    <div className="800px:w-[50%] w-[90%] bg-white h-[80vh] rounded-sm p-3 overflow-y-auto ">
-      <h5 className="text-3xl font-[Poppins] text-center">Create Product</h5>
-      {/* PRODUCT CREATION FORM */}
-      <form onSubmit={handleSubmit}>
-        <br />
-        <div className="">
-          <label className="pb-2">
-            Name <span className="text-red-500">*</span>
-          </label>
+    <div className="max-w-3xl mx-auto -mt-4 bg-white p-8 rounded-xl shadow text-slate-700">
+      <h2 className="text-3xl font-bold text-center text-[#B66E41] mb-6">
+        Create Product
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5 h-[70vh] overflow-y-auto px-1"
+      >
+        <div>
+          <label className="block font-semibold mb-1">Name *</label>
           <input
             type="text"
-            name="name"
             value={name}
-            className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setName(e.target.value)}
             placeholder="Product name..."
             required
+            className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-orange-600 outline-none"
           />
         </div>
-        <br />
-        <div className="">
-          <label className="pb-2">
-            Description <span className="text-red-500">*</span>
-          </label>
+
+        <div>
+          <label className="block font-semibold mb-1">Description *</label>
           <textarea
-            cols="30"
-            rows="8"
-            type="text"
-            name="description"
             value={description}
-            className="mt-2 appearance-none block w-full border pt-2 px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Product description..."
+            rows="4"
             required
+            className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-orange-600 outline-none"
           ></textarea>
         </div>
-        <br />
-        <div className="">
-          <label className="pb-2">
-            Category <span className="text-red-500">*</span>
-          </label>
+
+        <div>
+          <label className="block font-semibold mb-1">Category *</label>
           <select
-            required
-            className="w-full mt-2 border h-[35px] rounded-[5px]"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
+            required
+            className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-orange-600 outline-none"
           >
-            <option value="Choose a category">Choose a category</option>
-            {categoriesData &&
-              categoriesData.map((i, index) => (
-                <option value={i.title} key={index}>
-                  {i.title}
-                </option>
-              ))}
+            <option value="">Choose a category</option>
+            {categoriesData.map((i, idx) => (
+              <option value={i.title} key={idx}>
+                {i.title}
+              </option>
+            ))}
           </select>
         </div>
-        <br />
-        <div className="">
-          <label className="pb-2">Tags</label>
+
+        <div>
+          <label className="block font-semibold mb-1">Tags</label>
           <input
             type="text"
-            name="tags"
             value={tags}
-            className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setTags(e.target.value)}
             placeholder="Product tags..."
+            className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-orange-600 outline-none"
           />
         </div>
-        <br />
-        <div className="">
-          <label className="pb-2">Original Price</label>
-          <input
-            type="number"
-            name="price"
-            value={originalPrice}
-            className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
-            onChange={(e) => setOriginalPrice(e.target.value)}
-            placeholder="Product price..."
-          />
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block font-semibold mb-1">Original Price</label>
+            <input
+              type="number"
+              value={originalPrice}
+              onChange={(e) => setOriginalPrice(e.target.value)}
+              placeholder="Original price..."
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-orange-600 outline-none"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-1">Discount Price *</label>
+            <input
+              type="number"
+              required
+              value={discountPrice}
+              onChange={(e) => setDiscountPrice(e.target.value)}
+              placeholder="Discounted price..."
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-orange-600 outline-none"
+            />
+          </div>
         </div>
-        <br />
-        <div className="">
-          <label className="pb-2">
-            Price (With Discount) <span className="text-red-500">*</span>
-          </label>
+
+        <div>
+          <label className="block font-semibold mb-1">Stock *</label>
           <input
             type="number"
-            required
-            name="price"
-            value={discountPrice}
-            className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
-            onChange={(e) => setDiscountPrice(e.target.value)}
-            placeholder="Product price with discount..."
-          />
-        </div>
-        <br />
-        <div className="">
-          <label className="pb-2">
-            Stock <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            name="stock"
             value={stock}
             required
-            className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
             onChange={(e) => setStock(e.target.value)}
             placeholder="Product stock..."
+            className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-orange-600 outline-none"
           />
         </div>
-        <br />
-        <div className="">
-          <label className="pb-2">
-            Upload Images <span className="text-red-500">*</span>
-          </label>
+
+        <div>
+          <label className="block font-semibold mb-1">Upload Images *</label>
           <input
             type="file"
             id="upload"
@@ -206,28 +181,30 @@ const CreateProduct = () => {
             accept=".jpg,.jpeg,.png"
             required
           />
-          <div className="w-full flex items-center flex-wrap">
-            <label htmlFor="upload">
-              <AiOutlinePlusCircle size={30} className="mt-3" color="#555" />
-            </label>
-            {images &&
-              images.map((i, index) => (
-                <img
-                  src={i}
-                  key={index}
-                  alt=""
-                  className="h-[120px] w-[120px] object-cover m-2"
-                />
-              ))}
+          <label
+            htmlFor="upload"
+            className="flex items-center gap-2 mt-2 text-orange-600 hover:text-orange-800 cursor-pointer"
+          >
+            <AiOutlinePlusCircle size={24} /> Upload Images
+          </label>
+          <div className="flex flex-wrap mt-3 gap-2">
+            {images.map((img, i) => (
+              <img
+                src={img}
+                key={i}
+                alt="preview"
+                className="h-[100px] w-[100px] object-cover rounded-md border border-slate-200"
+              />
+            ))}
           </div>
-          <br />
-          <div className="">
-            <input
-              type="submit"
-              value="Create"
-              className="mt-2 cursor-pointer appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
-            />
-          </div>
+        </div>
+
+        <div>
+          <input
+            type="submit"
+            value="Create Product"
+            className="w-full bg-[#B66E41] hover:bg-orange-600 text-white py-2 rounded-md font-semibold shadow transition cursor-pointer"
+          />
         </div>
       </form>
     </div>

@@ -6,6 +6,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { server } from "../../server";
 import { RxAvatar } from "react-icons/rx";
+
 function ShopCreate() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,9 +14,12 @@ function ShopCreate() {
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [zipCode, setZipCode] = useState("");
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
 
   // FUNCTIONALITY FOR UPLOADING FILE
   const handleFileInputChange = (e) => {
@@ -41,6 +45,16 @@ function ShopCreate() {
   // FUNCTIONALITY FOR SUBMIT BUTTON
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!avatar) {
+      toast.error("Please select an image for avatar.");
+      return;
+    }
+    if (password.length < 6) {
+      setPasswordError("Password should be at least 6 characters long");
+      return;
+    }
+    setLoading(true);
     const payload = {
       name,
       email,
@@ -59,51 +73,68 @@ function ShopCreate() {
         setEmail("");
         setPassword("");
         setAvatar("");
-        setZipCode();
+        setZipCode("");
         setAddress("");
-        setPhoneNumber();
-        setAvatar(null);
+        setPhoneNumber("");
+        setPasswordError("");
+        navigate("/shop-login");
+        setLoading(false);
       })
       .catch((error) => {
         toast.error(error.response.data.message);
+        setLoading(false);
       });
   };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    if (value.length > 0 && value.length < 6) {
+      setPasswordError("Password should be at least 6 characters long");
+    } else {
+      setPasswordError("");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-slate-50 to-orange-100 flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* HEADER */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-          Register as a seller
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-700 tracking-tight">
+          Register as a Seller
         </h2>
+        <p className="mt-2 text-center text-sm text-slate-500">
+          Start your journey with NexVendor!
+        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-[35rem]">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-6 shadow-xl rounded-2xl">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* SHOP NAME */}
-            <div className="">
+            <div>
               <label
-                className="bloc text-sm font-medium text-gray-700"
-                htmlFor="email"
+                className="block text-sm font-medium text-slate-700"
+                htmlFor="name"
               >
                 Shop Name
               </label>
               <div className="mt-1">
                 <input
-                  type="name"
+                  type="text"
                   name="name"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 sm:text-sm"
                 />
               </div>
             </div>
             {/* SHOP PHONE */}
-            <div className="">
+            <div>
               <label
-                className="bloc text-sm font-medium text-gray-700"
-                htmlFor="email"
+                className="block text-sm font-medium text-slate-700"
+                htmlFor="phone-number"
               >
                 Phone Number
               </label>
@@ -114,14 +145,14 @@ function ShopCreate() {
                   required
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 sm:text-sm"
                 />
               </div>
             </div>
-            {/* SHOPE EMAIL */}
-            <div className="">
+            {/* SHOP EMAIL */}
+            <div>
               <label
-                className="bloc text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-slate-700"
                 htmlFor="email"
               >
                 Email Address
@@ -133,36 +164,34 @@ function ShopCreate() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 sm:text-sm"
                 />
               </div>
             </div>
-
-            {/* SHOPE ADDRESS */}
-            <div className="">
+            {/* SHOP ADDRESS */}
+            <div>
               <label
-                className="bloc text-sm font-medium text-gray-700"
-                htmlFor="email"
+                className="block text-sm font-medium text-slate-700"
+                htmlFor="address"
               >
                 Address
               </label>
               <div className="mt-1">
                 <input
-                  type="address"
+                  type="text"
                   name="address"
                   required
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 sm:text-sm"
                 />
               </div>
             </div>
-
             {/* ZIP CODE */}
-            <div className="">
+            <div>
               <label
-                className="bloc text-sm font-medium text-gray-700"
-                htmlFor="email"
+                className="block text-sm font-medium text-slate-700"
+                htmlFor="zipcode"
               >
                 Zip Code
               </label>
@@ -173,14 +202,13 @@ function ShopCreate() {
                   required
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 border border-slate-200 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 sm:text-sm"
                 />
               </div>
             </div>
-
             {/* SHOP PASSWORD */}
-            <div className="">
-              <label className="bloc text-sm font-medium text-gray-700">
+            <div>
+              <label className="block text-sm font-medium text-slate-700">
                 Password
               </label>
               <div className="mt-1 relative">
@@ -190,33 +218,39 @@ function ShopCreate() {
                   autoComplete="current-password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  onChange={handlePasswordChange}
+                  className={`block w-full px-3 py-2 border ${
+                    passwordError ? "border-red-500" : "border-slate-200"
+                  } rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 sm:text-sm`}
                 />
                 {visible ? (
                   <AiOutlineEye
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
+                    className="absolute right-2 top-2 cursor-pointer text-slate-400 hover:text-orange-600"
+                    size={22}
                     onClick={() => setVisible(false)}
                   />
                 ) : (
                   <AiOutlineEyeInvisible
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
+                    className="absolute right-2 top-2 cursor-pointer text-slate-400 hover:text-orange-600"
+                    size={22}
                     onClick={() => setVisible(true)}
                   />
                 )}
               </div>
+              {passwordError && (
+                <p className="text-xs text-red-600 mt-1">{passwordError}</p>
+              )}
             </div>
-
-            {/* PROFULE UPLOAD SECTION */}
-            <div className="">
+            {/* PROFILE UPLOAD SECTION */}
+            <div>
               <label
                 htmlFor="avatar"
-                className="block text-sm font-medium text-gray-700"
-              ></label>
-              <div className="mt-2 flex items-center">
-                <span className="inline-block h-8 w-8 rounded-full overflow-hidden">
+                className="block text-sm font-medium text-slate-700 mb-1"
+              >
+                Shop Logo
+              </label>
+              <div className="flex items-center gap-4">
+                <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-slate-100  shadow">
                   {avatar ? (
                     <img
                       src={avatar}
@@ -224,14 +258,14 @@ function ShopCreate() {
                       className="h-full w-full object-cover rounded-full"
                     />
                   ) : (
-                    <RxAvatar className="h-8 w-8" />
+                    <RxAvatar className="h-12 w-12 text-[#B66E41]" />
                   )}
                 </span>
                 <label
                   htmlFor="file-input"
-                  className="ml-5 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                  className="ml-2 text-sm font-medium text-[#B66E41] bg-orange-50 hover:bg-orange-100 flex items-center justify-center px-4 py-2 border border-orange-200 rounded-md shadow-sm cursor-pointer transition"
                 >
-                  <span>Upload a file</span>
+                  <span>Upload Image</span>
                   <input
                     type="file"
                     name="avatar"
@@ -243,16 +277,22 @@ function ShopCreate() {
                 </label>
               </div>
             </div>
-
+            {/* Submit Button */}
             <button
-              className="group relative-w-full h-[40px] w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 cursor-pointer"
+              disabled={loading}
+              className="w-full h-[44px] flex justify-center items-center py-2 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-[#B66E41] hover:bg-orange-600 shadow transition"
               type="submit"
             >
-              Register
+              {loading ? "Loading..." : "Register"}
             </button>
-            <div className={`${styles.normalFlex}`}>
-              <h4>Already have any account?</h4>
-              <Link to="/shop-login" className="text-blue-600 pl-2">
+            {/* Already have account */}
+            disabled={loading}
+            <div className="flex items-center justify-center gap-2 pt-2">
+              <span className="text-slate-600">Already have an account?</span>
+              <Link
+                to="/shop-login"
+                className="text-[#B66E41] font-semibold hover:underline"
+              >
                 Sign in
               </Link>
             </div>

@@ -7,128 +7,100 @@ import { Link } from "react-router-dom";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { AiOutlineSetting } from "react-icons/ai";
-const AdminSideBar = ({ active }) => {
-  return (
-    <div className="w-full h-[95vh] bg-white shadow-sm overflow-y-auto sticky top-0 left-0 z-10">
-      {/* SINGLE ITEMS */}
-      <div className="w-full flex items-center p-4">
-        <Link to="/admin/dashboard" className="w-full flex items-center">
-          <RxDashboard
-            size={30}
-            color={`${active === 1 ? "#5A67D8" : "#555"}`}
-          />
-          <h5
-            className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 1 ? "text-[#5A67D8]" : "text-[#555]"
-            } `}
-          >
-            Dashboard
-          </h5>
-        </Link>
-      </div>
-      <div className="w-full flex items-center p-4">
-        <Link to="/admin-orders" className="w-full flex items-center">
-          <FiPackage size={30} color={`${active === 2 ? "#1E3A8A" : "#555"}`} />
-          <h5
-            className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 2 ? "text-[#1E3A8A]" : "text-[#555]"
-            } `}
-          >
-            All Orders
-          </h5>
-        </Link>
-      </div>
 
-      <div className="w-full flex items-center p-4">
-        <Link to="/admin-sellers" className="w-full flex items-center">
-          <GrWorkshop
-            size={30}
-            color={`${active === 3 ? "#5A67D8" : "#555"}`}
-          />
-          <h5
-            className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 3 ? "text-[#5A67D8]" : "text-[#555]"
-            } `}
-          >
-            All Sellers
-          </h5>
-        </Link>
-      </div>
-      <div className="w-full flex items-center p-4">
-        <Link to="/admin-users" className="w-full flex items-center">
-          <HiOutlineUserGroup
-            size={30}
-            color={`${active === 4 ? "#5A67D8" : "#555"}`}
-          />
-          <h5
-            className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 4 ? "text-[#5A67D8]" : "text-[#555]"
-            } `}
-          >
-            All Users
-          </h5>
-        </Link>
-      </div>
-      <div className="w-full flex items-center p-4">
-        <Link to="/admin-products" className="w-full flex items-center">
-          <FiShoppingBag
-            size={30}
-            color={`${active === 5 ? "#1E3A8A" : "#555"}`}
-          />
-          <h5
-            className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 5 ? "text-[#1E3A8A]" : "text-[#555]"
-            } `}
-          >
-            All Products
-          </h5>
-        </Link>
-      </div>
-      <div className="w-full flex items-center p-4">
-        <Link to="/admin-events" className="w-full flex items-center">
-          <MdOutlineLocalOffer
-            size={30}
-            color={`${active === 6 ? "#5A67D8" : "#555"}`}
-          />
-          <h5
-            className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 6 ? "text-[#5A67D8]" : "text-[#555]"
-            } `}
-          >
-            All Events
-          </h5>
-        </Link>
-      </div>
-      <div className="w-full flex items-center p-4">
-        <Link to="/admin-withdraw-request" className="w-full flex items-center">
-          <CiMoneyBill
-            size={30}
-            color={`${active === 7 ? "#1E3A8A" : "#555"}`}
-          />
-          <h5
-            className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 7 ? "text-[#1E3A8A]" : "text-[#555]"
-            } `}
-          >
-            Withdraw Money
-          </h5>
-        </Link>
-      </div>
-      <div className="w-full flex items-center p-4">
-        <Link to="/profile" className="w-full flex items-center">
-          <AiOutlineSetting
-            size={30}
-            color={`${active === 8 ? "#1E3A8A" : "#555"}`}
-          />
-          <h5
-            className={`pl-2 text-lg font-[400] 800px:block hidden ${
-              active === 8 ? "text-[#1E3A8A]" : "text-[#555]"
-            } `}
-          >
-            Settings
-          </h5>
-        </Link>
-      </div>
+const AdminSideBar = ({ active }) => {
+  const sidebarItems = [
+    {
+      label: "Dashboard",
+      icon: RxDashboard,
+      id: 1,
+      to: "/admin/dashboard",
+    },
+    {
+      label: "All Orders",
+      icon: FiPackage,
+      id: 2,
+      to: "/admin-orders",
+    },
+    {
+      label: "All Sellers",
+      icon: GrWorkshop,
+      id: 3,
+      to: "/admin-sellers",
+    },
+    {
+      label: "All Users",
+      icon: HiOutlineUserGroup,
+      id: 4,
+      to: "/admin-users",
+    },
+    {
+      label: "All Products",
+      icon: FiShoppingBag,
+      id: 5,
+      to: "/admin-products",
+    },
+    {
+      label: "All Events",
+      icon: MdOutlineLocalOffer,
+      id: 6,
+      to: "/admin-events",
+    },
+    {
+      label: "Withdraw Money",
+      icon: CiMoneyBill,
+      id: 7,
+      to: "/admin-withdraw-request",
+    },
+    {
+      label: "Settings",
+      icon: AiOutlineSetting,
+      id: 8,
+      to: "/profile",
+    },
+  ];
+
+  return (
+    <div className="bg-white shadow-xl rounded-2xl flex flex-col gap-2 items-center w-16 min-w-16 h-[95vh] overflow-hidden sticky top-0 left-0 z-10 md:w-full md:min-w-0 md:p-6 md:items-stretch">
+      <nav className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col justify-start w-full items-center md:items-stretch">
+          {sidebarItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = active === item.id;
+            return (
+              <Link
+                key={item.id}
+                to={item.to}
+                className={`
+                  flex items-center justify-center md:justify-start
+                  w-14 h-14 md:w-full md:h-auto
+                  px-0 md:px-4 py-0 md:py-4
+                  rounded-lg transition-all duration-200 group
+                  ${
+                    isActive
+                      ? "bg-orange-50 text-[#FF6F00] shadow border-l-0 md:border-l-4 border-[#FF6F00]"
+                      : "hover:bg-orange-50 text-slate-700"
+                  }
+                `}
+                title={item.label}
+                onClick={() => {}}
+              >
+                <Icon size={28} color={isActive ? "#FF6F00" : "#B66E41"} />
+                <span
+                  className={`
+    ml-0 md:ml-4 font-medium text-base md:text-[15px] transition-colors duration-200 truncate
+    ${isActive ? "text-[#FF6F00]" : "group-hover:text-[#B66E41]"}
+    hidden md:inline
+  `}
+                  style={{ maxWidth: "160px" }}
+                >
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 };

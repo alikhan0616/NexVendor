@@ -139,7 +139,7 @@ router.put(
       async function updateSellerBalance(amount) {
         const seller = await Shop.findById(req.seller._id);
 
-        seller.availableBalance = amount;
+        seller.availableBalance += amount;
 
         await seller.save();
       }

@@ -9,8 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { FiSend } from "react-icons/fi";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { RiGalleryLine } from "react-icons/ri";
+import { BiMessageSquareDetail } from "react-icons/bi";
 import styles from "../styles/styles";
-const ENDPOINT = "https://nexvendor-socket.onrender.com";
+const ENDPOINT = "http://localhost:4000";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 const UserInbox = () => {
   const { user, loading } = useSelector((state) => state.user);
@@ -228,46 +229,63 @@ const UserInbox = () => {
     );
   };
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen bg-gradient-to-br from-orange-50 via-slate-50 to-orange-100">
       <Header />
-      {!open && (
-        <>
-          <h1 className="text-center text-3xl font-[Poppins] my-5">
-            All Messages
-          </h1>
-          {conversation ? (
-            conversation.map((item, index) => (
-              <MessageList
-                key={index}
-                setCurrentChat={setCurrentChat}
-                data={item}
-                setOpen={setOpen}
-                me={user?._id}
-                userData={userData}
-                setUserData={setUserData}
-                online={onlineCheck(item)}
-              />
-            ))
-          ) : (
-            <div>No conversations yet!</div>
-          )}
-        </>
-      )}
+      <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-6 py-8 px-2 md:px-0">
+        {/* Sidebar: Conversation List */}
+        <div className="w-full mt-8 sm:mt-0 md:w-1/3 bg-white rounded-2xl shadow-xl p-4 flex flex-col h-[70vh] min-h-[400px]">
+          <h2 className="text-xl font-bold text-[#B66E41] mb-4 flex items-center gap-2">
+            <BiMessageSquareDetail size={24} /> Conversations
+          </h2>
+          <div className="flex-1 overflow-y-auto">
+            {conversation && conversation.length > 0 ? (
+              conversation.map((item, index) => (
+                <MessageList
+                  key={index}
+                  setCurrentChat={setCurrentChat}
+                  data={item}
+                  setOpen={setOpen}
+                  me={user?._id}
+                  userData={userData}
+                  setUserData={setUserData}
+                  online={onlineCheck(item)}
+                />
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center h-40 text-slate-400">
+                <BiMessageSquareDetail size={48} className="mb-2" />
+                <span className="text-lg font-semibold">
+                  No active conversations
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
 
-      {open && (
-        <Inbox
-          setOpen={setOpen}
-          newMessage={newMessage}
-          setNewMessage={setNewMessage}
-          sendMessageHandler={sendMessageHandler}
-          messages={messages}
-          userId={user._id}
-          userData={userData}
-          scrollRef={scrollRef}
-          handleImageUpload={handleImageUpload}
-          activeStatus={onlineCheck(currentChat)}
-        />
-      )}
+        {/* Main Chat Area */}
+        <div className="w-full md:w-2/3 flex flex-col h-[70vh] min-h-[400px]">
+          {!open ? (
+            <div className="flex flex-col items-center justify-center flex-1">
+              <span className="text-slate-400 text-lg">
+                Select a conversation to start chatting
+              </span>
+            </div>
+          ) : (
+            <Inbox
+              setOpen={setOpen}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+              sendMessageHandler={sendMessageHandler}
+              messages={messages}
+              userId={user._id}
+              userData={userData}
+              scrollRef={scrollRef}
+              handleImageUpload={handleImageUpload}
+              activeStatus={onlineCheck(currentChat)}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -350,7 +368,7 @@ const Inbox = ({
   handleImageUpload,
 }) => {
   return (
-    <div className="w-full flex flex-col justify-between min-h-full mt-30">
+    <div className="w-full flex flex-col justify-between min-h-full mt-0">
       {/* Message header */}
       <div
         className={`w-full flex p-3 items-center justify-between bg-slate-200`}

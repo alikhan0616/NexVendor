@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteProduct, getAllProductsShop } from "../../redux/actions/product";
-import { Link } from "react-router-dom";
-import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
+import { AiOutlineDelete } from "react-icons/ai";
 import Loader from "../../components/Layout/Loader";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
@@ -40,7 +38,7 @@ const AllCoupons = () => {
           setCoupons(res.data.couponCodes);
           setIsLoading(false);
         })
-        .catch((err) => {
+        .catch(() => {
           setIsLoading(false);
         });
     }
@@ -76,13 +74,13 @@ const AllCoupons = () => {
       .delete(`${server}/coupon/delete-coupon/${id}`, {
         withCredentials: true,
       })
-      .then((res) => {
-        toast.success("Coupon code deleted succesfully!");
+      .then(() => {
+        toast.success("Coupon code deleted successfully!");
+        window.location.reload();
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error("Something went wrong!");
       });
-    window.location.reload();
   };
 
   const columns = [
@@ -101,28 +99,23 @@ const AllCoupons = () => {
       flex: 0.8,
       type: "number",
       sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Button onClick={() => handleDelete(params.id)}>
-              <AiOutlineDelete size={20} />
-            </Button>
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <Button
+          className="!text-red-600 hover:!text-white hover:!bg-red-600 !rounded-full !min-w-0 !p-2"
+          onClick={() => handleDelete(params.id)}
+        >
+          <AiOutlineDelete size={20} />
+        </Button>
+      ),
     },
   ];
 
-  const row = [];
+  const row = coupons.map((item) => ({
+    id: item._id,
+    name: item.name,
+    price: `${item.value}%`,
+  }));
 
-  coupons &&
-    coupons.forEach((item) => {
-      row.push({
-        id: item._id,
-        name: item.name,
-        price: item.value + "%",
-      });
-    });
   return (
     <>
       {isLoading ? (
@@ -130,118 +123,152 @@ const AllCoupons = () => {
       ) : (
         <div className="w-full mx-8 pt-1 mt-10 bg-white">
           <div className="w-full flex justify-end">
-            <div
-              className={`${styles.button} mr-4 bg-[#5A67D8] hover:bg-[#1E3A8A] duration-300 !w-max !p-3 !h-[45]px !rounded-[5px]`}
+            <button
+              className="bg-[#B66E41] hover:bg-[#a15630] text-white font-medium py-2 px-5 rounded-md transition"
               onClick={() => setOpen(true)}
             >
-              <span className="text-white">Create Coupon Code</span>
-            </div>
+              Create Coupon Code
+            </button>
           </div>
-          <DataGrid
-            rows={row}
-            columns={columns}
-            disableRowSelectionOnClick
-            autoPageSize
-          />
+
+          <div className="mt-5">
+            <DataGrid
+              rows={row}
+              columns={columns}
+              disableRowSelectionOnClick
+              autoPageSize
+              className="border border-slate-200 rounded-md"
+              sx={{
+                borderRadius: 3,
+                border: "none",
+                boxShadow: 1,
+                background: "#fff",
+                "& .MuiDataGrid-columnHeaders": {
+                  background: "#FFF7F0",
+                  color: "#B66E41",
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  borderRadius: "12px 12px 0 0",
+                },
+                "& .MuiDataGrid-row": {
+                  borderBottom: "1px solid #F3E8E0",
+                },
+                "& .MuiDataGrid-cell": {
+                  fontSize: 15,
+                },
+                "& .MuiDataGrid-footerContainer": {
+                  background: "#FFF7F0",
+                  borderTop: "none",
+                  borderRadius: "0 0 12px 12px",
+                },
+                "& .MuiDataGrid-selectedRowCount": {
+                  color: "#B66E41",
+                },
+              }}
+            />
+          </div>
+
           {open && (
-            <div className="fixed top-0 left-0 w-full h-screen bg-[#00000030] z-[2000] flex items-center justify-center ">
-              <div className="800px:w-[40%] w-[90%] h-[80vh] shadow-md overflow-y-auto bg-white rounded-sm ">
-                <div className="w-full flex justify-end p-4">
+            <div className="fixed top-0 left-0 w-full h-screen bg-[#00000030] z-[2000] flex items-center justify-center">
+              <div className="800px:w-[40%] w-[90%] max-h-[90vh] overflow-y-auto shadow-md bg-white rounded-xl p-6">
+                <div className="flex justify-end">
                   <RxCross1
                     size={25}
                     className="cursor-pointer"
                     onClick={() => setOpen(false)}
                   />
                 </div>
-                <h5 className="text-3xl font-[Poppins] text-center">
+
+                <h5 className="text-2xl font-semibold text-[#B66E41] text-center mb-4">
                   Create Coupon Code
                 </h5>
-                {/* CREATE COUPON CREATION FORM */}
-                <form
-                  onSubmit={handleSubmit}
-                  className="p-4"
-                  aria-required={true}
-                >
-                  <br />
-                  <div className="">
-                    <label className="pb-2">
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700">
                       Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       name="name"
                       value={name}
-                      className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Coupon name..."
                       required
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#B66E41]"
                     />
                   </div>
-                  <br />
-                  <div className="">
-                    <label className="pb-2">
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700">
                       Discount Percent <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
                       name="value"
-                      value={value}
                       max={100}
-                      className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
+                      value={value}
                       onChange={(e) => setValue(e.target.value)}
                       placeholder="Coupon discount percentage..."
                       required
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#B66E41]"
                     />
                   </div>
-                  <br />
-                  <div className="">
-                    <label className="pb-2">Minimum Amount</label>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700">
+                      Minimum Amount
+                    </label>
                     <input
                       type="number"
                       name="minAmount"
                       value={minAmount}
-                      className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
                       onChange={(e) => setMinAmount(e.target.value)}
                       placeholder="Minimum amount of a product..."
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#B66E41]"
                     />
                   </div>
-                  <br />
-                  <div className="">
-                    <label className="pb-2">Maximum Amount</label>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700">
+                      Maximum Amount
+                    </label>
                     <input
                       type="number"
                       name="maxAmount"
                       value={maxAmount}
-                      className="mt-2 appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
                       onChange={(e) => setMaxAmount(e.target.value)}
                       placeholder="Maximum amount of a product..."
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#B66E41]"
                     />
                   </div>
-                  <br />
-                  <div className="">
-                    <label className="pb-2">Selected Product</label>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700">
+                      Selected Product
+                    </label>
                     <select
-                      className="w-full mt-2 border h-[35px] rounded-[5px]"
                       value={selectedProduct}
                       onChange={(e) => setSelectedProduct(e.target.value)}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#B66E41]"
                     >
-                      <option value="Choose your product">
-                        Choose your product
-                      </option>
+                      <option value="">Choose your product</option>
                       {products &&
                         products.map((i, index) => (
                           <option value={i.name} key={index}>
-                            {i.name.slice(0, 60) + "..."}
+                            {i.name.length > 60
+                              ? `${i.name.slice(0, 60)}...`
+                              : i.name}
                           </option>
                         ))}
                     </select>
                   </div>
-                  <br />
-                  <div className="">
+
+                  <div>
                     <input
                       type="submit"
-                      value={"Create"}
-                      className="mt-2 cursor-pointer appearance-none block w-full h-[35px] border px-3 border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-slate-700 sm:text-sm"
+                      value="Create"
+                      className="w-full bg-[#B66E41] text-white py-2 rounded-md font-medium cursor-pointer hover:bg-[#a15630] transition"
                     />
                   </div>
                 </form>

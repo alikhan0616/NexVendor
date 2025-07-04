@@ -8,16 +8,21 @@ const Categories = () => {
   return (
     <>
       <div className={`${styles.section} hidden sm:block`}>
-        <div
-          className={`brading my-12 flex justify-between w-full shadow-sm bg-white p-5 rounded-md `}
-        >
+        <div className="my-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {brandingData &&
             brandingData.map((i, index) => (
-              <div key={index} className="flex items-start">
-                {i.icon}
-                <div className="px-3">
-                  <h3 className="font-bold text-sm md:text-base">{i.title}</h3>
-                  <p className="text-xs md:text-sm">{i.Description}</p>
+              <div
+                key={index}
+                className="flex items-center gap-4 bg-white rounded-xl shadow-md border border-slate-100 p-5 hover:shadow-lg transition group"
+              >
+                <div className="flex items-center justify-center w-14 h-14 rounded-full bg-orange-50 border-2 border-orange-100 group-hover:scale-105 transition">
+                  {React.cloneElement(i.icon, { size: 32, color: "#ea580c" })}
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-700 text-base mb-1">
+                    {i.title}
+                  </h3>
+                  <p className="text-sm text-slate-500">{i.Description}</p>
                 </div>
               </div>
             ))}
@@ -27,7 +32,7 @@ const Categories = () => {
         className={`${styles.section} bg-white p-6 rounded-lg mb-12`}
         id="categories"
       >
-        <div className="grid grid-cols-1 gap-1 md:grid-cols-2 md:gap-2.5 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-7">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5 xl:gap-8">
           {categoriesData &&
             categoriesData.map((i, index) => {
               const handleSubmit = (i) => {
@@ -35,15 +40,19 @@ const Categories = () => {
               };
               return (
                 <div
-                  className="w-full h-24 p-2 flex items-center justify-between  cursor-pointer overflow-hidden"
+                  className="flex items-center justify-between bg-slate-50 border-l-4 border-orange-600 rounded-lg p-4 cursor-pointer shadow-sm hover:shadow-lg transition group"
                   key={i.id}
                   onClick={() => handleSubmit(i)}
                 >
-                  <h5 className="text-md leading-[1.3] ">{i.title}</h5>
+                  <div>
+                    <h5 className="text-lg font-semibold text-slate-700 group-hover:text-orange-600 transition">
+                      {i.title}
+                    </h5>
+                  </div>
                   <img
                     src={i.image_Url}
-                    className="w-[120px] h-[120px] object-contain "
-                    alt=""
+                    className="w-[80px] h-[80px] object-contain rounded-lg border border-[#B66E41]/20 bg-white"
+                    alt={i.title}
                   />
                 </div>
               );

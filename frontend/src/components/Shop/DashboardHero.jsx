@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineArrowRight, AiOutlineMoneyCollect } from "react-icons/ai";
-import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import { FiPackage, FiShoppingBag } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +14,6 @@ const DashboardHero = () => {
   const { seller } = useSelector((state) => state.seller);
   const { products } = useSelector((state) => state.product);
   const { orders, isLoading } = useSelector((state) => state.order);
-  const [deliveredOrder, setDeliveredOrder] = useState(null);
 
   useEffect(() => {
     dispatch(getAllOrdersShop(seller._id));
@@ -29,9 +27,17 @@ const DashboardHero = () => {
       headerName: "Status",
       minWidth: 130,
       flex: 0.7,
-      cellClassName: (params) => {
-        return params.value === "Delivered" ? "greenColor" : "redColor";
-      },
+      renderCell: (params) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            params.value === "Delivered"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "itemsQty",
@@ -40,7 +46,6 @@ const DashboardHero = () => {
       minWidth: 130,
       flex: 0.7,
     },
-
     {
       field: "total",
       headerName: "Total",
@@ -55,113 +60,140 @@ const DashboardHero = () => {
       headerName: "",
       type: "number",
       sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`/order/${params.id}`}>
-              <Button>
-                <AiOutlineArrowRight size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <Link to={`/order/${params.id}`}>
+          <Button className="!text-slate-700 hover:!text-white hover:!bg-slate-700 !rounded-full !min-w-0 !p-2">
+            <AiOutlineArrowRight size={18} />
+          </Button>
+        </Link>
+      ),
     },
   ];
 
-  const row = [];
-
-  orders &&
-    orders.forEach((item) => {
-      row.push({
-        id: item._id,
-        itemsQty: item.cart.reduce((acc, item) => acc + item.qty, 0),
-        total: "US$ " + item.totalPrice,
-        status: item.status,
-      });
-    });
+  const row =
+    orders?.map((item) => ({
+      id: item._id,
+      itemsQty: item.cart.reduce((acc, item) => acc + item.qty, 0),
+      total: "US$ " + item.totalPrice,
+      status: item.status,
+    })) || [];
 
   return (
-    <div className="w-full p-8">
-      <h3 className="text-[22px] font-[Poppins] pb-2">Overview</h3>
-      <div className="w-full block 800px:flex items-center justify-between">
-        <div className="w-full mb-4 800px:w-[30%] min-h-[20vh] bg-white shadow rounded px-2 py-5">
-          <div className="flex items-center">
-            <AiOutlineMoneyCollect
-              size={30}
-              className="mr-2"
-              fill="#00000085"
-            />
-            <h3
-              className={`${styles.productTitle} !text-[18px] leading-5 !font-[400] text-[#00000085]`}
-            >
-              Account Balance <br />
-              <span className="text-sm">(with 8% service charge)</span>
-            </h3>
+    <div className="w-full px-4 py-6 md:px-8">
+      <h3 className="text-[24px] font-semibold text-[#B66E41] pb-4">
+        Overview
+      </h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white rounded-xl shadow p-4">
+          <div className="flex items-center gap-2">
+            <AiOutlineMoneyCollect size={28} className="text-slate-700" />
+            <div>
+              <h4 className="text-base font-medium text-slate-700">
+                Account Balance
+              </h4>
+              <p className="text-sm text-slate-500">(after 8% charge)</p>
+            </div>
           </div>
-          <h5 className="pt-2 pl-[35px] text-[22px] font-[500]">
-            ${isLoading ? "-" : seller.availableBalance.toFixed(2)}{" "}
-          </h5>
+          <p className="text-2xl font-semibold  text-[#B66E41] mt-2">
+            ${isLoading ? "-" : seller.availableBalance.toFixed(2)}
+          </p>
           <Link to="/dashboard-withdraw-money">
-            <h5 className="pt-4 pl-2 text-[#077f9c] hover:text-[#5A67D8] duration-300">
-              Withdraw Money
-            </h5>
+            <p className="text-sm text-[#FF6F00] mt-3 hover:underline">
+              Withdraw
+            </p>
           </Link>
         </div>
 
-        <div className="w-full mb-4 800px:w-[30%] min-h-[20vh] bg-white shadow rounded px-2 py-5">
-          <div className="flex items-center">
-            <FiPackage size={30} className="mr-2 text-[#00000085]" />
-            <h3
-              className={`${styles.productTitle} !text-[18px] leading-5 !font-[400] text-[#00000085]`}
-            >
-              All Orders <br />
-            </h3>
+        <div className="bg-white rounded-xl shadow p-4">
+          <div className="flex items-center gap-2">
+            <FiPackage size={28} className="text-slate-700" />
+            <div>
+              <h4 className="text-base font-medium text-slate-700">
+                All Orders
+              </h4>
+            </div>
           </div>
-          <h5 className="pt-2 pl-[35px] text-[22px] font-[500]">
-            {orders && orders.length}
-          </h5>
+          <p className="text-2xl font-semibold  text-[#B66E41] mt-2">
+            {orders?.length || 0}
+          </p>
           <Link to="/dashboard-orders">
-            <h5 className="pt-4 pl-2 text-[#077f9c] hover:text-[#5A67D8] duration-300">
+            <p className="text-sm text-[#FF6F00] mt-3 hover:underline">
               View Orders
-            </h5>
+            </p>
           </Link>
         </div>
 
-        <div className="w-full mb-4 800px:w-[30%] min-h-[20vh] bg-white shadow rounded px-2 py-5">
-          <div className="flex items-center">
-            <FiShoppingBag size={30} className="mr-2 text-[#00000085]" />
-            <h3
-              className={`${styles.productTitle} !text-[18px] leading-5 !font-[400] text-[#00000085]`}
-            >
-              All Products <br />
-            </h3>
+        <div className="bg-white rounded-xl shadow p-4">
+          <div className="flex items-center gap-2">
+            <FiShoppingBag size={28} className="text-slate-700" />
+            <div>
+              <h4 className="text-base font-medium text-slate-700">
+                All Products
+              </h4>
+            </div>
           </div>
-          <h5 className="pt-2 pl-[35px] text-[22px] font-[500]">
-            {products && products?.length}
-          </h5>
+          <p className="text-2xl font-semibold  text-[#B66E41] mt-2">
+            {products?.length || 0}
+          </p>
           <Link to="/dashboard-products">
-            <h5 className="pt-4 pl-2 text-[#077f9c] hover:text-[#5A67D8] duration-300">
+            <p className="text-sm text-[#FF6F00] mt-3 hover:underline">
               View Products
-            </h5>
+            </p>
           </Link>
         </div>
       </div>
-      <br />
-      <h3 className="text-[22px] font-[Poppins] pb-2">Latest Orders</h3>
-      <div className="w-full min-h-[42vh] shadow bg-white rounded">
+
+      <h3 className="text-[24px] font-semibold text-[#B66E41] pt-8 pb-4">
+        Latest Orders
+      </h3>
+
+      <div className="w-full rounded-xl shadow bg-white p-2">
         {isLoading ? (
           <Loader />
         ) : (
-          <div className="">
-            <DataGrid
-              rows={row}
-              columns={columns}
-              disableRowSelectionOnClick
-              pageSize={5}
-              autoHeight
-            />
-          </div>
+          <DataGrid
+            rows={row}
+            columns={columns}
+            disableRowSelectionOnClick
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 4, // Set to 4 items per page
+                  page: 0, // Start at the first page
+                },
+              },
+            }}
+            pageSizeOptions={[4]} // Optional: Only allow 4 items per page
+            pagination // Enable pagination
+            sx={{
+              borderRadius: 3,
+              border: "none",
+              boxShadow: 1,
+              background: "#fff",
+              "& .MuiDataGrid-columnHeaders": {
+                background: "#FFF7F0",
+                color: "#B66E41",
+                fontWeight: "bold",
+                fontSize: 16,
+                borderRadius: "12px 12px 0 0",
+              },
+              "& .MuiDataGrid-row": {
+                borderBottom: "1px solid #F3E8E0",
+              },
+              "& .MuiDataGrid-cell": {
+                fontSize: 15,
+              },
+              "& .MuiDataGrid-footerContainer": {
+                background: "#FFF7F0",
+                borderTop: "none",
+                borderRadius: "0 0 12px 12px",
+              },
+              "& .MuiDataGrid-selectedRowCount": {
+                color: "#B66E41",
+              },
+            }}
+          />
         )}
       </div>
     </div>

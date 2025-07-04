@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { RxCross1 } from "react-icons/rx";
-import { BsCartPlus } from "react-icons/bs";
 import { AiOutlineHeart } from "react-icons/ai";
+import { BsCartPlus } from "react-icons/bs";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,18 +36,20 @@ const WishList = ({ setOpenWishList }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-screen bg-[#00000041] z-10">
-      <div className="fixed top-0 right-0 overflow-y-auto h-screen w-[80%] 800px:w-[25%] bg-white flex flex-col justify-between shadow-sm">
+    <div className="fixed top-0 left-0 w-full h-screen bg-[#00000041] z-[9999]">
+      <div className="fixed top-0 right-0 overflow-y-auto h-screen w-[90%] 800px:w-[28%] bg-white flex flex-col justify-between shadow-lg rounded-l-xl">
         {wishlist && wishlist.length === 0 ? (
           <div className="w-full h-full flex items-center justify-center">
             <div className="flex w-full justify-end pt-5 pr-5 fixed top-3 right-3">
               <RxCross1
                 size={25}
-                className="cursor-pointer"
+                className="cursor-pointer text-slate-700 hover:text-orange-600"
                 onClick={() => setOpenWishList(false)}
               />
             </div>
-            <h5>Wishlist Items are empty</h5>
+            <h5 className="text-slate-700 text-lg font-medium">
+              Wishlist is empty
+            </h5>
           </div>
         ) : (
           <>
@@ -56,19 +58,16 @@ const WishList = ({ setOpenWishList }) => {
                 <RxCross1
                   onClick={() => setOpenWishList(false)}
                   size={25}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-slate-700 hover:text-orange-600"
                 />
               </div>
-              {/* ITEM LENGTH */}
-              <div className={`${styles.normalFlex} p-4`}>
-                <AiOutlineHeart size={25} />
-                <h5 className="pl-2 text-lg font-semibold">
+              <div className="flex items-center p-4 border-b border-gray-200">
+                <AiOutlineHeart size={25} className="text-slate-700" />
+                <h5 className="pl-2 text-lg font-semibold text-slate-700">
                   {wishlist && wishlist.length} Item(s)
                 </h5>
               </div>
-              {/* WISHLIST SINGLE ITEMS */}
-              <br />
-              <div className="w-full border-t border-gray-200">
+              <div className="divide-y divide-gray-200">
                 {wishlist &&
                   wishlist.map((i, index) => (
                     <WishListSingle
@@ -93,33 +92,31 @@ const WishListSingle = ({
   addToCartHandler,
 }) => {
   return (
-    <div className="border-b border-gray-200 p-4">
-      <div className="w-full flex items-center">
-        <RxCross1
-          size={24}
-          className="cursor-pointer"
-          onClick={() => removeFromWishlistHandler(data)}
-        />
-        <img
-          src={data.images[0].url}
-          alt="product-img"
-          className="w-[80px] h-[80px] ml-2"
-        />
-        <div className="pl-[5px]">
-          <h1 className="text-sm line-clamp-3">{data.name}</h1>
-          <h4 className="font-semibold text-[17px] text-red-600 font-[Roboto]">
-            US${data.discountPrice}
-          </h4>
-        </div>
-        <div>
-          <BsCartPlus
-            size={20}
-            onClick={() => addToCartHandler(data._id, data)}
-            className="cursor-pointer"
-            title="Add to wishlist"
-          />
-        </div>
+    <div className="flex items-center gap-3 p-4">
+      <RxCross1
+        size={20}
+        className="cursor-pointer text-slate-500 hover:text-red-600"
+        onClick={() => removeFromWishlistHandler(data)}
+      />
+      <img
+        src={data.images[0].url}
+        alt="product-img"
+        className="w-16 h-16 rounded-md object-cover border border-gray-200"
+      />
+      <div className="flex-1">
+        <h1 className="text-sm font-semibold text-slate-700 line-clamp-2">
+          {data.name}
+        </h1>
+        <p className="text-base font-bold text-orange-600">
+          US${data.discountPrice}
+        </p>
       </div>
+      <BsCartPlus
+        size={20}
+        onClick={() => addToCartHandler(data._id, data)}
+        className="cursor-pointer text-slate-700 hover:text-orange-600"
+        title="Add to cart"
+      />
     </div>
   );
 };

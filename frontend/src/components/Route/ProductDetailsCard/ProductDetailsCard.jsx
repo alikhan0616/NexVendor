@@ -8,25 +8,29 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { backend_url } from "../../../server";
-import { Link } from "react-router-dom";
+import { backend_url, server } from "../../../server";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { addTocart } from "../../../redux/actions/cart";
 import {
   addTowishlist,
   removeFromwishlist,
 } from "../../../redux/actions/wishlist";
+import axios from "axios";
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
 
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
+  const [showFullDesc, setShowFullDesc] = useState(false);
 
   const dispatch = useDispatch();
   const id = data._id;
   // const [select, setSelect] = useState(false);
-  const handleMessageSubmit = () => {};
 
   const addToCartHandler = (id) => {
     const isItemExists = cart && cart.find((i) => i._id === id);
@@ -42,6 +46,26 @@ const ProductDetailsCard = ({ setOpen, data }) => {
         toast.success("Item added to cart");
       }
     }
+  };
+
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data.shopId + user._id;
+      const userId = user._id;
+      const sellerId = data?.shopId;
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox/?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else toast.error("Please login to contact seller");
   };
 
   useEffect(() => {
@@ -72,121 +96,139 @@ const ProductDetailsCard = ({ setOpen, data }) => {
       setCount(count + 1);
     }
   };
+
+  const descToShow = showFullDesc
+    ? data.description
+    : `${data.description.substring(0, 100)}...`;
+  const isLongDesc = data.description && data.description.length > 100;
+
   return (
-    <div className="bg-white ">
+    <div className="bg-white">
       {data ? (
-        <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 items-center flex justify-center">
-          <div className="w-[90%] sm:w-[60%] h-[99vh] mt-45 800px:mt-0 overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
-            <RxCross1
-              size={30}
-              className="absolute right-3 top-3 z-50"
+        <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 flex items-center justify-center">
+          <div className="w-[95%] sm:w-[70%] md:w-[60%] max-w-4xl h-[98vh] md:h-[80vh] overflow-y-auto bg-white rounded-xl shadow-2xl relative p-6 flex flex-col md:flex-row gap-8">
+            {/* Close Button */}
+            <button
+              className="absolute right-4 top-4 text-slate-700 hover:text-orange-600 transition"
               onClick={() => setOpen(false)}
-            />
-            <div className="block w-full 800px:flex ">
-              {/* LEFT DIV OF DETAILS */}
-              <div className="w-full 800px:w-[50%]">
-                <Link to={`/product/${id}`}>
+              aria-label="Close"
+            >
+              <RxCross1 size={28} />
+            </button>
+
+            {/* LEFT: Product Image & Shop */}
+            <div className="flex-1 flex flex-col items-center md:items-start">
+              <Link to={`/product/${data._id}`}>
+                <img
+                  src={data.images && data.images[0].url}
+                  alt="product-img"
+                  className="w-56 h-56 object-contain rounded-lg bg-slate-50 border border-slate-100 mb-4"
+                />
+              </Link>
+              <div className="flex items-center mb-4">
+                <Link to={`/shop/preview/${data.shop._id}`}>
                   <img
-                    src={data.images && data.images[0].url}
-                    alt="product-img"
+                    src={data.shop.avatar && data.shop.avatar.url}
+                    alt="shop-img"
+                    className="w-12 h-12 rounded-full border-2 border-[#B66E41] mr-3"
                   />
                 </Link>
-                <div className="flex">
+                <div>
                   <Link to={`/shop/preview/${data.shop._id}`}>
-                    <img
-                      src={data.shop.avatar && data.shop.avatar.url}
-                      alt="shop-img"
-                      className="w-[50px] h-[50px] rounded-full mr-2"
-                    />
+                    <h3 className="text-[#B66E41] font-bold text-lg hover:underline">
+                      {data.shop.name}
+                    </h3>
                   </Link>
-                  <div className="">
-                    <Link to={`/shop/preview/${data.shop._id}`}>
-                      <h3 className={`${styles.shop_name}`}>
-                        {data.shop.name}
-                      </h3>
-                    </Link>
-                    <h5 className="pb-3 text-[15px]">(10) Ratings</h5>
-                  </div>
+                  <h5 className="text-xs text-slate-500">(10) Ratings</h5>
                 </div>
-                <div
-                  className={`${styles.button} bg-black mt-4 rounded-[4px] h-11`}
-                  onClick={handleMessageSubmit}
-                >
-                  <span className="text-white flex items-center">
-                    Send Message <AiOutlineMessage className="ml-1" />
-                  </span>
-                </div>
-                <h5 className="text-base text-red-600 mt-5">
-                  ({data?.sold_out}) Sold
-                </h5>
               </div>
-              {/* RIGHT DIV OF DETAILS */}
-              <div className="w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px]">
-                <Link to={`/product/${id}`}>
-                  <h1 className={`${styles.productTitle} text-xl`}>
+              <div className="inline-flex items-center px-4 py-2 rounded bg-[#B66E41]/10 text-[#B66E41] font-semibold text-sm mb-2">
+                {data?.sold_out} Sold
+              </div>
+              <button
+                className="w-full mt-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md py-2 font-semibold flex items-center justify-center transition"
+                onClick={handleMessageSubmit}
+              >
+                Send Message <AiOutlineMessage className="ml-2" />
+              </button>
+            </div>
+
+            {/* RIGHT: Product Details */}
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <Link to={`/product/${data._id}`}>
+                  <h1 className="text-2xl font-bold text-slate-700 mb-2">
                     {data.name}
                   </h1>
                 </Link>
-                <p className="text-sm mt-2 text-slate-800">
-                  {data.description}
+                <p className="text-base text-slate-600 mb-4">
+                  {descToShow}
+                  {isLongDesc && (
+                    <button
+                      className="ml-2 text-orange-600 font-semibold hover:underline focus:outline-none"
+                      onClick={() => setShowFullDesc((prev) => !prev)}
+                    >
+                      {showFullDesc ? "See less" : "See more"}
+                    </button>
+                  )}
                 </p>
-                <div className="flex pt-3">
-                  <h4 className={styles.productDiscountPrice}>
+                <div className="flex items-center gap-4 mb-4">
+                  <h4 className="text-2xl font-bold text-orange-600">
                     $
                     {data.originalPrice === 0
                       ? data.originalPrice
                       : data.discountPrice}
                   </h4>
-                  <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? "$" + data.originalPrice : null}
-                  </h3>
+                  {data.originalPrice && (
+                    <span className="text-lg line-through text-slate-400">
+                      ${data.originalPrice}
+                    </span>
+                  )}
                 </div>
-                <div className="flex items-center mt-12 justify-between pr-3">
-                  <div className="">
+                {/* Quantity Selector & Wishlist */}
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center border border-slate-200 rounded overflow-hidden">
                     <button
                       onClick={descrementCount}
-                      className="bg-gradient-to-r w-12 from-[#1D2D44] to-[#3E5C76] text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out "
+                      className="w-10 h-10 bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold text-xl transition"
                     >
                       -
                     </button>
-                    <span className="bg-gray-200 text-gray-800 font-md px-4 py-[10px]">
+                    <span className="w-12 text-center text-slate-700 font-semibold">
                       {count}
                     </span>
                     <button
                       onClick={incrementCount}
-                      className="bg-gradient-to-l w-12 from-[#1D2D44] to-[#3E5C76] text-white font-bold rounded-r px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out "
+                      className="w-10 h-10 bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold text-xl transition"
                     >
                       +
                     </button>
                   </div>
-                  <div className="">
+                  <button
+                    className="ml-2"
+                    onClick={
+                      click
+                        ? () => removeFromWishlistHandler(data)
+                        : () => addToWishListHandler(data)
+                    }
+                    aria-label="Wishlist"
+                  >
                     {click ? (
-                      <AiFillHeart
-                        size={30}
-                        className="cursor-pointer "
-                        onClick={() => removeFromWishlistHandler(data)}
-                        color={click ? "red" : "#333"}
-                        title="Remove from wishlist"
-                      />
+                      <AiFillHeart size={28} color="#ea580c" />
                     ) : (
-                      <AiOutlineHeart
-                        size={30}
-                        className="cursor-pointer "
-                        onClick={() => addToWishListHandler(data)}
-                        color={click ? "red" : "#333"}
-                        title="Add to wishlist"
-                      />
+                      <AiOutlineHeart size={28} color="#334155" />
                     )}
-                  </div>
+                  </button>
                 </div>
-                <div
-                  className={`${styles.button} bg-black mt-6 rounded-[4px] h-11 flex items-center`}
+              </div>
+              {/* Add to Cart Button */}
+              <div className="pb-4">
+                <button
+                  className="w-full bg-slate-700 hover:bg-orange-600 text-white rounded-md py-3 font-semibold flex items-center justify-center transition"
                   onClick={() => addToCartHandler(data._id)}
                 >
-                  <span className="text-white flex items-center">
-                    Add to cart <AiOutlineShoppingCart className="ml-1" />
-                  </span>
-                </div>
+                  Add to cart <AiOutlineShoppingCart className="ml-2" />
+                </button>
               </div>
             </div>
           </div>

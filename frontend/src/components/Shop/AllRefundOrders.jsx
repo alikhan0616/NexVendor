@@ -29,9 +29,19 @@ const AllRefundOrders = () => {
       headerName: "Status",
       minWidth: 130,
       flex: 0.7,
-      cellClassName: (params) => {
-        return params.value === "Delivered" ? "greenColor" : "redColor";
-      },
+      renderCell: (params) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            params.value === "Delivered"
+              ? "bg-green-100 text-green-700"
+              : params.value === "Processing refund"
+              ? "bg-yellow-100 text-yellow-700"
+              : "bg-orange-100 text-orange-700"
+          }`}
+        >
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "itemsQty",
@@ -39,14 +49,19 @@ const AllRefundOrders = () => {
       type: "number",
       minWidth: 130,
       flex: 0.7,
+      renderCell: (params) => (
+        <span className="font-semibold text-[#B66E41]">{params.value}</span>
+      ),
     },
-
     {
       field: "total",
       headerName: "Total",
       type: "number",
       minWidth: 130,
       flex: 0.8,
+      renderCell: (params) => (
+        <span className="font-bold text-orange-600">{params.value}</span>
+      ),
     },
     {
       field: " ",
@@ -55,17 +70,16 @@ const AllRefundOrders = () => {
       headerName: "",
       type: "number",
       sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`/order/${params.id}`}>
-              <Button>
-                <AiOutlineArrowRight size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <Link to={`/order/${params.id}`}>
+          <Button
+            className="!bg-[#B66E41] hover:!bg-orange-600 !text-white !rounded-full !min-w-0 !p-2 shadow transition"
+            style={{ minWidth: 0 }}
+          >
+            <AiOutlineArrowRight size={20} />
+          </Button>
+        </Link>
+      ),
     },
   ];
 

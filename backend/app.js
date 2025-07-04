@@ -19,6 +19,7 @@ const orderRoute = require("./controller/order.js");
 const conversationRoute = require("./controller/conversation.js");
 const messageRoute = require("./controller/messages.js");
 const withdrawRoute = require("./controller/withdraw.js");
+const subscriberRoute = require("./controller/subscriber.js");
 const app = express();
 app.use(
   cors({
@@ -42,6 +43,7 @@ app.use("/api/v2/order", orderRoute);
 app.use("/api/v2/conversation", conversationRoute);
 app.use("/api/v2/message", messageRoute);
 app.use("/api/v2/withdraw", withdrawRoute);
+app.use("/api/v2", subscriberRoute);
 
 app.get("/ping", (req, res) => res.send("pong"));
 
