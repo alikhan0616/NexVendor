@@ -11,7 +11,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { RiGalleryLine } from "react-icons/ri";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import styles from "../styles/styles";
-const ENDPOINT = "http://localhost:4000";
+const ENDPOINT = "https://nexvendor-socket.onrender.com";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 const UserInbox = () => {
   const { user, loading } = useSelector((state) => state.user);

@@ -11,7 +11,7 @@ import styles from "../../styles/styles";
 import { format } from "timeago.js";
 import { RiGalleryLine } from "react-icons/ri";
 import socketIO from "socket.io-client";
-const ENDPOINT = "http://localhost:4000";
+const ENDPOINT = "https://nexvendor-socket.onrender.com";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const DashboardMessages = () => {
