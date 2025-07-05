@@ -209,8 +209,8 @@ function SignUp() {
             </div>
             {/* Submit Button */}
             <button
-              disabled={loading ? "Loading..." : "Register"}
-              className="w-full h-[44px] flex justify-center items-center py-2 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-[#B66E41] hover:bg-orange-600 shadow transition"
+              disabled={loading}
+              className="w-full h-[44px] cursor-pointer flex justify-center items-center py-2 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-[#B66E41] hover:bg-orange-600 shadow transition"
               type="submit"
             >
               {loading ? "Registering..." : "Sign Up"}

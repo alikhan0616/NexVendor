@@ -280,13 +280,12 @@ function ShopCreate() {
             {/* Submit Button */}
             <button
               disabled={loading}
-              className="w-full h-[44px] flex justify-center items-center py-2 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-[#B66E41] hover:bg-orange-600 shadow transition"
+              className="w-full h-[44px] cursor-pointer disabled:opacity-45 flex justify-center items-center py-2 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-[#B66E41] hover:bg-orange-600 shadow transition"
               type="submit"
             >
               {loading ? "Loading..." : "Register"}
             </button>
             {/* Already have account */}
-            disabled={loading}
             <div className="flex items-center justify-center gap-2 pt-2">
               <span className="text-slate-600">Already have an account?</span>
               <Link
