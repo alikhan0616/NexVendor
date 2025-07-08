@@ -45,6 +45,19 @@ const Header = ({ activeHeading }) => {
     setSearchData(filteredProducts);
   };
 
+  const handleSearchFocus = () => {
+    // Keep search results visible when input is focused
+  };
+
+  const handleSearchBlur = (e) => {
+    // Close search results when clicking outside
+    setTimeout(() => {
+      if (!e.currentTarget.contains(document.activeElement)) {
+        setSearchData(null);
+      }
+    }, 150);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const headerElement = document.querySelector(".main-header");
@@ -81,13 +94,14 @@ const Header = ({ activeHeading }) => {
           </div>
 
           {/* SEARCH BAR */}
-          <div className="w-[50%] relative">
+          <div className="w-[50%] relative" onBlur={handleSearchBlur}>
             <div className="relative group">
               <input
                 type="text"
                 placeholder="Search for products, brands and more..."
                 value={searchTerm}
                 onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
                 className="h-[50px] w-full px-6 pr-14 bg-white border-2 border-slate-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 text-slate-700 placeholder-slate-400"
               />
               <div className="absolute right-2 top-2 bg-orange-600 hover:bg-orange-700 rounded-full p-2 cursor-pointer transition-all duration-300 transform hover:scale-105">
@@ -96,7 +110,7 @@ const Header = ({ activeHeading }) => {
             </div>
 
             {searchData && searchData.length > 0 && searchTerm !== "" ? (
-              <div className="absolute min-w-full bg-white shadow-2xl z-30 mt-2 rounded-2xl border border-slate-200 overflow-hidden">
+              <div className="absolute min-w-full bg-white shadow-2xl z-[99999] mt-2 rounded-2xl border border-slate-200 overflow-hidden">
                 <div className="max-h-[400px] overflow-y-auto">
                   {searchData &&
                     searchData.map((i, index) => {
@@ -106,7 +120,7 @@ const Header = ({ activeHeading }) => {
                           key={index}
                           onClick={() => {
                             setSearchTerm("");
-                            setSearchData([]);
+                            setSearchData(null);
                           }}
                           to={`/product/${d}`}
                         >
@@ -322,13 +336,14 @@ const Header = ({ activeHeading }) => {
 
               {/* MOBILE SEARCH */}
               <div className="p-6 border-b border-slate-200">
-                <div className="relative">
+                <div className="relative" onBlur={handleSearchBlur}>
                   <input
                     type="search"
                     placeholder="Search products..."
                     className="h-[50px] w-full px-6 pr-14 bg-slate-50 border-2 border-slate-200 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 text-slate-700"
                     value={searchTerm}
                     onChange={handleSearchChange}
+                    onFocus={handleSearchFocus}
                   />
                   <div className="absolute right-2 top-2 bg-orange-600 rounded-full p-2">
                     <AiOutlineSearch size={20} className="text-white" />

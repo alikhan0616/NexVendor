@@ -8,7 +8,7 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { backend_url, server } from "../../../server";
+import { server } from "../../../server";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { addTocart } from "../../../redux/actions/cart";
@@ -17,8 +17,11 @@ import {
   removeFromwishlist,
 } from "../../../redux/actions/wishlist";
 import axios from "axios";
+import { getAllProductsShop } from "../../../redux/actions/product";
+
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
+  const { products } = useSelector((state) => state.product);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { user, isAuthenticated } = useSelector((state) => state.user);
 
@@ -30,7 +33,24 @@ const ProductDetailsCard = ({ setOpen, data }) => {
 
   const dispatch = useDispatch();
   const id = data._id;
+  useEffect(() => {
+    dispatch(getAllProductsShop(data && data.shop?._id));
+  }, [dispatch, data]);
   // const [select, setSelect] = useState(false);
+
+  const totalReviewsLength =
+    products &&
+    products.reduce((acc, product) => acc + product.reviews.length, 0);
+
+  const totalRatings =
+    products &&
+    products.reduce(
+      (acc, product) =>
+        acc + product.reviews.reduce((sum, review) => sum + review.rating, 0),
+      0
+    );
+
+  const averageRating = totalRatings / totalReviewsLength || 0;
 
   const addToCartHandler = (id) => {
     const isItemExists = cart && cart.find((i) => i._id === id);
@@ -139,7 +159,9 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                       {data.shop.name}
                     </h3>
                   </Link>
-                  <h5 className="text-xs text-slate-500">(10) Ratings</h5>
+                  <h5 className="text-xs text-slate-500">
+                    ({averageRating && averageRating.toFixed(1)}/5) Ratings
+                  </h5>
                 </div>
               </div>
               <div className="inline-flex items-center px-4 py-2 rounded bg-[#B66E41]/10 text-[#B66E41] font-semibold text-sm mb-2">
