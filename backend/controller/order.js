@@ -192,18 +192,36 @@ router.put(
       order.status = req.body.status;
       await order.save();
 
+      if (req.body.status === "Refund Success") {
+        console.log("Processing refund for order:", order._id);
+        console.log("Order total price:", order.totalPrice);
+        console.log("Order total price type:", typeof order.totalPrice);
+
+        // Validate order.totalPrice
+        const totalPrice = parseFloat(order.totalPrice);
+        if (isNaN(totalPrice) || !isFinite(totalPrice) || totalPrice <= 0) {
+          console.error("Invalid order total price:", order.totalPrice);
+          return next(new ErrorHandler("Invalid order total price", 400));
+        }
+
+        // Use for...of loop instead of forEach for proper async handling
+        for (const orderItem of order.cart) {
+          await updateProduct(orderItem._id, orderItem.qty);
+        }
+
+        const serviceCharge = totalPrice * 0.1;
+        const refundAmount = totalPrice - serviceCharge;
+
+        console.log("Service charge:", serviceCharge);
+        console.log("Amount to deduct from seller:", refundAmount);
+
+        await updateSellerBalance(refundAmount);
+      }
+
       res.status(200).json({
         success: true,
         message: "Order Refund Successful!",
       });
-
-      if (req.body.status === "Refund Success") {
-        order.cart.forEach(async (order) => {
-          await updateProduct(order._id, order.qty);
-          const serviceCharge = order.totalPrice * 0.1;
-          await updateSellerBalance(order.totalPrice - serviceCharge);
-        });
-      }
 
       async function updateProduct(id, qty) {
         const product = await Product.findById(id);
@@ -215,11 +233,60 @@ router.put(
       }
 
       async function updateSellerBalance(amount) {
+        console.log("Updating seller balance. Seller ID:", req.seller._id);
+        console.log("Amount to deduct:", amount);
+        console.log(
+          "Amount is valid number:",
+          !isNaN(amount) && isFinite(amount)
+        );
+
         const seller = await Shop.findById(req.seller._id);
 
-        seller.availableBalance -= amount;
+        if (!seller) {
+          console.log("Seller not found!");
+          return;
+        }
+
+        console.log("Current balance:", seller.availableBalance);
+        console.log(
+          "Current balance is valid number:",
+          !isNaN(seller.availableBalance) && isFinite(seller.availableBalance)
+        );
+
+        // Ensure we have valid numbers
+        const currentBalance = parseFloat(seller.availableBalance) || 0;
+        const deductAmount = parseFloat(amount) || 0;
+
+        // Validate the numbers before calculation
+        if (
+          isNaN(currentBalance) ||
+          isNaN(deductAmount) ||
+          !isFinite(currentBalance) ||
+          !isFinite(deductAmount)
+        ) {
+          console.error("Invalid numbers detected - skipping balance update");
+          console.error(
+            "Current balance:",
+            currentBalance,
+            "Deduct amount:",
+            deductAmount
+          );
+          return;
+        }
+
+        const newBalance = currentBalance - deductAmount;
+
+        // Final validation
+        if (isNaN(newBalance) || !isFinite(newBalance)) {
+          console.error("Calculated balance is invalid:", newBalance);
+          return;
+        }
+
+        seller.availableBalance = newBalance;
+        console.log("New balance:", seller.availableBalance);
 
         await seller.save();
+        console.log("Balance updated successfully");
       }
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
