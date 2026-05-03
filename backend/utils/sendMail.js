@@ -11,6 +11,9 @@ const sendMail = async (options) => {
     },
   });
 
+  await transporter.verify();
+  console.log("SMTP connection verified successfully");
+
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
       <div style="background-color: #B66E41; padding: 20px; color: white; text-align: center;">
