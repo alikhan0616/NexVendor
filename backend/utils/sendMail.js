@@ -11,8 +11,14 @@ const sendMail = async (options) => {
     },
   });
 
-  await transporter.verify();
-  console.log("SMTP connection verified successfully");
+  try {
+    console.log("[sendMail] verifying SMTP connection");
+    await transporter.verify();
+    console.log("[sendMail] SMTP connection verified successfully");
+  } catch (error) {
+    console.error("[sendMail] SMTP verify failed", error);
+    throw error;
+  }
 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
@@ -50,7 +56,14 @@ const sendMail = async (options) => {
     html: htmlContent,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    console.log("[sendMail] sending message", { to: options.email });
+    await transporter.sendMail(mailOptions);
+    console.log("[sendMail] message sent", { to: options.email });
+  } catch (error) {
+    console.error("[sendMail] send failed", error);
+    throw error;
+  }
 };
 
 module.exports = sendMail;
