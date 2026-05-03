@@ -56,8 +56,6 @@ const sendMail = async (options) => {
   };
 
   try {
-    console.log("[sendMail] sending message via Brevo API", { to: options.email });
-
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
@@ -73,13 +71,8 @@ const sendMail = async (options) => {
       throw new Error(`Brevo API error ${response.status}: ${errorText}`);
     }
 
-    const result = await response.json();
-    console.log("[sendMail] message sent via Brevo API", {
-      to: options.email,
-      messageId: result.messageId,
-    });
+    await response.json();
   } catch (error) {
-    console.error("[sendMail] send failed", error);
     throw error;
   }
 };

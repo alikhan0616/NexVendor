@@ -16,17 +16,14 @@ const router = express.Router();
 router.post("/create-user", async (req, res, next) => {
   try {
     const { name, email, password, avatar } = req.body;
-    console.log("[create-user] request received", { email, hasAvatar: !!avatar });
     const userEmail = await User.findOne({ email });
     if (userEmail) {
       return next(new ErrorHandler("User already exists!", 400));
     }
 
-    console.log("[create-user] uploading avatar to Cloudinary");
     const myCloud = await cloudinary.v2.uploader.upload(avatar, {
       folder: "avatars",
     });
-    console.log("[create-user] avatar uploaded", { public_id: myCloud.public_id });
 
     const user = {
       name: name,
@@ -42,14 +39,12 @@ router.post("/create-user", async (req, res, next) => {
 
     const activationUrl = `https://nex-vendor-ssk2.vercel.app/activation/${activationToken}`;
     try {
-      console.log("[create-user] sending activation email");
       await sendMail({
         email: user.email,
         subject: "Activate your account",
         name: user.name,
         activationUrl,
       });
-      console.log("[create-user] activation email sent");
 
       res.status(201).json({
         success: true,
@@ -59,7 +54,6 @@ router.post("/create-user", async (req, res, next) => {
       return next(new ErrorHandler(error.message, 500));
     }
   } catch (error) {
-    console.error("[create-user] failed", error);
     return next(new ErrorHandler(error.message, 400));
   }
 });
