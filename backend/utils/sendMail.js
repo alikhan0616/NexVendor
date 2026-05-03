@@ -1,31 +1,4 @@
-const nodemailer = require("nodemailer");
-
 const sendMail = async (options) => {
-  const smtpHost = process.env.SMPT_HOST || "smtp-relay.brevo.com";
-  const smtpPort = Number(process.env.SMPT_PORT || 587);
-  const transporter = nodemailer.createTransport({
-    host: smtpHost,
-    port: smtpPort,
-    secure: smtpPort === 465,
-    requireTLS: smtpPort === 587,
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000,
-    auth: {
-      user: process.env.SMPT_MAIL,
-      pass: process.env.SMPT_PASSWORD,
-    },
-  });
-
-  try {
-    console.log("[sendMail] verifying SMTP connection");
-    await transporter.verify();
-    console.log("[sendMail] SMTP connection verified successfully");
-  } catch (error) {
-    console.error("[sendMail] SMTP verify failed", error);
-    throw error;
-  }
-
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
       <div style="background-color: #B66E41; padding: 20px; color: white; text-align: center;">
@@ -55,17 +28,56 @@ const sendMail = async (options) => {
     </div>
   `;
 
-  const mailOptions = {
-    from: process.env.SMPT_MAIL,
-    to: options.email,
+  const apiKey = process.env.SMPT_PASSWORD;
+  const senderEmail = process.env.SMPT_MAIL;
+  const senderName = process.env.SMPT_HOST || "NexVendor";
+
+  if (!apiKey) {
+    throw new Error("Missing Brevo API key in SMPT_PASSWORD");
+  }
+
+  if (!senderEmail) {
+    throw new Error("Missing sender email in SMPT_MAIL");
+  }
+
+  const mailPayload = {
+    sender: {
+      name: senderName,
+      email: senderEmail,
+    },
+    to: [
+      {
+        email: options.email,
+        name: options.name,
+      },
+    ],
     subject: options.subject,
-    html: htmlContent,
+    htmlContent,
   };
 
   try {
-    console.log("[sendMail] sending message", { to: options.email });
-    await transporter.sendMail(mailOptions);
-    console.log("[sendMail] message sent", { to: options.email });
+    console.log("[sendMail] sending message via Brevo API", { to: options.email });
+
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "api-key": apiKey,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(mailPayload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Brevo API error ${response.status}: ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log("[sendMail] message sent via Brevo API", {
+      to: options.email,
+      messageId: result.messageId,
+    });
   } catch (error) {
     console.error("[sendMail] send failed", error);
     throw error;
